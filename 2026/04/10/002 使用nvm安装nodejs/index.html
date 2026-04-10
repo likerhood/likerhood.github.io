@@ -1,0 +1,271 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>使用nvm安装node.js</title><meta name="author" content="Like"><meta name="copyright" content="Like"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="使用nvm安装和管理node.js[toc] 前言概览Node.js 的更新迭代非常迅速，不同项目间常常需要搭配不同版本的 Node。为了避免频繁手动卸载、重装所带来的麻烦，你可以使用一个专门的版本管理工具——nvm（Node Version Manager），它可以：  🔄 轻松安装不同版本的 Node.js 💡 一句话就切换版本，无需 root 权限 ❌ 避免旧版本残留和路径冲突  安装最">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用nvm安装node.js">
+<meta property="og:url" content="https://likerhood.github.io/2026/04/10/002%20%E4%BD%BF%E7%94%A8nvm%E5%AE%89%E8%A3%85nodejs/index.html">
+<meta property="og:site_name" content="Liker&#39;s Blog">
+<meta property="og:description" content="使用nvm安装和管理node.js[toc] 前言概览Node.js 的更新迭代非常迅速，不同项目间常常需要搭配不同版本的 Node。为了避免频繁手动卸载、重装所带来的麻烦，你可以使用一个专门的版本管理工具——nvm（Node Version Manager），它可以：  🔄 轻松安装不同版本的 Node.js 💡 一句话就切换版本，无需 root 权限 ❌ 避免旧版本残留和路径冲突  安装最">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likerhood.github.io/images/background.jpg">
+<meta property="article:published_time" content="2026-04-10T08:44:23.018Z">
+<meta property="article:modified_time" content="2026-04-10T08:56:11.437Z">
+<meta property="article:author" content="Like">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likerhood.github.io/images/background.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/04/10/002%20%E4%BD%BF%E7%94%A8nvm%E5%AE%89%E8%A3%85nodejs/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Like","link":"链接: ","source":"来源: Liker's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '使用nvm安装node.js',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-04-10 16:56:11'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description"></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/chenxz21/bcxm" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/google"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://json.xbyzs.cf"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://draw.xbyzs.cf"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://enkey.xbyzs.cf"><span> EnKey</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Liker's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/google"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://json.xbyzs.cf"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://draw.xbyzs.cf"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://enkey.xbyzs.cf"><span> EnKey</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">使用nvm安装node.js</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-04-10T08:44:23.018Z" title="发表于 2026-04-10 16:44:23">2026-04-10</time></span></div><div class="meta-secondline"></div></div></div><article class="post-content" id="article-container"><h1 id="使用nvm安装和管理node-js"><a href="#使用nvm安装和管理node-js" class="headerlink" title="使用nvm安装和管理node.js"></a>使用nvm安装和管理node.js</h1><p>[toc]</p>
+<h2 id="前言概览"><a href="#前言概览" class="headerlink" title="前言概览"></a>前言概览</h2><p>Node.js 的更新迭代非常迅速，不同项目间常常需要搭配不同版本的 Node。为了避免频繁手动卸载、重装所带来的麻烦，你可以使用一个专门的版本管理工具——<strong>nvm（Node Version Manager）</strong>，它可以：</p>
+<ul>
+<li>🔄 轻松安装不同版本的 Node.js</li>
+<li>💡 一句话就切换版本，无需 root 权限</li>
+<li>❌ 避免旧版本残留和路径冲突</li>
+</ul>
+<p>安装最新的 LTS 或者项目所需的精确版本都能轻松实现。本文基于windows实现nvm安装和nodejs的切换。</p>
+<h2 id="一、准备工作"><a href="#一、准备工作" class="headerlink" title="一、准备工作"></a>一、准备工作</h2><blockquote>
+<p> <strong>之前没有下载过node.js的同学可以跳过这一步。</strong></p>
+</blockquote>
+<h3 id="1-1-删除旧版本node-js"><a href="#1-1-删除旧版本node-js" class="headerlink" title="1.1 删除旧版本node.js"></a>1.1 删除旧版本node.js</h3><ol>
+<li><p>在**“设置 → 应用和功能”<strong>或者</strong>控制面板 -&gt; 卸载程序 -&gt; 卸载nodejs<strong>里卸载 Node.js。建议使用</strong>geek软件**删除。</p>
+</li>
+<li><p>运行命令：<code>npm cache clean --force</code>。</p>
+</li>
+<li><p>确认 <code>node -v</code> 或 <code>npm -v</code> 不再返回版本号。</p>
+</li>
+</ol>
+<h3 id="1-2-删除残余路径"><a href="#1-2-删除残余路径" class="headerlink" title="1.2 删除残余路径"></a>1.2 删除残余路径</h3><p><strong>删除以下文件夹：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">C:\Program Files (x86)\Nodejs</span><br><span class="line">C:\Program Files\Nodejs</span><br><span class="line">C:\Users&#123;User&#125;\AppData\Roaming\npm</span><br><span class="line">C:\Users&#123;User&#125;\AppData\Roaming\npm-cache</span><br><span class="line">删除C:\Users\用户名 下的 .npmrc文件以及 .yarnrc 文件</span><br><span class="line">环境变量中npm、node的所有相关统统删掉</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="二、安装nvm"><a href="#二、安装nvm" class="headerlink" title="二、安装nvm"></a>二、安装nvm</h2><h3 id="2-1-官网下载nvm"><a href="#2-1-官网下载nvm" class="headerlink" title="2.1 官网下载nvm"></a>2.1 官网下载nvm</h3><p><a target="_blank" rel="noopener" href="https://github.com/coreybutler/nvm-windows/releases">Releases · coreybutler&#x2F;nvm-windows</a></p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/image-20250707110914841.png" alt="image-20250707110914841"></p>
+<h3 id="2-2-安装-nvm-setup-exe"><a href="#2-2-安装-nvm-setup-exe" class="headerlink" title="2.2 安装 nvm-setup.exe"></a>2.2 安装 nvm-setup.exe</h3><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707112401469.png" alt="image-20250707112401469"></p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707112420792.png" alt="image-20250707112420792"></p>
+<blockquote>
+<p>上面nvm和nodejs默认安装地址都是C盘，我们最好换成其他的盘。</p>
+<p>并且注意安装路径的文件夹名称不要出现中文，空格等，否则后期npm使用的时候会出现符号格式不正确问题。</p>
+<p>继续点击 Next 就行。</p>
+</blockquote>
+<h3 id="2-3-配置路径和下载镜像"><a href="#2-3-配置路径和下载镜像" class="headerlink" title="2.3 配置路径和下载镜像"></a>2.3 配置路径和下载镜像</h3><p>安装完nvm后先不要着急安装node版本。</p>
+<p><strong>找到nvm安装路径 -&gt; 找到 <code>setting.txt</code> 文件 -&gt; 新增两行信息，配置下载源</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node_mirror: https://npmmirror.com/mirrors/node/</span><br><span class="line">npm_mirror: https://npmmirror.com/mirrors/npm/</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707112834601.png" alt="image-20250707112834601"></p>
+<p>增加后如下，然后保存退出(注意前面的不要动):</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707112912391.png" alt="image-20250707112912391"></p>
+<blockquote>
+<p><strong>第一行是 nvm安装路径</strong><br><strong>第二行是 nodejs路径</strong><br><strong>第三行是 node下载镜像</strong><br><strong>第四行是 npm下载镜像</strong></p>
+</blockquote>
+<h3 id="2-4-检查nvm是否安装完成"><a href="#2-4-检查nvm是否安装完成" class="headerlink" title="2.4 检查nvm是否安装完成"></a>2.4 检查nvm是否安装完成</h3><p>win + R，调用cmd，输入<code>nvm</code>，出现下面这一堆就表示安装成功了。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707113036213.png" alt="image-20250707113036213"></p>
+<h2 id="三、安装node"><a href="#三、安装node" class="headerlink" title="三、安装node"></a>三、安装node</h2><h3 id="3-1-nvm安装指定node"><a href="#3-1-nvm安装指定node" class="headerlink" title="3.1 nvm安装指定node"></a>3.1 nvm安装指定node</h3><ol>
+<li><strong>win + R，调用cmd</strong>，查看node.js稳定版本</li>
+</ol>
+<p>​	安装完成后开始插入nodejs首先使用 <code>nvm list available</code> 查询可插入版本号，LST表示可插入稳定版本。【如未指定版本，建议安装LTS下的版本】<img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707113304135.png" alt="image-20250707113304135"></p>
+<ol start="2">
+<li>安装指定node.js版本,未指定版本号默认下载最新版本</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm install 22.15.0</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>检查安装是否成功</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>查看当前已经安装的node版本，<strong>带*是正在使用的</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm list</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>删除指定版本node</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm uninstall node 版本号</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-2-设置node镜像源"><a href="#3-2-设置node镜像源" class="headerlink" title="3.2 设置node镜像源"></a>3.2 设置node镜像源</h3><ol>
+<li><strong>修改npm镜像源为淘宝镜像</strong>，加快npm包的下载速度，减少发生连接错误和超时的概率</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config <span class="built_in">set</span> registry https://registry.npmmirror.com</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>检查是否设置淘宝镜像成功</strong>（会返回这个地址表示成功：<a target="_blank" rel="noopener" href="https://registry.npmmirror.com)/">https://registry.npmmirror.com）</a></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config get registry</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-3-切换其他版本nodejs"><a href="#3-3-切换其他版本nodejs" class="headerlink" title="3.3 切换其他版本nodejs"></a>3.3 切换其他版本nodejs</h3><p><code>nvm use</code> 切换node版本。(如果报错，用管理员身份打开重新 <code>nvm use</code> 你指定的版本）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvm use 22.15.0</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="四、关于环境变量"><a href="#四、关于环境变量" class="headerlink" title="四、关于环境变量"></a>四、关于环境变量</h2><h3 id="4-1-nvm和node环境变量"><a href="#4-1-nvm和node环境变量" class="headerlink" title="4.1 nvm和node环境变量"></a>4.1 nvm和node环境变量</h3><p>nvm安装时会自动帮我们配置nvm和node的环境变量，如图所示。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707125714321.png" alt="image-20250707125714321"></p>
+<p>同时这里变量已经写<strong>path</strong>中：</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707130703808.png" alt="image-20250707130703808"></p>
+<h3 id="4-2-配置npm在安装全局模块时的路径和缓存cache的路径"><a href="#4-2-配置npm在安装全局模块时的路径和缓存cache的路径" class="headerlink" title="4.2 配置npm在安装全局模块时的路径和缓存cache的路径"></a>4.2 配置npm在安装全局模块时的路径和缓存cache的路径</h3><ol>
+<li><p>默认情况下，<strong>npm 会把全局包安装到 <code>%AppData%\Roaming\npm</code>（默认的 <code>prefix</code>）和 <code>%AppData%\Roaming\npm-cache</code>（默认 <code>cache</code>）路径中。</strong></p>
+</li>
+<li><p>修改prefix路径<strong>可以避免安装在系统目录（如 <code>C:\Program Files</code>）而导致权限不足的问题</strong>，尤其是在用户无管理员权限或 AV&#x2F;策略限制 AppData 执行时 </p>
+</li>
+<li><p>自定义 <code>cache</code> 路径能让缓存存储更稳定，也减少在共享目录&#x2F;网络盘上的读写异常 。</p>
+</li>
+</ol>
+<p>所以我们可以通过配置环境变量，修改这里<strong>安装全局模块的路径</strong>。</p>
+<h4 id="4-2-1-在nvm的node文件夹下新增两文件夹"><a href="#4-2-1-在nvm的node文件夹下新增两文件夹" class="headerlink" title="4.2.1 在nvm的node文件夹下新增两文件夹"></a>4.2.1 在nvm的node文件夹下新增两文件夹</h4><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707131551570.png" alt="image-20250707131551570"></p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707131626089.png" alt="image-20250707131626089"></p>
+<h4 id="4-2-2-npm配置prefix和cache路径"><a href="#4-2-2-npm配置prefix和cache路径" class="headerlink" title="4.2.2 npm配置prefix和cache路径"></a>4.2.2 npm配置prefix和cache路径</h4><p>打开cmd命令行工具，执行操作（两个路径就是新建上面两个文件夹的路径，主要目的是方便后面window机器使用方便）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm config <span class="built_in">set</span> prefix <span class="string">&quot;D:\tools\nvm\nodejs\node_global&quot;</span></span><br><span class="line">npm config <span class="built_in">set</span> cache <span class="string">&quot;D:\tools\nvm\nodejs\node_cache&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707131849076.png" alt="image-20250707131849076"></p>
+<p>执行成功就无任何响应。</p>
+<h4 id="4-2-3-设置环境变量"><a href="#4-2-3-设置环境变量" class="headerlink" title="4.2.3 设置环境变量"></a>4.2.3 设置环境变量</h4><ol>
+<li><p>进入环境变量对话框（直接搜索环境变量）</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707132130838.png" alt="image-20250707132130838"></p>
+</li>
+<li><p><strong>系统环境变量新增 <code>NODE_PATH</code> 变量</strong></p>
+<p>其中<code>D:\tools\nvm\nodejs\node_global\node_modules</code> 就是上面创建的全局模块安装路径文件夹，<strong>注意是原来global中的文件夹</strong>。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707133424243.png" alt="image-20250707133424243"></p>
+</li>
+<li><p><strong>修改 【用户变量】中的 <code>path</code> 变量</strong></p>
+</li>
+</ol>
+<p>​	<img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707134001368.png" alt="image-20250707134001368"></p>
+<p>​	<img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707134155968.png" alt="image-20250707134155968"></p>
+<h4 id="4-2-4-测试安装全局模块是否配置成功"><a href="#4-2-4-测试安装全局模块是否配置成功" class="headerlink" title="4.2.4 测试安装全局模块是否配置成功"></a>4.2.4 测试安装全局模块是否配置成功</h4><p>在cmd窗口中输入以下指定全局安装express模块，安装成功的话表示环境变量配置成功。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g express</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707134414034.png" alt="image-20250707134414034"></p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20250707134335221.png" alt="image-20250707134335221"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="总体流程"><a href="#总体流程" class="headerlink" title="总体流程"></a>总体流程</h3><ol>
+<li>安装nvm；</li>
+<li>用nvm安装和切换不同版本的node.js；</li>
+<li>nvm和node的环境变量不需要再配置；</li>
+<li>可以配置node下载全局模块时的路径和环境变量（有些麻烦，但是按照教程可以配置成功）。</li>
+</ol>
+<h3 id="参考博客"><a href="#参考博客" class="headerlink" title="参考博客"></a>参考博客</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/goods_yao/article/details/137854626">使用nvm管理node多版本（安装、卸载nvm，配置环境变量，更换npm淘宝镜像）_node 版本管理-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45796592/article/details/128469141">node详细安装教程以及Vue脚手架搭建_nodejs安装vue脚手架-CSDN博客</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Like</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://likerhood.github.io/2026/04/10/002%20%E4%BD%BF%E7%94%A8nvm%E5%AE%89%E8%A3%85nodejs/">https://likerhood.github.io/2026/04/10/002%20%E4%BD%BF%E7%94%A8nvm%E5%AE%89%E8%A3%85nodejs/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://likerhood.github.io" target="_blank">Liker's Blog</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/images/background.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://fastly.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2026/03/30/hello-world/"><img class="next-cover" src="/images/background.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Hello World</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8nvm%E5%AE%89%E8%A3%85%E5%92%8C%E7%AE%A1%E7%90%86node-js"><span class="toc-number">1.</span> <span class="toc-text">使用nvm安装和管理node.js</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80%E6%A6%82%E8%A7%88"><span class="toc-number">1.1.</span> <span class="toc-text">前言概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-number">1.2.</span> <span class="toc-text">一、准备工作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%88%A0%E9%99%A4%E6%97%A7%E7%89%88%E6%9C%ACnode-js"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.1 删除旧版本node.js</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%88%A0%E9%99%A4%E6%AE%8B%E4%BD%99%E8%B7%AF%E5%BE%84"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2 删除残余路径</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%AE%89%E8%A3%85nvm"><span class="toc-number">1.3.</span> <span class="toc-text">二、安装nvm</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%AE%98%E7%BD%91%E4%B8%8B%E8%BD%BDnvm"><span class="toc-number">1.3.1.</span> <span class="toc-text">2.1 官网下载nvm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%AE%89%E8%A3%85-nvm-setup-exe"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.2 安装 nvm-setup.exe</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E9%85%8D%E7%BD%AE%E8%B7%AF%E5%BE%84%E5%92%8C%E4%B8%8B%E8%BD%BD%E9%95%9C%E5%83%8F"><span class="toc-number">1.3.3.</span> <span class="toc-text">2.3 配置路径和下载镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E6%A3%80%E6%9F%A5nvm%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85%E5%AE%8C%E6%88%90"><span class="toc-number">1.3.4.</span> <span class="toc-text">2.4 检查nvm是否安装完成</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AE%89%E8%A3%85node"><span class="toc-number">1.4.</span> <span class="toc-text">三、安装node</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-nvm%E5%AE%89%E8%A3%85%E6%8C%87%E5%AE%9Anode"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1 nvm安装指定node</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E8%AE%BE%E7%BD%AEnode%E9%95%9C%E5%83%8F%E6%BA%90"><span class="toc-number">1.4.2.</span> <span class="toc-text">3.2 设置node镜像源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E5%88%87%E6%8D%A2%E5%85%B6%E4%BB%96%E7%89%88%E6%9C%ACnodejs"><span class="toc-number">1.4.3.</span> <span class="toc-text">3.3 切换其他版本nodejs</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%85%B3%E4%BA%8E%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">1.5.</span> <span class="toc-text">四、关于环境变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-nvm%E5%92%8Cnode%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">1.5.1.</span> <span class="toc-text">4.1 nvm和node环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E9%85%8D%E7%BD%AEnpm%E5%9C%A8%E5%AE%89%E8%A3%85%E5%85%A8%E5%B1%80%E6%A8%A1%E5%9D%97%E6%97%B6%E7%9A%84%E8%B7%AF%E5%BE%84%E5%92%8C%E7%BC%93%E5%AD%98cache%E7%9A%84%E8%B7%AF%E5%BE%84"><span class="toc-number">1.5.2.</span> <span class="toc-text">4.2 配置npm在安装全局模块时的路径和缓存cache的路径</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-1-%E5%9C%A8nvm%E7%9A%84node%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%8B%E6%96%B0%E5%A2%9E%E4%B8%A4%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="toc-number">1.5.2.1.</span> <span class="toc-text">4.2.1 在nvm的node文件夹下新增两文件夹</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-2-npm%E9%85%8D%E7%BD%AEprefix%E5%92%8Ccache%E8%B7%AF%E5%BE%84"><span class="toc-number">1.5.2.2.</span> <span class="toc-text">4.2.2 npm配置prefix和cache路径</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-3-%E8%AE%BE%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">1.5.2.3.</span> <span class="toc-text">4.2.3 设置环境变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-4-%E6%B5%8B%E8%AF%95%E5%AE%89%E8%A3%85%E5%85%A8%E5%B1%80%E6%A8%A1%E5%9D%97%E6%98%AF%E5%90%A6%E9%85%8D%E7%BD%AE%E6%88%90%E5%8A%9F"><span class="toc-number">1.5.2.4.</span> <span class="toc-text">4.2.4 测试安装全局模块是否配置成功</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.6.</span> <span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E4%BD%93%E6%B5%81%E7%A8%8B"><span class="toc-number">1.6.1.</span> <span class="toc-text">总体流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E5%8D%9A%E5%AE%A2"><span class="toc-number">1.6.2.</span> <span class="toc-text">参考博客</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description"></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/chenxz21/bcxm" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">微信公众号: 小白一只手</div></div></div></div></main><footer id="footer" style="background: #FFFFFF"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2026 By Like</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">Bcxm</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"></div><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/leancloud-storage@4.10.0/dist/av-min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
