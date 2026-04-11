@@ -1,0 +1,275 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>使用 Hexo + GitHub Pages 搭建个人静态博客</title><meta name="author" content="Like"><meta name="copyright" content="Like"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="使用 Hexo + GitHub Pages 搭建个人静态博客[toc] 前言GitHub Pages 是 GitHub 提供的免费静态页面托管服务，配合 Hexo 这个快速、简洁的静态博客框架，可以零成本搭建一个属于自己的技术博客。全程不需要购买服务器，只需要熟悉基本的命令行操作。  一、环境准备1.1 安装 Node.js（使用 nvm 管理版本）推荐使用 nvm 安装 Node.js，便于后">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Hexo + GitHub Pages 搭建个人静态博客">
+<meta property="og:url" content="https://likerhood.github.io/2026/04/11/002%20github.io%E5%92%8Chexo%E5%BB%BA%E7%AB%8B%E9%9D%99%E6%80%81%E7%BD%91%E9%A1%B5%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/index.html">
+<meta property="og:site_name" content="Liker&#39;s Blog">
+<meta property="og:description" content="使用 Hexo + GitHub Pages 搭建个人静态博客[toc] 前言GitHub Pages 是 GitHub 提供的免费静态页面托管服务，配合 Hexo 这个快速、简洁的静态博客框架，可以零成本搭建一个属于自己的技术博客。全程不需要购买服务器，只需要熟悉基本的命令行操作。  一、环境准备1.1 安装 Node.js（使用 nvm 管理版本）推荐使用 nvm 安装 Node.js，便于后">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likerhood.github.io/img/default-cover.png">
+<meta property="article:published_time" content="2026-04-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-11T07:53:50.225Z">
+<meta property="article:author" content="Like">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likerhood.github.io/img/default-cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/04/11/002%20github.io%E5%92%8Chexo%E5%BB%BA%E7%AB%8B%E9%9D%99%E6%80%81%E7%BD%91%E9%A1%B5%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Like","link":"链接: ","source":"来源: Liker's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '使用 Hexo + GitHub Pages 搭建个人静态博客',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-04-11 15:53:50'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/google"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://json.xbyzs.cf"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://draw.xbyzs.cf"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://enkey.xbyzs.cf"><span> EnKey</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Liker's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/google"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://json.xbyzs.cf"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://draw.xbyzs.cf"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://enkey.xbyzs.cf"><span> EnKey</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">使用 Hexo + GitHub Pages 搭建个人静态博客</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-04-10T16:00:00.000Z" title="发表于 2026-04-11 00:00:00">2026-04-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/">工具安装教程</a></span></div><div class="meta-secondline"></div></div></div><article class="post-content" id="article-container"><h1 id="使用-Hexo-GitHub-Pages-搭建个人静态博客"><a href="#使用-Hexo-GitHub-Pages-搭建个人静态博客" class="headerlink" title="使用 Hexo + GitHub Pages 搭建个人静态博客"></a>使用 Hexo + GitHub Pages 搭建个人静态博客</h1><p>[toc]</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>GitHub Pages 是 GitHub 提供的免费静态页面托管服务，配合 Hexo 这个快速、简洁的静态博客框架，可以零成本搭建一个属于自己的技术博客。全程不需要购买服务器，只需要熟悉基本的命令行操作。</p>
+<hr>
+<h2 id="一、环境准备"><a href="#一、环境准备" class="headerlink" title="一、环境准备"></a>一、环境准备</h2><h3 id="1-1-安装-Node-js（使用-nvm-管理版本）"><a href="#1-1-安装-Node-js（使用-nvm-管理版本）" class="headerlink" title="1.1 安装 Node.js（使用 nvm 管理版本）"></a>1.1 安装 Node.js（使用 nvm 管理版本）</h3><p>推荐使用 nvm 安装 Node.js，便于后续版本管理（可参考《使用 nvm 安装 Node.js》）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">nvm install 22.15.0</span><br><span class="line">nvm use 22.15.0</span><br><span class="line">node -v   <span class="comment"># 验证安装成功</span></span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-安装-Git"><a href="#1-2-安装-Git" class="headerlink" title="1.2 安装 Git"></a>1.2 安装 Git</h3><ul>
+<li>Windows 用户前往 <a target="_blank" rel="noopener" href="https://git-scm.com/">git-scm.com</a> 下载安装。</li>
+<li>安装后验证：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git --version</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-配置-Git-全局信息"><a href="#1-3-配置-Git-全局信息" class="headerlink" title="1.3 配置 Git 全局信息"></a>1.3 配置 Git 全局信息</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;你的用户名&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;你的邮箱&quot;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、注册并配置-GitHub"><a href="#二、注册并配置-GitHub" class="headerlink" title="二、注册并配置 GitHub"></a>二、注册并配置 GitHub</h2><h3 id="2-1-注册-GitHub-账号"><a href="#2-1-注册-GitHub-账号" class="headerlink" title="2.1 注册 GitHub 账号"></a>2.1 注册 GitHub 账号</h3><p>前往 <a target="_blank" rel="noopener" href="https://github.com/">github.com</a> 注册账号（已有则跳过）。</p>
+<h3 id="2-2-创建-GitHub-Pages-仓库"><a href="#2-2-创建-GitHub-Pages-仓库" class="headerlink" title="2.2 创建 GitHub Pages 仓库"></a>2.2 创建 GitHub Pages 仓库</h3><blockquote>
+<p><strong>关键步骤</strong>：仓库名必须遵循固定格式。</p>
+</blockquote>
+<ol>
+<li>点击 <strong>New repository</strong>；</li>
+<li>仓库名填写 <code>你的用户名.github.io</code>（例如 <code>likerhood.github.io</code>）；</li>
+<li>权限设置为 <strong>Public</strong>；</li>
+<li>不要勾选初始化 README；</li>
+<li>点击 <strong>Create repository</strong>。</li>
+</ol>
+<p>创建成功后，GitHub 会自动为该仓库启用 GitHub Pages，访问地址即为 <code>https://你的用户名.github.io</code>。</p>
+<h3 id="2-3-配置-SSH-密钥（推荐）"><a href="#2-3-配置-SSH-密钥（推荐）" class="headerlink" title="2.3 配置 SSH 密钥（推荐）"></a>2.3 配置 SSH 密钥（推荐）</h3><p>配置 SSH 可以让 Hexo 免密码推送。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 生成 SSH 密钥对</span></span><br><span class="line">ssh-keygen -t rsa -b 4096 -C <span class="string">&quot;你的邮箱&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看公钥内容（复制全部内容）</span></span><br><span class="line"><span class="built_in">cat</span> ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
+
+<p>将公钥粘贴到 GitHub → <strong>Settings → SSH and GPG keys → New SSH key</strong>。</p>
+<p>验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br><span class="line"><span class="comment"># 出现 &quot;Hi xxx! You&#x27;ve successfully authenticated.&quot; 即为成功</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、安装并初始化-Hexo"><a href="#三、安装并初始化-Hexo" class="headerlink" title="三、安装并初始化 Hexo"></a>三、安装并初始化 Hexo</h2><h3 id="3-1-全局安装-Hexo-CLI"><a href="#3-1-全局安装-Hexo-CLI" class="headerlink" title="3.1 全局安装 Hexo CLI"></a>3.1 全局安装 Hexo CLI</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-初始化博客目录"><a href="#3-2-初始化博客目录" class="headerlink" title="3.2 初始化博客目录"></a>3.2 初始化博客目录</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在你希望存放博客的位置执行</span></span><br><span class="line">hexo init myblog</span><br><span class="line"><span class="built_in">cd</span> myblog</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+
+<p>初始化后的目录结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">myblog/</span><br><span class="line">├── _config.yml          # 站点全局配置（核心）</span><br><span class="line">├── package.json</span><br><span class="line">├── scaffolds/           # 文章模板</span><br><span class="line">├── source/</span><br><span class="line">│   ├── _posts/          # 博客文章存放目录</span><br><span class="line">│   └── about/</span><br><span class="line">└── themes/              # 主题目录</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-本地预览"><a href="#3-3-本地预览" class="headerlink" title="3.3 本地预览"></a>3.3 本地预览</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo server</span><br><span class="line"><span class="comment"># 访问 http://localhost:4000</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、站点全局配置"><a href="#四、站点全局配置" class="headerlink" title="四、站点全局配置"></a>四、站点全局配置</h2><p>编辑根目录下的 _config.yml，常用配置如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 站点基本信息</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">Liker&#x27;s</span> <span class="string">Blog</span></span><br><span class="line"><span class="attr">subtitle:</span> <span class="string">&#x27;记录技术成长，分享生活点滴&#x27;</span></span><br><span class="line"><span class="attr">author:</span> <span class="string">Like</span></span><br><span class="line"><span class="attr">language:</span> <span class="string">zh-CN</span></span><br><span class="line"><span class="attr">timezone:</span> <span class="string">&#x27;Asia/Shanghai&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 博客访问地址（必须与 GitHub Pages 仓库名一致）</span></span><br><span class="line"><span class="attr">url:</span> <span class="string">https://你的用户名.github.io</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 代码高亮（必须显式启用，否则主题的 mac 风格代码框无法渲染）</span></span><br><span class="line"><span class="attr">syntax_highlighter:</span> <span class="string">highlight.js</span></span><br><span class="line"><span class="attr">highlight:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">line_number:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">auto_detect:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">wrap:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">hljs:</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 主题</span></span><br><span class="line"><span class="attr">theme:</span> <span class="string">hexo-theme-bcxm</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 部署配置</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">https://github.com/你的用户名/你的用户名.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">main</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>⚠️ <strong>注意</strong>：<code>highlight.enable: true</code> 是让主题的代码工具栏（mac 风格三色点、复制按钮、语言标签）正常显示的关键配置，缺少此项会导致所有代码块工具栏不渲染。</p>
+</blockquote>
+<hr>
+<h2 id="五、安装与配置主题"><a href="#五、安装与配置主题" class="headerlink" title="五、安装与配置主题"></a>五、安装与配置主题</h2><p>以 <code>hexo-theme-bcxm</code> 主题为例。</p>
+<h3 id="5-1-下载主题"><a href="#5-1-下载主题" class="headerlink" title="5.1 下载主题"></a>5.1 下载主题</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 方式一：git clone（推荐）</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/chenxz21/hexo-theme-bcxm themes/hexo-theme-bcxm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 方式二：手动下载 zip 并解压到 themes 目录</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-修改站点配置使用主题"><a href="#5-2-修改站点配置使用主题" class="headerlink" title="5.2 修改站点配置使用主题"></a>5.2 修改站点配置使用主题</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># _config.yml</span></span><br><span class="line"><span class="attr">theme:</span> <span class="string">hexo-theme-bcxm</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-主题配置文件"><a href="#5-3-主题配置文件" class="headerlink" title="5.3 主题配置文件"></a>5.3 主题配置文件</h3><p>主题配置文件位于 <code>themes/hexo-theme-bcxm/_config.yml</code>，核心配置项包括：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 代码块样式（mac / mac light / darker / pale night / ocean / light）</span></span><br><span class="line"><span class="attr">highlight_theme:</span> <span class="string">mac</span></span><br><span class="line"><span class="attr">highlight_copy:</span> <span class="literal">true</span>     <span class="comment"># 显示复制按钮</span></span><br><span class="line"><span class="attr">highlight_lang:</span> <span class="literal">true</span>     <span class="comment"># 显示语言标签</span></span><br><span class="line"><span class="attr">highlight_shrink:</span> <span class="literal">false</span>  <span class="comment"># 是否默认折叠代码块</span></span><br><span class="line"><span class="attr">highlight_height_limit:</span> <span class="number">500</span>  <span class="comment"># 超出此高度则折叠（单位：px）</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 头像</span></span><br><span class="line"><span class="attr">avatar:</span></span><br><span class="line">  <span class="attr">img:</span> <span class="string">/img/avatar.jpg</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 社交链接</span></span><br><span class="line"><span class="attr">social:</span></span><br><span class="line">  <span class="attr">Github:</span> <span class="string">https://github.com/你的用户名</span> <span class="string">||</span> <span class="string">fab</span> <span class="string">fa-github</span></span><br><span class="line">  <span class="attr">Email:</span> <span class="string">mailto:你的邮箱</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-envelope</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、写文章"><a href="#六、写文章" class="headerlink" title="六、写文章"></a>六、写文章</h2><h3 id="6-1-新建文章"><a href="#6-1-新建文章" class="headerlink" title="6.1 新建文章"></a>6.1 新建文章</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo new post <span class="string">&quot;文章标题&quot;</span></span><br><span class="line"><span class="comment"># 会在 source/_posts/ 下生成对应的 .md 文件</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-文章-Front-Matter"><a href="#6-2-文章-Front-Matter" class="headerlink" title="6.2 文章 Front Matter"></a>6.2 文章 Front Matter</h3><p>文章头部的 YAML 声明块，用于设置元数据：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">使用nvm安装node.js</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2026-04-10 16:44:23</span></span><br><span class="line"><span class="attr">categories:</span> <span class="string">工具安装教程</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-3-文章正文"><a href="#6-3-文章正文" class="headerlink" title="6.3 文章正文"></a>6.3 文章正文</h3><p>支持标准 Markdown 语法，代码块语法如下：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="code">```bash</span></span><br><span class="line"><span class="code">nvm install 22.15.0</span></span><br><span class="line"><span class="code">```</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、部署到-GitHub-Pages"><a href="#七、部署到-GitHub-Pages" class="headerlink" title="七、部署到 GitHub Pages"></a>七、部署到 GitHub Pages</h2><h3 id="7-1-安装部署插件"><a href="#7-1-安装部署插件" class="headerlink" title="7.1 安装部署插件"></a>7.1 安装部署插件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-本地生成静态文件并部署"><a href="#7-2-本地生成静态文件并部署" class="headerlink" title="7.2 本地生成静态文件并部署"></a>7.2 本地生成静态文件并部署</h3><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 三步走（每次修改后重复执行）</span></span><br><span class="line">hexo clean       <span class="comment"># 清除旧的生成文件（缓存）</span></span><br><span class="line">hexo generate    <span class="comment"># 重新生成静态文件到 public/</span></span><br><span class="line">hexo deploy      <span class="comment"># 推送 public/ 到 GitHub Pages 仓库</span></span><br></pre></td></tr></table></figure>
+
+<p>也可以合并执行：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean; hexo g <span class="literal">-d</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="7-3-验证部署"><a href="#7-3-验证部署" class="headerlink" title="7.3 验证部署"></a>7.3 验证部署</h3><p>等待 1~3 分钟后，访问 <code>https://你的用户名.github.io</code>，确认博客正常显示。</p>
+<hr>
+<h2 id="八、日常维护流程"><a href="#八、日常维护流程" class="headerlink" title="八、日常维护流程"></a>八、日常维护流程</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">写文章（.md）</span><br><span class="line">     ↓</span><br><span class="line">hexo clean</span><br><span class="line">     ↓</span><br><span class="line">hexo generate（本地预览确认：hexo server）</span><br><span class="line">     ↓</span><br><span class="line">hexo deploy（推送到 GitHub）</span><br><span class="line">     ↓</span><br><span class="line">等待片刻后访问博客</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="九、常见问题与注意事项"><a href="#九、常见问题与注意事项" class="headerlink" title="九、常见问题与注意事项"></a>九、常见问题与注意事项</h2><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>原因</th>
+<th>解决方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>代码块没有 mac 三色点工具栏</td>
+<td>根配置 <code>highlight.enable</code> 未设置 <code>true</code></td>
+<td>在 _config.yml 中添加 <code>highlight.enable: true</code></td>
+</tr>
+<tr>
+<td>部署成功但页面没更新</td>
+<td>浏览器缓存 &#x2F; GitHub Pages 未刷新</td>
+<td>强制刷新（Ctrl+Shift+R）或等待几分钟</td>
+</tr>
+<tr>
+<td><code>hexo deploy</code> 报错</td>
+<td>未安装部署插件</td>
+<td><code>npm install hexo-deployer-git --save</code></td>
+</tr>
+<tr>
+<td>主题样式不生效</td>
+<td>修改了主题 Stylus 文件但未重新生成</td>
+<td>每次改样式后都要重新 <code>hexo g</code></td>
+</tr>
+<tr>
+<td>图片不显示</td>
+<td>路径错误或未放到 <code>source/img/</code> 目录</td>
+<td>统一将图片放入 <code>source/img/</code>，引用 <code>/img/filename.jpg</code></td>
+</tr>
+<tr>
+<td>文章 <code>[toc]</code> 不渲染为目录</td>
+<td>部分主题&#x2F;插件不支持此语法</td>
+<td>使用主题内置的目录侧边栏代替，或安装 <code>hexo-toc</code> 插件</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十、参考资源"><a href="#十、参考资源" class="headerlink" title="十、参考资源"></a>十、参考资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">Hexo 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.github.com/pages">GitHub Pages 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">hexo-theme-bcxm 主题仓库</a></li>
+</ul>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文完整记录了从零搭建一个 Hexo + GitHub Pages 个人博客的全过程，可以归纳为以下五个阶段：</p>
+<ol>
+<li><strong>环境搭建</strong>：安装 Node.js（推荐 nvm 管理版本）和 Git，配置好本地开发基础；</li>
+<li><strong>GitHub 配置</strong>：创建命名为 <code>用户名.github.io</code> 的仓库，配置 SSH 密钥实现免密推送；</li>
+<li><strong>Hexo 初始化</strong>：全局安装 Hexo CLI，初始化博客目录，本地 <code>hexo server</code> 预览确认环境正常；</li>
+<li><strong>主题与配置</strong>：在站点 <code>_config.yml</code> 中完成 URL、高亮、部署等核心配置，安装并调整主题样式；</li>
+<li><strong>写作与发布</strong>：用 Markdown 写文章，通过 <code>hexo clean → hexo generate → hexo deploy</code> 三步将内容推送上线。</li>
+</ol>
+<p>整个方案的优势在于<strong>完全免费、无需服务器</strong>，同时 Hexo 生成的是纯静态 HTML，加载速度快、安全性高。后续维护也极为简单，只需专注于写 Markdown 文章，剩下的交给 Hexo 和 GitHub 自动完成。</p>
+<blockquote>
+<p>💡 <strong>给自己的一条建议</strong>：搭建博客只是起点，坚持输出内容才是关键。哪怕每周一篇学习笔记，时间久了就是一份非常有价值的个人知识沉淀。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Like</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://likerhood.github.io/2026/04/11/002%20github.io%E5%92%8Chexo%E5%BB%BA%E7%AB%8B%E9%9D%99%E6%80%81%E7%BD%91%E9%A1%B5%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/">https://likerhood.github.io/2026/04/11/002%20github.io%E5%92%8Chexo%E5%BB%BA%E7%AB%8B%E9%9D%99%E6%80%81%E7%BD%91%E9%A1%B5%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://likerhood.github.io" target="_blank">Liker's Blog</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/default-cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://fastly.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/04/11/004%20%E5%A6%82%E4%BD%95%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BAHalo%E5%8D%9A%E5%AE%A2/"><img class="prev-cover" src="/img/default-cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info"></div></div></a></div><div class="next-post pull-right"><a href="/2026/04/10/001%20%E4%BD%BF%E7%94%A8nvm%E5%AE%89%E8%A3%85nodejs/"><img class="next-cover" src="/img/default-cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">使用nvm安装node.js</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Hexo-GitHub-Pages-%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2"><span class="toc-number">1.</span> <span class="toc-text">使用 Hexo + GitHub Pages 搭建个人静态博客</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-number">1.2.</span> <span class="toc-text">一、环境准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%AE%89%E8%A3%85-Node-js%EF%BC%88%E4%BD%BF%E7%94%A8-nvm-%E7%AE%A1%E7%90%86%E7%89%88%E6%9C%AC%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.1 安装 Node.js（使用 nvm 管理版本）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%AE%89%E8%A3%85-Git"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2 安装 Git</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E9%85%8D%E7%BD%AE-Git-%E5%85%A8%E5%B1%80%E4%BF%A1%E6%81%AF"><span class="toc-number">1.2.3.</span> <span class="toc-text">1.3 配置 Git 全局信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%B3%A8%E5%86%8C%E5%B9%B6%E9%85%8D%E7%BD%AE-GitHub"><span class="toc-number">1.3.</span> <span class="toc-text">二、注册并配置 GitHub</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%B3%A8%E5%86%8C-GitHub-%E8%B4%A6%E5%8F%B7"><span class="toc-number">1.3.1.</span> <span class="toc-text">2.1 注册 GitHub 账号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%88%9B%E5%BB%BA-GitHub-Pages-%E4%BB%93%E5%BA%93"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.2 创建 GitHub Pages 仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E9%85%8D%E7%BD%AE-SSH-%E5%AF%86%E9%92%A5%EF%BC%88%E6%8E%A8%E8%8D%90%EF%BC%89"><span class="toc-number">1.3.3.</span> <span class="toc-text">2.3 配置 SSH 密钥（推荐）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AE%89%E8%A3%85%E5%B9%B6%E5%88%9D%E5%A7%8B%E5%8C%96-Hexo"><span class="toc-number">1.4.</span> <span class="toc-text">三、安装并初始化 Hexo</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%85%A8%E5%B1%80%E5%AE%89%E8%A3%85-Hexo-CLI"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1 全局安装 Hexo CLI</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8D%9A%E5%AE%A2%E7%9B%AE%E5%BD%95"><span class="toc-number">1.4.2.</span> <span class="toc-text">3.2 初始化博客目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E6%9C%AC%E5%9C%B0%E9%A2%84%E8%A7%88"><span class="toc-number">1.4.3.</span> <span class="toc-text">3.3 本地预览</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%AB%99%E7%82%B9%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE"><span class="toc-number">1.5.</span> <span class="toc-text">四、站点全局配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE%E4%B8%BB%E9%A2%98"><span class="toc-number">1.6.</span> <span class="toc-text">五、安装与配置主题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E4%B8%8B%E8%BD%BD%E4%B8%BB%E9%A2%98"><span class="toc-number">1.6.1.</span> <span class="toc-text">5.1 下载主题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E4%BF%AE%E6%94%B9%E7%AB%99%E7%82%B9%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8%E4%B8%BB%E9%A2%98"><span class="toc-number">1.6.2.</span> <span class="toc-text">5.2 修改站点配置使用主题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.6.3.</span> <span class="toc-text">5.3 主题配置文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%86%99%E6%96%87%E7%AB%A0"><span class="toc-number">1.7.</span> <span class="toc-text">六、写文章</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E6%96%B0%E5%BB%BA%E6%96%87%E7%AB%A0"><span class="toc-number">1.7.1.</span> <span class="toc-text">6.1 新建文章</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E6%96%87%E7%AB%A0-Front-Matter"><span class="toc-number">1.7.2.</span> <span class="toc-text">6.2 文章 Front Matter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-%E6%96%87%E7%AB%A0%E6%AD%A3%E6%96%87"><span class="toc-number">1.7.3.</span> <span class="toc-text">6.3 文章正文</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E9%83%A8%E7%BD%B2%E5%88%B0-GitHub-Pages"><span class="toc-number">1.8.</span> <span class="toc-text">七、部署到 GitHub Pages</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E6%8F%92%E4%BB%B6"><span class="toc-number">1.8.1.</span> <span class="toc-text">7.1 安装部署插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-%E6%9C%AC%E5%9C%B0%E7%94%9F%E6%88%90%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E5%B9%B6%E9%83%A8%E7%BD%B2"><span class="toc-number">1.8.2.</span> <span class="toc-text">7.2 本地生成静态文件并部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3-%E9%AA%8C%E8%AF%81%E9%83%A8%E7%BD%B2"><span class="toc-number">1.8.3.</span> <span class="toc-text">7.3 验证部署</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E6%97%A5%E5%B8%B8%E7%BB%B4%E6%8A%A4%E6%B5%81%E7%A8%8B"><span class="toc-number">1.9.</span> <span class="toc-text">八、日常维护流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">1.10.</span> <span class="toc-text">九、常见问题与注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E5%8F%82%E8%80%83%E8%B5%84%E6%BA%90"><span class="toc-number">1.11.</span> <span class="toc-text">十、参考资源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.12.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div></div></main><footer id="footer" style="background: #FFFFFF"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2026 By Like</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">Bcxm</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"></div><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/leancloud-storage@4.10.0/dist/av-min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
