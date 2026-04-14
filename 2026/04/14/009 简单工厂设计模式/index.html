@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://likerhood.github.io/img/simplefactory_cover.png">
 <meta property="article:published_time" content="2026-04-14T11:16:13.054Z">
-<meta property="article:modified_time" content="2026-04-14T12:58:40.054Z">
+<meta property="article:modified_time" content="2026-04-14T13:11:04.725Z">
 <meta property="article:author" content="Like">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://likerhood.github.io/img/simplefactory_cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/04/14/009%20%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
@@ -52,7 +52,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2026-04-14 20:58:40'
+  postUpdate: '2026-04-14 21:11:04'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -148,7 +148,36 @@
 <li><strong>具体产品（ConcreteProduct）</strong>：实现规范的具体类，用于实现接口。</li>
 <li><strong>简单工厂（SimpleFactory）</strong>：包含了必要的判断逻辑，根据外界给定的信息，决定究竟应该创建哪个具体类的对象。</li>
 </ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">classDiagram</span><br><span class="line">    direction BT</span><br><span class="line"></span><br><span class="line">    class Product &#123;</span><br><span class="line">        &lt;&lt;Interface&gt;&gt;</span><br><span class="line">        +execute() void</span><br><span class="line">    &#125;</span><br><span class="line">    class ConcreteProductA &#123;</span><br><span class="line">        +execute() void</span><br><span class="line">    &#125;</span><br><span class="line">    class ConcreteProductB &#123;</span><br><span class="line">        +execute() void</span><br><span class="line">    &#125;</span><br><span class="line">    class SimpleFactory &#123;</span><br><span class="line">        +createProduct(type: String) Product</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ConcreteProductA ..|&gt; Product : 实现</span><br><span class="line">    ConcreteProductB ..|&gt; Product : 实现</span><br><span class="line">    SimpleFactory ..&gt; Product : 依赖抽象</span><br><span class="line">    SimpleFactory ..&gt; ConcreteProductA : 实例化 (内部通过 if/switch)</span><br><span class="line">    SimpleFactory ..&gt; ConcreteProductB : 实例化 (内部通过 if/switch)</span><br><span class="line"></span><br><span class="line">    %% 直接应用样式避免解析错误</span><br><span class="line">    style Product fill:#E8F0FE,stroke:#1A73E8,stroke-width:1px</span><br><span class="line">    style SimpleFactory fill:#FCE8E6,stroke:#D93025,stroke-width:1px</span><br><span class="line">    style ConcreteProductA fill:#E6F4EA,stroke:#1E8E3E,stroke-width:1px</span><br><span class="line">    style ConcreteProductB fill:#E6F4EA,stroke:#1E8E3E,stroke-width:1px</span><br></pre></td></tr></table></figure>
+<div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    direction BT
+
+    class Product {
+        &lt;&lt;Interface&gt;&gt;
+        +execute() void
+    }
+    class ConcreteProductA {
+        +execute() void
+    }
+    class ConcreteProductB {
+        +execute() void
+    }
+    class SimpleFactory {
+        +createProduct(type: String) Product
+    }
+
+    ConcreteProductA ..|&gt; Product : 实现
+    ConcreteProductB ..|&gt; Product : 实现
+    SimpleFactory ..&gt; Product : 依赖抽象
+    SimpleFactory ..&gt; ConcreteProductA : 实例化 (内部通过 if&#x2F;switch)
+    SimpleFactory ..&gt; ConcreteProductB : 实例化 (内部通过 if&#x2F;switch)
+
+    %% 直接应用样式避免解析错误
+    style Product fill:#E8F0FE,stroke:#1A73E8,stroke-width:1px
+    style SimpleFactory fill:#FCE8E6,stroke:#D93025,stroke-width:1px
+    style ConcreteProductA fill:#E6F4EA,stroke:#1E8E3E,stroke-width:1px
+    style ConcreteProductB fill:#E6F4EA,stroke:#1E8E3E,stroke-width:1px
+  </pre></div>
 
 <h2 id="三、-场景推演：LLM-模型网关路由"><a href="#三、-场景推演：LLM-模型网关路由" class="headerlink" title="三、 场景推演：LLM 模型网关路由"></a>三、 场景推演：LLM 模型网关路由</h2><p>在开发大模型 Agent 或自进化框架时，底层通常需要接入不同的 LLM 提供商（如 OpenAI, Anthropic, DeepSeek）。</p>
 <p>如果使用简单工厂模式来构建这个网关，代码会是这样的：</p>
@@ -197,11 +226,70 @@
 <li><strong>架构目标</strong>：对上层业务（如抽奖接口、前端调用）屏蔽底层的发奖差异，提供一个统一的、高内聚低耦合的发奖网关。</li>
 </ul>
 <p>如图：描述了系统参与者（外部系统&#x2F;用户）与发奖系统之间的功能边界。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">    %% 外部角色定义</span><br><span class="line">    subgraph 业务客户都安</span><br><span class="line">        OpsSystem([触发方])</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% 系统内部核心用例</span><br><span class="line">    subgraph 发奖业务系统核心用例</span><br><span class="line">        UC1(发放优惠券奖品)</span><br><span class="line">        UC2(发放实物商品)</span><br><span class="line">        UC3(发放爱奇艺兑换卡)</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% 第三方或下游服务角色</span><br><span class="line">    subgraph 外部依赖服务</span><br><span class="line">        CouponSvc([优惠券服务])</span><br><span class="line">        GoodsSvc([物流商品服务])</span><br><span class="line">        IQiYiSvc([爱奇艺卡服务])</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% 触发方与用例的关系</span><br><span class="line">    OpsSystem --&gt;|&quot;触发发奖请求&quot;| UC1</span><br><span class="line">    OpsSystem --&gt;|&quot;触发发奖请求&quot;| UC2</span><br><span class="line">    OpsSystem --&gt;|&quot;触发发奖请求&quot;| UC3</span><br><span class="line"></span><br><span class="line">    %% 用例与外部依赖的关系</span><br><span class="line">    UC1 -.-&gt;|&quot;&lt;&lt;include&gt;&gt; 调用发券接口&quot;| CouponSvc</span><br><span class="line">    UC2 -.-&gt;|&quot;&lt;&lt;include&gt;&gt; 调用发货接口&quot;| GoodsSvc</span><br><span class="line">    UC3 -.-&gt;|&quot;&lt;&lt;include&gt;&gt; 调用发卡接口&quot;| IQiYiSvc</span><br><span class="line">    </span><br><span class="line">    %% 样式美化</span><br><span class="line">    classDef actor fill:#e1f5fe,stroke:#01579b,stroke-width:2px;</span><br><span class="line">    classDef usecase fill:#fff3e0,stroke:#e65100,stroke-width:2px;</span><br><span class="line">    </span><br><span class="line">    class OpsSystem,CouponSvc,GoodsSvc,IQiYiSvc actor;</span><br><span class="line">    class UC1,UC2,UC3 usecase;</span><br></pre></td></tr></table></figure>
+<div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  graph TB
+    %% 外部角色定义
+    subgraph 业务客户都安
+        OpsSystem([触发方])
+    end
+
+    %% 系统内部核心用例
+    subgraph 发奖业务系统核心用例
+        UC1(发放优惠券奖品)
+        UC2(发放实物商品)
+        UC3(发放爱奇艺兑换卡)
+    end
+
+    %% 第三方或下游服务角色
+    subgraph 外部依赖服务
+        CouponSvc([优惠券服务])
+        GoodsSvc([物流商品服务])
+        IQiYiSvc([爱奇艺卡服务])
+    end
+
+    %% 触发方与用例的关系
+    OpsSystem --&gt;|&quot;触发发奖请求&quot;| UC1
+    OpsSystem --&gt;|&quot;触发发奖请求&quot;| UC2
+    OpsSystem --&gt;|&quot;触发发奖请求&quot;| UC3
+
+    %% 用例与外部依赖的关系
+    UC1 -.-&gt;|&quot;&lt;&lt;include&gt;&gt; 调用发券接口&quot;| CouponSvc
+    UC2 -.-&gt;|&quot;&lt;&lt;include&gt;&gt; 调用发货接口&quot;| GoodsSvc
+    UC3 -.-&gt;|&quot;&lt;&lt;include&gt;&gt; 调用发卡接口&quot;| IQiYiSvc
+    
+    %% 样式美化
+    classDef actor fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef usecase fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    
+    class OpsSystem,CouponSvc,GoodsSvc,IQiYiSvc actor;
+    class UC1,UC2,UC3 usecase;
+  </pre></div>
 
 
 
-<h3 id="5-2-发放奖品的请求体和响应体字段设计"><a href="#5-2-发放奖品的请求体和响应体字段设计" class="headerlink" title="5.2 发放奖品的请求体和响应体字段设计"></a>5.2 发放奖品的请求体和响应体字段设计</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">classDiagram</span><br><span class="line">    class AwardReq &#123;</span><br><span class="line">        -String uId              %% 用户ID</span><br><span class="line">        -Integer awardType       %% 1优惠券 2实物商品 3爱奇艺卡</span><br><span class="line">        -String awardNumber      %% 奖品编号(券号/SKU/卡ID)</span><br><span class="line">        -String bizId            %% 幂等业务ID防重复</span><br><span class="line">        -Map~String,String~ extMap  %% 扩展字段(收货地址等)</span><br><span class="line">        +getuId() String</span><br><span class="line">        +getAwardType() Integer</span><br><span class="line">        +getAwardNumber() String</span><br><span class="line">        +getBizId() String</span><br><span class="line">        +getExtMap() Map</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class AwardRes &#123;</span><br><span class="line">        -String code   %% 0000成功 0001失败</span><br><span class="line">        -String info   %% 描述信息</span><br><span class="line">        +AwardRes(code, info)</span><br><span class="line">        +getCode() String</span><br><span class="line">        +getInfo() String</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="5-2-发放奖品的请求体和响应体字段设计"><a href="#5-2-发放奖品的请求体和响应体字段设计" class="headerlink" title="5.2 发放奖品的请求体和响应体字段设计"></a>5.2 发放奖品的请求体和响应体字段设计</h3><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    class AwardReq {
+        -String uId              %% 用户ID
+        -Integer awardType       %% 1优惠券 2实物商品 3爱奇艺卡
+        -String awardNumber      %% 奖品编号(券号&#x2F;SKU&#x2F;卡ID)
+        -String bizId            %% 幂等业务ID防重复
+        -Map~String,String~ extMap  %% 扩展字段(收货地址等)
+        +getuId() String
+        +getAwardType() Integer
+        +getAwardNumber() String
+        +getBizId() String
+        +getExtMap() Map
+    }
+
+    class AwardRes {
+        -String code   %% 0000成功 0001失败
+        -String info   %% 描述信息
+        +AwardRes(code, info)
+        +getCode() String
+        +getInfo() String
+    }
+  </pre></div>
 
 <p><strong>extMap 的 key 约定</strong>（发实物商品时必传）：</p>
 <table>
@@ -227,11 +315,106 @@
 <h3 id="5-3-类图对比"><a href="#5-3-类图对比" class="headerlink" title="5.3 类图对比"></a>5.3 类图对比</h3><h4 id="5-3-1-面条代码类图"><a href="#5-3-1-面条代码类图" class="headerlink" title="5.3.1 面条代码类图"></a>5.3.1 面条代码类图</h4><blockquote>
 <p>对应仓库中项目模块：codedesign1.0-0</p>
 </blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">classDiagram</span><br><span class="line">    class PrizeController &#123;</span><br><span class="line">        -Logger logger</span><br><span class="line">        +awardToUser(AwardReq req) AwardRes</span><br><span class="line">        -queryUserName(uId) String</span><br><span class="line">        -queryUserPhoneNumber(uId) String</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class AwardReq &#123;</span><br><span class="line">        -String uId</span><br><span class="line">        -Integer awardType</span><br><span class="line">        -String awardNumber</span><br><span class="line">        -String bizId</span><br><span class="line">        -Map extMap</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class AwardRes &#123;</span><br><span class="line">        -String code</span><br><span class="line">        -String info</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class CouponService &#123;</span><br><span class="line">        +sendCoupon(uId, couponNumber, uuid) CouponResult</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class GoodsService &#123;</span><br><span class="line">        +deliverGoods(DeliverReq) Boolean</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class IQiYiCardService &#123;</span><br><span class="line">        +grantToken(mobile, cardId) void</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    PrizeController ..&gt; AwardReq : 入参</span><br><span class="line">    PrizeController ..&gt; AwardRes : 出参</span><br><span class="line">    PrizeController ..&gt; CouponService : if awardType==1 直接 new</span><br><span class="line">    PrizeController ..&gt; GoodsService  : if awardType==2 直接 new</span><br><span class="line">    PrizeController ..&gt; IQiYiCardService : if awardType==3 直接 new</span><br></pre></td></tr></table></figure>
+<div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    class PrizeController {
+        -Logger logger
+        +awardToUser(AwardReq req) AwardRes
+        -queryUserName(uId) String
+        -queryUserPhoneNumber(uId) String
+    }
+
+    class AwardReq {
+        -String uId
+        -Integer awardType
+        -String awardNumber
+        -String bizId
+        -Map extMap
+    }
+
+    class AwardRes {
+        -String code
+        -String info
+    }
+
+    class CouponService {
+        +sendCoupon(uId, couponNumber, uuid) CouponResult
+    }
+
+    class GoodsService {
+        +deliverGoods(DeliverReq) Boolean
+    }
+
+    class IQiYiCardService {
+        +grantToken(mobile, cardId) void
+    }
+
+    PrizeController ..&gt; AwardReq : 入参
+    PrizeController ..&gt; AwardRes : 出参
+    PrizeController ..&gt; CouponService : if awardType&#x3D;&#x3D;1 直接 new
+    PrizeController ..&gt; GoodsService  : if awardType&#x3D;&#x3D;2 直接 new
+    PrizeController ..&gt; IQiYiCardService : if awardType&#x3D;&#x3D;3 直接 new
+  </pre></div>
 
 
 
-<h4 id="5-3-2-简单工厂类图"><a href="#5-3-2-简单工厂类图" class="headerlink" title="5.3.2 简单工厂类图"></a>5.3.2 简单工厂类图</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">classDiagram</span><br><span class="line">    class PrizeController &#123;</span><br><span class="line">        -Logger logger</span><br><span class="line">        -StoreFactory storeFactory</span><br><span class="line">        +awardToUser(AwardReq req) AwardRes</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class StoreFactory &#123;</span><br><span class="line">        +getCommodityService(Integer) ICommodity</span><br><span class="line">        +getCommodityService(Class) ICommodity</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class ICommodity &#123;</span><br><span class="line">        &lt;&lt;interface&gt;&gt;</span><br><span class="line">        +sendCommodity(uId, commodityId, bizId, extMap) void</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class CouponCommodityService &#123;</span><br><span class="line">        -CouponService couponService</span><br><span class="line">        +sendCommodity(...)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class GoodsCommodityService &#123;</span><br><span class="line">        -GoodsService goodsService</span><br><span class="line">        +sendCommodity(...)</span><br><span class="line">        -queryUserName(uId) String</span><br><span class="line">        -queryUserPhoneNumber(uId) String</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class CardCommodityService &#123;</span><br><span class="line">        -IQiYiCardService iQiYiCardService</span><br><span class="line">        +sendCommodity(...)</span><br><span class="line">        -queryUserMobile(uId) String</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class AwardReq &#123;</span><br><span class="line">        -String uId</span><br><span class="line">        -Integer awardType</span><br><span class="line">        -String awardNumber</span><br><span class="line">        -String bizId</span><br><span class="line">        -Map extMap</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class AwardRes &#123;</span><br><span class="line">        -String code</span><br><span class="line">        -String info</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    PrizeController ..&gt; AwardReq : 入参</span><br><span class="line">    PrizeController ..&gt; AwardRes : 出参</span><br><span class="line">    PrizeController --&gt; StoreFactory : 持有</span><br><span class="line">    StoreFactory ..&gt; ICommodity : 创建返回</span><br><span class="line">    ICommodity &lt;|.. CouponCommodityService</span><br><span class="line">    ICommodity &lt;|.. GoodsCommodityService</span><br><span class="line">    ICommodity &lt;|.. CardCommodityService</span><br></pre></td></tr></table></figure>
+<h4 id="5-3-2-简单工厂类图"><a href="#5-3-2-简单工厂类图" class="headerlink" title="5.3.2 简单工厂类图"></a>5.3.2 简单工厂类图</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    class PrizeController {
+        -Logger logger
+        -StoreFactory storeFactory
+        +awardToUser(AwardReq req) AwardRes
+    }
+
+    class StoreFactory {
+        +getCommodityService(Integer) ICommodity
+        +getCommodityService(Class) ICommodity
+    }
+
+    class ICommodity {
+        &lt;&lt;interface&gt;&gt;
+        +sendCommodity(uId, commodityId, bizId, extMap) void
+    }
+
+    class CouponCommodityService {
+        -CouponService couponService
+        +sendCommodity(...)
+    }
+
+    class GoodsCommodityService {
+        -GoodsService goodsService
+        +sendCommodity(...)
+        -queryUserName(uId) String
+        -queryUserPhoneNumber(uId) String
+    }
+
+    class CardCommodityService {
+        -IQiYiCardService iQiYiCardService
+        +sendCommodity(...)
+        -queryUserMobile(uId) String
+    }
+
+    class AwardReq {
+        -String uId
+        -Integer awardType
+        -String awardNumber
+        -String bizId
+        -Map extMap
+    }
+
+    class AwardRes {
+        -String code
+        -String info
+    }
+
+    PrizeController ..&gt; AwardReq : 入参
+    PrizeController ..&gt; AwardRes : 出参
+    PrizeController --&gt; StoreFactory : 持有
+    StoreFactory ..&gt; ICommodity : 创建返回
+    ICommodity &lt;|.. CouponCommodityService
+    ICommodity &lt;|.. GoodsCommodityService
+    ICommodity &lt;|.. CardCommodityService
+  </pre></div>
 
 
 
@@ -239,11 +422,61 @@
 
 
 
-<h3 id="5-4-简单体系结构图对比"><a href="#5-4-简单体系结构图对比" class="headerlink" title="5.4 简单体系结构图对比"></a>5.4 简单体系结构图对比</h3><h4 id="5-4-1-面条代码"><a href="#5-4-1-面条代码" class="headerlink" title="5.4.1 面条代码"></a>5.4.1 面条代码</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    subgraph 客户端</span><br><span class="line">        T1[ApiTest]</span><br><span class="line">    end</span><br><span class="line">    subgraph 业务层 单一Controller</span><br><span class="line">        PC[PrizeController&lt;br/&gt;⚠️ 所有逻辑都在这里]</span><br><span class="line">    end</span><br><span class="line">    subgraph 外部服务 4.0-0</span><br><span class="line">        CS[CouponService]</span><br><span class="line">        GS[GoodsService]</span><br><span class="line">        IS[IQiYiCardService]</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    T1 --&gt;|AwardReq| PC</span><br><span class="line">    PC --&gt;|if type==1| CS</span><br><span class="line">    PC --&gt;|if type==2| GS</span><br><span class="line">    PC --&gt;|if type==3| IS</span><br><span class="line">    PC --&gt;|AwardRes| T1</span><br></pre></td></tr></table></figure>
+<h3 id="5-4-简单体系结构图对比"><a href="#5-4-简单体系结构图对比" class="headerlink" title="5.4 简单体系结构图对比"></a>5.4 简单体系结构图对比</h3><h4 id="5-4-1-面条代码"><a href="#5-4-1-面条代码" class="headerlink" title="5.4.1 面条代码"></a>5.4.1 面条代码</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  graph LR
+    subgraph 客户端
+        T1[ApiTest]
+    end
+    subgraph 业务层 单一Controller
+        PC[PrizeController&lt;br&#x2F;&gt;⚠️ 所有逻辑都在这里]
+    end
+    subgraph 外部服务 4.0-0
+        CS[CouponService]
+        GS[GoodsService]
+        IS[IQiYiCardService]
+    end
+
+    T1 --&gt;|AwardReq| PC
+    PC --&gt;|if type&#x3D;&#x3D;1| CS
+    PC --&gt;|if type&#x3D;&#x3D;2| GS
+    PC --&gt;|if type&#x3D;&#x3D;3| IS
+    PC --&gt;|AwardRes| T1
+  </pre></div>
 
 
 
-<h4 id="5-4-2-简单工厂"><a href="#5-4-2-简单工厂" class="headerlink" title="5.4.2 简单工厂"></a>5.4.2 简单工厂</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    subgraph 客户端</span><br><span class="line">        T2[ApiTest]</span><br><span class="line">    end</span><br><span class="line">    subgraph 业务层 分离职责</span><br><span class="line">        PC2[PrizeController&lt;br/&gt;只负责调用工厂和返回结果]</span><br><span class="line">        SF[StoreFactory&lt;br/&gt;只负责创建对象]</span><br><span class="line">        IC[ICommodity&lt;br/&gt;统一接口]</span><br><span class="line">    end</span><br><span class="line">    subgraph 实现层</span><br><span class="line">        CC[CouponCommodityService]</span><br><span class="line">        GC[GoodsCommodityService]</span><br><span class="line">        KC[CardCommodityService]</span><br><span class="line">    end</span><br><span class="line">    subgraph 外部服务 4.0-0</span><br><span class="line">        CS2[CouponService]</span><br><span class="line">        GS2[GoodsService]</span><br><span class="line">        IS2[IQiYiCardService]</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    T2 --&gt;|AwardReq| PC2</span><br><span class="line">    PC2 --&gt; SF</span><br><span class="line">    SF --&gt;|返回ICommodity| IC</span><br><span class="line">    IC -.-&gt;|实现| CC</span><br><span class="line">    IC -.-&gt;|实现| GC</span><br><span class="line">    IC -.-&gt;|实现| KC</span><br><span class="line">    CC --&gt; CS2</span><br><span class="line">    GC --&gt; GS2</span><br><span class="line">    KC --&gt; IS2</span><br><span class="line">    PC2 --&gt;|AwardRes| T2</span><br></pre></td></tr></table></figure>
+<h4 id="5-4-2-简单工厂"><a href="#5-4-2-简单工厂" class="headerlink" title="5.4.2 简单工厂"></a>5.4.2 简单工厂</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  graph LR
+    subgraph 客户端
+        T2[ApiTest]
+    end
+    subgraph 业务层 分离职责
+        PC2[PrizeController&lt;br&#x2F;&gt;只负责调用工厂和返回结果]
+        SF[StoreFactory&lt;br&#x2F;&gt;只负责创建对象]
+        IC[ICommodity&lt;br&#x2F;&gt;统一接口]
+    end
+    subgraph 实现层
+        CC[CouponCommodityService]
+        GC[GoodsCommodityService]
+        KC[CardCommodityService]
+    end
+    subgraph 外部服务 4.0-0
+        CS2[CouponService]
+        GS2[GoodsService]
+        IS2[IQiYiCardService]
+    end
+
+    T2 --&gt;|AwardReq| PC2
+    PC2 --&gt; SF
+    SF --&gt;|返回ICommodity| IC
+    IC -.-&gt;|实现| CC
+    IC -.-&gt;|实现| GC
+    IC -.-&gt;|实现| KC
+    CC --&gt; CS2
+    GC --&gt; GS2
+    KC --&gt; IS2
+    PC2 --&gt;|AwardRes| T2
+  </pre></div>
 
 
 
@@ -251,11 +484,48 @@
 
 
 
-<h3 id="5-5-时序图对比"><a href="#5-5-时序图对比" class="headerlink" title="5.5 时序图对比"></a>5.5 时序图对比</h3><h4 id="5-5-1-面条代码"><a href="#5-5-1-面条代码" class="headerlink" title="5.5.1 面条代码"></a>5.5.1 面条代码</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant T as ApiTest</span><br><span class="line">    participant PC as PrizeController</span><br><span class="line">    participant GS as GoodsService</span><br><span class="line"></span><br><span class="line">    T-&gt;&gt;PC: awardToUser(AwardReq&#123;type=2&#125;)</span><br><span class="line">    activate PC</span><br><span class="line">    Note over PC: if type==1 → false&lt;br/&gt;else if type==2 → true</span><br><span class="line">    PC-&gt;&gt;PC: new GoodsService()</span><br><span class="line">    PC-&gt;&gt;PC: new DeliverReq() 手动组装7个字段</span><br><span class="line">    PC-&gt;&gt;PC: queryUserName() / queryUserPhoneNumber()</span><br><span class="line">    PC-&gt;&gt;GS: deliverGoods(deliverReq)</span><br><span class="line">    GS--&gt;&gt;PC: true</span><br><span class="line">    PC--&gt;&gt;T: AwardRes(&quot;0000&quot;,&quot;发放成功&quot;)</span><br><span class="line">    deactivate PC</span><br></pre></td></tr></table></figure>
+<h3 id="5-5-时序图对比"><a href="#5-5-时序图对比" class="headerlink" title="5.5 时序图对比"></a>5.5 时序图对比</h3><h4 id="5-5-1-面条代码"><a href="#5-5-1-面条代码" class="headerlink" title="5.5.1 面条代码"></a>5.5.1 面条代码</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  sequenceDiagram
+    participant T as ApiTest
+    participant PC as PrizeController
+    participant GS as GoodsService
+
+    T-&gt;&gt;PC: awardToUser(AwardReq{type&#x3D;2})
+    activate PC
+    Note over PC: if type&#x3D;&#x3D;1 → false&lt;br&#x2F;&gt;else if type&#x3D;&#x3D;2 → true
+    PC-&gt;&gt;PC: new GoodsService()
+    PC-&gt;&gt;PC: new DeliverReq() 手动组装7个字段
+    PC-&gt;&gt;PC: queryUserName() &#x2F; queryUserPhoneNumber()
+    PC-&gt;&gt;GS: deliverGoods(deliverReq)
+    GS--&gt;&gt;PC: true
+    PC--&gt;&gt;T: AwardRes(&quot;0000&quot;,&quot;发放成功&quot;)
+    deactivate PC
+  </pre></div>
 
 
 
-<h4 id="5-5-2-简单工厂"><a href="#5-5-2-简单工厂" class="headerlink" title="5.5.2 简单工厂"></a>5.5.2 简单工厂</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant T as ApiTest</span><br><span class="line">    participant PC as PrizeController</span><br><span class="line">    participant SF as StoreFactory</span><br><span class="line">    participant GC as GoodsCommodityService</span><br><span class="line">    participant GS as GoodsService</span><br><span class="line"></span><br><span class="line">    T-&gt;&gt;PC: awardToUser(AwardReq&#123;type=2&#125;)</span><br><span class="line">    activate PC</span><br><span class="line">    PC-&gt;&gt;SF: getCommodityService(awardType=2)</span><br><span class="line">    SF--&gt;&gt;PC: GoodsCommodityService实例</span><br><span class="line">    PC-&gt;&gt;GC: sendCommodity(uId, sku, bizId, extMap)</span><br><span class="line">    activate GC</span><br><span class="line">    GC-&gt;&gt;GC: 组装DeliverReq（职责在这里）</span><br><span class="line">    GC-&gt;&gt;GS: deliverGoods(deliverReq)</span><br><span class="line">    GS--&gt;&gt;GC: true</span><br><span class="line">    GC--&gt;&gt;PC: 正常返回</span><br><span class="line">    deactivate GC</span><br><span class="line">    PC--&gt;&gt;T: AwardRes(&quot;0000&quot;,&quot;发放成功&quot;)</span><br><span class="line">    deactivate PC</span><br></pre></td></tr></table></figure>
+<h4 id="5-5-2-简单工厂"><a href="#5-5-2-简单工厂" class="headerlink" title="5.5.2 简单工厂"></a>5.5.2 简单工厂</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  sequenceDiagram
+    participant T as ApiTest
+    participant PC as PrizeController
+    participant SF as StoreFactory
+    participant GC as GoodsCommodityService
+    participant GS as GoodsService
+
+    T-&gt;&gt;PC: awardToUser(AwardReq{type&#x3D;2})
+    activate PC
+    PC-&gt;&gt;SF: getCommodityService(awardType&#x3D;2)
+    SF--&gt;&gt;PC: GoodsCommodityService实例
+    PC-&gt;&gt;GC: sendCommodity(uId, sku, bizId, extMap)
+    activate GC
+    GC-&gt;&gt;GC: 组装DeliverReq（职责在这里）
+    GC-&gt;&gt;GS: deliverGoods(deliverReq)
+    GS--&gt;&gt;GC: true
+    GC--&gt;&gt;PC: 正常返回
+    deactivate GC
+    PC--&gt;&gt;T: AwardRes(&quot;0000&quot;,&quot;发放成功&quot;)
+    deactivate PC
+  </pre></div>
 
 
 
