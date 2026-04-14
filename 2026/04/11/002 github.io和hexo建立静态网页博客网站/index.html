@@ -295,7 +295,7 @@
     }
 
     const loadMermaid = () => {
-      window.loadMermaid ? runMermaid() : getScript('https://cdn.bootcdn.net/ajax/libs/mermaid/9.4.3/mermaid.min.js').then(runMermaid)
+      window.loadMermaid ? runMermaid() : getScript('https://fastly.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
     }
 
     window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)

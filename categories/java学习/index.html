@@ -48,7 +48,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: false,
-  postUpdate: '2026-04-14 20:40:57'
+  postUpdate: '2026-04-14 20:50:22'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -159,7 +159,7 @@
     }
 
     const loadMermaid = () => {
-      window.loadMermaid ? runMermaid() : getScript('https://cdn.bootcdn.net/ajax/libs/mermaid/9.4.3/mermaid.min.js').then(runMermaid)
+      window.loadMermaid ? runMermaid() : getScript('https://fastly.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
     }
 
     window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
