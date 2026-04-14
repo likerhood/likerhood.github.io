@@ -1,0 +1,217 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>关于三个工厂设计模式总结</title><meta name="author" content="Like"><meta name="copyright" content="Like"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="关于工厂的设计模式总结前言简单工厂：只能提供一个工厂生产一种产品；  工厂方法：可以提供多个工厂生产一种产品； 抽象工厂：一个工厂可生产多种产品且可以提供多个工厂。    图片来源b站视频和评论区：《重学Java设计模式》第5章 抽象工厂模式_哔哩哔哩_bilibili  一、 简单工厂模式 (Simple Factory)场景设定：你拥有一家全能小作坊。根据客户的指令，这家作坊既能做苹果手机，也">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于三个工厂设计模式总结">
+<meta property="og:url" content="https://likerhood.github.io/2026/04/14/010%20%E5%85%B3%E4%BA%8E%E5%B7%A5%E5%8E%82%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Liker&#39;s Blog">
+<meta property="og:description" content="关于工厂的设计模式总结前言简单工厂：只能提供一个工厂生产一种产品；  工厂方法：可以提供多个工厂生产一种产品； 抽象工厂：一个工厂可生产多种产品且可以提供多个工厂。    图片来源b站视频和评论区：《重学Java设计模式》第5章 抽象工厂模式_哔哩哔哩_bilibili  一、 简单工厂模式 (Simple Factory)场景设定：你拥有一家全能小作坊。根据客户的指令，这家作坊既能做苹果手机，也">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likerhood.github.io/img/factoryconclusion_cover.png">
+<meta property="article:published_time" content="2026-04-14T12:30:55.368Z">
+<meta property="article:modified_time" content="2026-04-14T12:31:56.669Z">
+<meta property="article:author" content="Like">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likerhood.github.io/img/factoryconclusion_cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/04/14/010%20%E5%85%B3%E4%BA%8E%E5%B7%A5%E5%8E%82%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Like","link":"链接: ","source":"来源: Liker's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '关于三个工厂设计模式总结',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-04-14 20:31:56'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/google"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://json.xbyzs.cf"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://draw.xbyzs.cf"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://enkey.xbyzs.cf"><span> EnKey</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Liker's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/google"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://json.xbyzs.cf"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://draw.xbyzs.cf"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://enkey.xbyzs.cf"><span> EnKey</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">关于三个工厂设计模式总结</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-04-14T12:30:55.368Z" title="发表于 2026-04-14 20:30:55">2026-04-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/java%E5%AD%A6%E4%B9%A0/">java学习</a></span></div><div class="meta-secondline"></div></div></div><article class="post-content" id="article-container"><h1 id="关于工厂的设计模式总结"><a href="#关于工厂的设计模式总结" class="headerlink" title="关于工厂的设计模式总结"></a>关于工厂的设计模式总结</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>简单工厂：只能提供一个工厂生产一种产品； </p>
+<p>工厂方法：可以提供多个工厂生产一种产品；</p>
+<p>抽象工厂：一个工厂可生产多种产品且可以提供多个工厂。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260414193005471.png" alt="image-20260414193005471"></p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260414193030146.png" alt="image-20260414193030146"></p>
+<blockquote>
+<p>图片来源b站视频和评论区：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1ir4y1i7uf/?spm_id_from=888.80997.embed_other.whitelist&t=507.741004&bvid=BV1ir4y1i7uf&vd_source=4df08d069d45f57cba1a350ccb2bbd75">《重学Java设计模式》第5章 抽象工厂模式_哔哩哔哩_bilibili</a></p>
+</blockquote>
+<h2 id="一、-简单工厂模式-Simple-Factory"><a href="#一、-简单工厂模式-Simple-Factory" class="headerlink" title="一、 简单工厂模式 (Simple Factory)"></a>一、 简单工厂模式 (Simple Factory)</h2><p><strong>场景设定</strong>：你拥有一家全能小作坊。根据客户的指令，这家作坊既能做苹果手机，也能做小米手机。</p>
+<h3 id="1-1-代码实现"><a href="#1-1-代码实现" class="headerlink" title="1.1 代码实现"></a>1.1 代码实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 先规定什么是手机（产品接口）</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Phone</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">make</span><span class="params">()</span>; <span class="comment">// 制造手机</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 具体的手机产品</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">IPhone</span> <span class="keyword">implements</span> <span class="title class_">Phone</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">make</span><span class="params">()</span> &#123; </span><br><span class="line">        System.out.println(<span class="string">&quot;制造了一台苹果手机&quot;</span>); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MiPhone</span> <span class="keyword">implements</span> <span class="title class_">Phone</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">make</span><span class="params">()</span> &#123; </span><br><span class="line">        System.out.println(<span class="string">&quot;制造了一台小米手机&quot;</span>); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 核心：简单工厂类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PhoneFactory</span> &#123;</span><br><span class="line">    <span class="comment">// 客户传名字进来，工厂负责判断并实例化</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Phone <span class="title function_">createPhone</span><span class="params">(String brand)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="string">&quot;Apple&quot;</span>.equals(brand)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">IPhone</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;Xiaomi&quot;</span>.equals(brand)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MiPhone</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>; <span class="comment">// 不支持的品牌</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>客户端调用（客户买手机）：</strong></p>
+<p>客户不需要自己去 <code>new IPhone()</code>，直接找工厂要就行了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Phone</span> <span class="variable">myPhone</span> <span class="operator">=</span> PhoneFactory.createPhone(<span class="string">&quot;Apple&quot;</span>);</span><br><span class="line">myPhone.make();</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-模式解析"><a href="#1-2-模式解析" class="headerlink" title="1.2 模式解析"></a>1.2 模式解析</h3><ul>
+<li><strong>核心逻辑</strong>：重点看 <code>PhoneFactory</code> 里的 <code>if-else</code>。所有的“生杀大权”以及创建逻辑都集中在这一个静态方法里。</li>
+<li><strong>致命痛点</strong>：如果明天客户说“我要买华为”，你除了要新建一个 <code>HuaweiPhone</code> 类，还<strong>必须</strong>回头修改 <code>PhoneFactory</code> 的源代码，加上一段 <code>else if (&quot;Huawei&quot;)</code>。如果产品种类繁多，这个类会变成一个极易改出 Bug 的巨型判断炼狱，严重违背了<strong>开闭原则（OCP）</strong>。</li>
+</ul>
+<h2 id="二、-工厂方法模式-Factory-Method"><a href="#二、-工厂方法模式-Factory-Method" class="headerlink" title="二、 工厂方法模式 (Factory Method)"></a>二、 工厂方法模式 (Factory Method)</h2><p><strong>场景设定</strong>：随着作坊做大，为了方便管理，你决定拆分重组！成立专门的“苹果分厂”和“小米分厂”。现在客户想要什么牌子，直接去对应的专属分厂提货即可。</p>
+<h3 id="2-1-代码实现"><a href="#2-1-代码实现" class="headerlink" title="2.1 代码实现"></a>2.1 代码实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 产品类不变（依然有 Phone, IPhone, MiPhone）</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 核心：抽象出一个“工厂的规矩”</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">IFactory</span> &#123;</span><br><span class="line">    Phone <span class="title function_">createPhone</span><span class="params">()</span>; <span class="comment">// 所有的具体工厂都必须具备生产手机的方法</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 具体的工厂类（专厂专办）</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppleFactory</span> <span class="keyword">implements</span> <span class="title class_">IFactory</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> Phone <span class="title function_">createPhone</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">IPhone</span>(); <span class="comment">// 苹果厂只造苹果</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">XiaomiFactory</span> <span class="keyword">implements</span> <span class="title class_">IFactory</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> Phone <span class="title function_">createPhone</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MiPhone</span>(); <span class="comment">// 小米厂只造小米</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>客户端调用（客户买手机）：</strong></p>
+<p>客户想买苹果，就先锁定苹果厂，再要手机。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">IFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AppleFactory</span>();</span><br><span class="line"><span class="type">Phone</span> <span class="variable">myPhone</span> <span class="operator">=</span> factory.createPhone();</span><br><span class="line">myPhone.make();</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-模式解析"><a href="#2-2-模式解析" class="headerlink" title="2.2 模式解析"></a>2.2 模式解析</h3><ul>
+<li><strong>核心逻辑</strong>：可怕的 <code>if-else</code> 判断消失了！对象的创建职责被下放交给了<strong>具体的工厂实现类</strong>去完成。</li>
+<li><strong>巨大优势</strong>：如果明天要新增“华为”产线，操作变得极其简单：直接新建一个 <code>HuaweiPhone</code> 类和一个对应的 <code>HuaweiFactory</code> 类即可。原有的苹果和小米的代码<strong>一行都不用改</strong>！这完美契合了<strong>开闭原则（对扩展开放，对修改封闭）</strong>。</li>
+</ul>
+<h2 id="三、-抽象工厂模式-Abstract-Factory"><a href="#三、-抽象工厂模式-Abstract-Factory" class="headerlink" title="三、 抽象工厂模式 (Abstract Factory)"></a>三、 抽象工厂模式 (Abstract Factory)</h2><p><strong>场景设定</strong>：品牌方的业务升级了，现在不仅仅卖手机，还要卖智能手表。他们要求你提供**“全家桶”<strong>服务。也就是说，苹果分厂不仅要造 iPhone，还要造 Apple Watch；华为分厂也要同时造 HuaweiPhone 和 HuaweiWatch。这就引入了</strong>“产品族（一套相关产品）”**的概念。</p>
+<h3 id="3-1-代码实现"><a href="#3-1-代码实现" class="headerlink" title="3.1 代码实现"></a>3.1 代码实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 多个产品接口（一套产品体系）</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Phone</span> &#123; <span class="keyword">void</span> <span class="title function_">make</span><span class="params">()</span>; &#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Watch</span> &#123; <span class="keyword">void</span> <span class="title function_">make</span><span class="params">()</span>; &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 具体的苹果系产品</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">IPhone</span> <span class="keyword">implements</span> <span class="title class_">Phone</span> &#123; <span class="comment">/*...*/</span> &#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppleWatch</span> <span class="keyword">implements</span> <span class="title class_">Watch</span> &#123; <span class="comment">/*...*/</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 具体的华为系产品</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HuaweiPhone</span> <span class="keyword">implements</span> <span class="title class_">Phone</span> &#123; <span class="comment">/*...*/</span> &#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HuaweiWatch</span> <span class="keyword">implements</span> <span class="title class_">Watch</span> &#123; <span class="comment">/*...*/</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 核心：超级大工厂接口（定义必须能造一整套生态的东西）</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">AbstractFactory</span> &#123;</span><br><span class="line">    Phone <span class="title function_">createPhone</span><span class="params">()</span>; <span class="comment">// 必须能造手机</span></span><br><span class="line">    Watch <span class="title function_">createWatch</span><span class="params">()</span>; <span class="comment">// 必须能造手表</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 具体的品牌全系代工厂</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppleFactory</span> <span class="keyword">implements</span> <span class="title class_">AbstractFactory</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> Phone <span class="title function_">createPhone</span><span class="params">()</span> &#123; <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">IPhone</span>(); &#125;</span><br><span class="line">    <span class="keyword">public</span> Watch <span class="title function_">createWatch</span><span class="params">()</span> &#123; <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">AppleWatch</span>(); &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HuaweiFactory</span> <span class="keyword">implements</span> <span class="title class_">AbstractFactory</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> Phone <span class="title function_">createPhone</span><span class="params">()</span> &#123; <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">HuaweiPhone</span>(); &#125;</span><br><span class="line">    <span class="keyword">public</span> Watch <span class="title function_">createWatch</span><span class="params">()</span> &#123; <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">HuaweiWatch</span>(); &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>客户端调用（客户买一套生态电子产品）：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">AbstractFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AppleFactory</span>(); <span class="comment">// 我选定苹果全能代工厂</span></span><br><span class="line"><span class="type">Phone</span> <span class="variable">myPhone</span> <span class="operator">=</span> factory.createPhone();        <span class="comment">// 拿到的绝对是 iPhone</span></span><br><span class="line"><span class="type">Watch</span> <span class="variable">myWatch</span> <span class="operator">=</span> factory.createWatch();        <span class="comment">// 拿到的绝对是 AppleWatch</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-模式解析"><a href="#3-2-模式解析" class="headerlink" title="3.2 模式解析"></a>3.2 模式解析</h3><ul>
+<li><strong>核心逻辑</strong>：看 <code>AbstractFactory</code>，里面不再只有一个 <code>create</code> 方法。它强制约束了底下的具体工厂（如 <code>AppleFactory</code>）<strong>必须一次性提供整套的相关生态产品</strong>。</li>
+<li><strong>巨大优势</strong>：它从代码架构层面保证了客户拿到手的一定是<strong>同一个生态</strong>的配套组件。你选择调用 <code>AppleFactory</code>，产出的手机和手表就一定能完美配对，从根本上杜绝了“iPhone 强行搭配华为手表”这种逻辑错乱的产生。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在实际项目架构中，选择哪种工厂模式并没有绝对的标准，核心在于平衡<strong>复杂度</strong>与<strong>扩展性</strong>：</p>
+<ul>
+<li><strong>简单工厂</strong>：<ul>
+<li><strong>适用场景</strong>：产品类型很少，且业务预期内几乎不会再增加新产品（例如：数据库连接池仅支持 MySQL 和 Oracle 两种）。</li>
+<li><strong>优势</strong>：结构最简单，代码量最少，足够轻量。</li>
+</ul>
+</li>
+<li><strong>工厂方法</strong>：<ul>
+<li><strong>适用场景</strong>：产品种类不确定，经常需要横向扩展增加新类型（例如：游戏引擎中的怪物种类，今天加哥布林，明天加史莱姆）。</li>
+<li><strong>优势</strong>：新增扩展极度平滑，完全不需要触碰老代码逻辑。</li>
+</ul>
+</li>
+<li><strong>抽象工厂</strong>：<ul>
+<li><strong>适用场景</strong>：产品不是单一出现的，而是<strong>成套、成体系</strong>（产品族）出现的（例如：开发跨平台 UI 界面库，Windows 风格必须对应自己的一套按钮和文本框，Mac 风格也有自己对应的一套）。</li>
+<li><strong>优势</strong>：强约束产品生态，保证整体风格和逻辑的统一，绝不乱套。</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Like</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://likerhood.github.io/2026/04/14/010%20%E5%85%B3%E4%BA%8E%E5%B7%A5%E5%8E%82%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93/">https://likerhood.github.io/2026/04/14/010%20%E5%85%B3%E4%BA%8E%E5%B7%A5%E5%8E%82%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://likerhood.github.io" target="_blank">Liker's Blog</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/factoryconclusion_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://fastly.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2026/04/14/009%20%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"><img class="next-cover" src="/img/simplefactory_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">简单工厂设计模式</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E5%B7%A5%E5%8E%82%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93"><span class="toc-text">关于工厂的设计模式总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81-%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F-Simple-Factory"><span class="toc-text">一、 简单工厂模式 (Simple Factory)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">1.1 代码实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90"><span class="toc-text">1.2 模式解析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81-%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F-Factory-Method"><span class="toc-text">二、 工厂方法模式 (Factory Method)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">2.1 代码实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90"><span class="toc-text">2.2 模式解析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F-Abstract-Factory"><span class="toc-text">三、 抽象工厂模式 (Abstract Factory)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">3.1 代码实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E6%A8%A1%E5%BC%8F%E8%A7%A3%E6%9E%90"><span class="toc-text">3.2 模式解析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div></div></main><footer id="footer" style="background: #FFFFFF"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2026 By Like</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">Bcxm</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+      Array.from($mermaidWrap).forEach((item, index) => {
+        const mermaidSrc = item.firstElementChild
+        const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+        const mermaidID = 'mermaid-' + index
+        const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+        mermaid.mermaidAPI.render(mermaidID, mermaidDefinition, (svgCode) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        })
+      })
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://cdn.bootcdn.net/ajax/libs/mermaid/8.14.0/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/leancloud-storage@4.10.0/dist/av-min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
