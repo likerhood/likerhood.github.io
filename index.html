@@ -48,7 +48,7 @@
   isHome: true,
   isHighlightShrink: false,
   isToc: false,
-  postUpdate: '2026-04-15 21:32:38'
+  postUpdate: '2026-04-15 22:03:55'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -170,12 +170,14 @@
 三、场景推演：从“单品生 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2026/04/15/011%20%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" title="工厂方法模式（Factory Method Pattern）"><img class="post_bg" src="/img/factoryway_cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="工厂方法模式（Factory Method Pattern）"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/04/15/011%20%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" title="工厂方法模式（Factory Method Pattern）">工厂方法模式（Factory Method Pattern）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-04-15T07:04:30.581Z" title="发表于 2026-04-15 15:04:30">2026-04-15</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/java%E5%AD%A6%E4%B9%A0/">java学习</a></span></div><div class="content">工厂方法模式（Factory Method Pattern）前言简单工厂模式虽然初步实现了对象创建与使用的分离，但其内部臃肿的 if-else 逻辑却成为了系统扩展时的痛点，严重违背了开闭原则（OCP）。
 如何优雅地打破这种“上帝类”的束缚？工厂方法模式（Factory Method Pattern） 给出了标准答案：利用多态，将对象的实例化彻底延迟到子类中进行。
 
-参考博客：https://refactoringguru.cn/design-patterns/factory-method
+参考博客：工厂方法设计模式
 
 一、核心定义在简单工厂模式中，所有的创建逻辑都集中在一个“上帝工厂类”里（充满了 if-else 或 switch-case）。
  痛点：一旦新增产品（比如新增华为手机），就必须修改这个工厂类的源代码，这严重违背了开闭原则（Open-Closed Principle, OCP）——对扩展开放，对修改封闭。
 工厂方法模式通过“多态”解决了这个问题：&#x3D;&#x3D;将对象的实例化推迟到子类中进行。&#x3D;&#x3D; 
-核心思想是：定义一个创建对象的接口（抽象工厂），但让实现这个接口的类（ ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2026/04/14/010%20%E5%85%B3%E4%BA%8E%E5%B7%A5%E5%8E%82%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93/" title="关于三个工厂设计模式总结"><img class="post_bg" src="/img/factoryconclusion_cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="关于三个工厂设计模式总结"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/04/14/010%20%E5%85%B3%E4%BA%8E%E5%B7%A5%E5%8E%82%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93/" title="关于三个工厂设计模式总结">关于三个工厂设计模式总结</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-04-14T12:30:55.368Z" title="发表于 2026-04-14 20:30:55">2026-04-14</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/java%E5%AD%A6%E4%B9%A0/">java学习</a></span></div><div class="content">关于工厂的设计模式总结前言简单工厂：只能提供一个工厂生产一种产品； 
+核心思想是：定义一个创建对象的接口（抽象工厂），但让实现这个接口的类（具体工厂）来决定实例化哪个类（具体产品）。
+
+核心思想：不直接 new 对象，而是通过工厂子类来决 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2026/04/14/010%20%E5%85%B3%E4%BA%8E%E5%B7%A5%E5%8E%82%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93/" title="关于三个工厂设计模式总结"><img class="post_bg" src="/img/factoryconclusion_cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="关于三个工厂设计模式总结"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/04/14/010%20%E5%85%B3%E4%BA%8E%E5%B7%A5%E5%8E%82%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93/" title="关于三个工厂设计模式总结">关于三个工厂设计模式总结</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-04-14T12:30:55.368Z" title="发表于 2026-04-14 20:30:55">2026-04-14</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/java%E5%AD%A6%E4%B9%A0/">java学习</a></span></div><div class="content">关于工厂的设计模式总结前言简单工厂：只能提供一个工厂生产一种产品； 
 工厂方法：可以提供多个工厂生产一种产品；
 抽象工厂：一个工厂可生产多种产品且可以提供多个工厂。
 
@@ -185,7 +187,7 @@
 
 一、 简单工厂模式 (Simple Factory)场景设定：你拥有一家全能小作坊。根据客户的指令，这家作坊既能做苹果手机，也能做小米手机。
 1.1 代码实现12345678910111213141516171819202122232425262728293031// 1. 先规定什么是手机（产品接口）public interface Phone &#123;    void make(); // 制造手机&#125;// 2. 具体的手机产品public class IPhone implements Phone &#123;    public void make() &#123;         System.out.println(&quot;制造了一台苹果手机&quot;);     &#125;&#125 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2026/04/14/009%20%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" title="简单工厂设计模式"><img class="post_bg" src="/img/simplefactory_cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="简单工厂设计模式"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/04/14/009%20%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" title="简单工厂设计模式">简单工厂设计模式</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-04-14T11:16:13.054Z" title="发表于 2026-04-14 19:16:13">2026-04-14</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/java%E5%AD%A6%E4%B9%A0/">java学习</a></span></div><div class="content">简单工厂设计模式前言在日常开发中，当我们需要根据不同参数创建不同对象时，代码很容易变成一堆 if-else 的“面条代码”。
-简单工厂模式（Static Factory Method） 正是为了解决这个问题而生：它把所有对象的创建逻辑集中到一个“大工厂”里，让调用方只需要传入一个类型参数，就能拿到统一的接口对象，无需关心具体是哪一个实现类。
+**简单工厂模式（Static Factory Method）**正是为了解决这个问题而生：它把所有对象的创建逻辑集中到一个“大工厂”里，让调用方只需要传入一个类型参数，就能拿到统一的接口对象，无需关心具体是哪一个实现类。
 本文从简单工厂模式的核心定义与UML结构出发，以两个场景对比“面条代码”与“简单工厂”两种写法：
 
 LLM模型网关路由；
@@ -196,7 +198,7 @@ LLM模型网关路由；
 打个比方：简单工厂就像是一个全能的“自动售货机”，你按 1，它给你掉下来可乐；你按 2，它给你掉下来雪碧。售货机（工厂）内部自己搞定了所有的判断逻辑。
 二、 标准体系结构图 (UML)角色说明：
 
-抽象产品（Product）：定义规范，java中通常是接口 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2026/04/13/008%20IntelliJ%20IDEA%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7/" title="IDEA中创建和运行java项目的常见技巧"><img class="post_bg" src="/img/javaIdea_cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="IDEA中创建和运行java项目的常见技巧"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/04/13/008%20IntelliJ%20IDEA%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7/" title="IDEA中创建和运行java项目的常见技巧">IDEA中创建和运行java项目的常见技巧</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-04-13T13:14:24.764Z" title="发表于 2026-04-13 21:14:24">2026-04-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/java%E5%AD%A6%E4%B9%A0/">java学习</a></span></div><div class="content">IDEA中创建和运行java项目的常见技巧一、创建maven模块1.1 如何创建maven模块
+抽象产品（Product）：定义规范，java中通常 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2026/04/13/008%20IntelliJ%20IDEA%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7/" title="IDEA中创建和运行java项目的常见技巧"><img class="post_bg" src="/img/javaIdea_cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="IDEA中创建和运行java项目的常见技巧"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/04/13/008%20IntelliJ%20IDEA%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7/" title="IDEA中创建和运行java项目的常见技巧">IDEA中创建和运行java项目的常见技巧</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-04-13T13:14:24.764Z" title="发表于 2026-04-13 21:14:24">2026-04-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/java%E5%AD%A6%E4%B9%A0/">java学习</a></span></div><div class="content">IDEA中创建和运行java项目的常见技巧一、创建maven模块1.1 如何创建maven模块
 文件或者项目根目录 -&gt; new -&gt; Module
 
 
