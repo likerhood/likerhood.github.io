@@ -1,0 +1,572 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>设计模式之建造者模式（Builder Pattern）</title><meta name="author" content="Like"><meta name="copyright" content="Like"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="建造者模式（Builder Pattern）前言在日常软件开发中，我们经常面对这样的场景：需要组合多个零件来生成一个复杂对象，而且组合方式多种多样。如果用 if-else 硬编码堆砌，代码将变得又长又难维护——这正是”面条代码”的典型特征。 建造者模式（Builder Pattern）就是解决这类问题的利器。本文以装修套餐选择系统为背景，通过面条代码与建造者模式的对比，深入理解该模式的价值所在。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式之建造者模式（Builder Pattern）">
+<meta property="og:url" content="https://likerhood.github.io/2026/04/22/015%20%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Liker&#39;s Blog">
+<meta property="og:description" content="建造者模式（Builder Pattern）前言在日常软件开发中，我们经常面对这样的场景：需要组合多个零件来生成一个复杂对象，而且组合方式多种多样。如果用 if-else 硬编码堆砌，代码将变得又长又难维护——这正是”面条代码”的典型特征。 建造者模式（Builder Pattern）就是解决这类问题的利器。本文以装修套餐选择系统为背景，通过面条代码与建造者模式的对比，深入理解该模式的价值所在。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likerhood.github.io/img/javabuilder_cover.png">
+<meta property="article:published_time" content="2026-04-22T06:32:56.137Z">
+<meta property="article:modified_time" content="2026-04-22T06:38:36.588Z">
+<meta property="article:author" content="Like">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likerhood.github.io/img/javabuilder_cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/04/22/015%20%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Like","link":"链接: ","source":"来源: Liker's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '设计模式之建造者模式（Builder Pattern）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-04-22 14:38:36'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Liker's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">设计模式之建造者模式（Builder Pattern）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-04-22T06:32:56.137Z" title="发表于 2026-04-22 14:32:56">2026-04-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/java%E5%AD%A6%E4%B9%A0/">java学习</a></span></div><div class="meta-secondline"></div></div></div><article class="post-content" id="article-container"><h1 id="建造者模式（Builder-Pattern）"><a href="#建造者模式（Builder-Pattern）" class="headerlink" title="建造者模式（Builder Pattern）"></a>建造者模式（Builder Pattern）</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在日常软件开发中，我们经常面对这样的场景：需要<strong>组合多个零件</strong>来生成一个复杂对象，而且组合方式多种多样。如果用 if-else 硬编码堆砌，代码将变得又长又难维护——这正是”面条代码”的典型特征。</p>
+<p>建造者模式（Builder Pattern）就是解决这类问题的利器。本文以<strong>装修套餐选择系统</strong>为背景，通过面条代码与建造者模式的对比，深入理解该模式的价值所在。</p>
+<blockquote>
+<p> 本文实战代码链接：<a target="_blank" rel="noopener" href="https://github.com/likerhood/CodeDesignWork/tree/main/codedesign2.0-0">codedesign2.0</a></p>
+<p> 参考博客：<a target="_blank" rel="noopener" href="https://bugstack.cn/md/develop/design-pattern/2020-05-26-%E9%87%8D%E5%AD%A6Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%8A%E5%AE%9E%E6%88%98%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%E3%80%8B.html">重学 Java 设计模式：实战建造者模式「各项装修物料组合套餐选配场景」 | 小傅哥 bugstack 虫洞栈</a></p>
+</blockquote>
+<hr>
+<h2 id="一、核心定义"><a href="#一、核心定义" class="headerlink" title="一、核心定义"></a>一、核心定义</h2><p><strong>建造者模式</strong>（Builder Pattern）是一种<strong>创建型</strong>设计模式，将一个复杂对象的<strong>构建过程</strong>与其<strong>表示</strong>分离，使得同样的构建过程可以创建不同的表示。</p>
+<p>核心思想：</p>
+<ul>
+<li><strong>把构建步骤标准化（接口约定）</strong>，但每一步具体用什么材料可以灵活替换</li>
+<li><strong>链式调用（Fluent Interface）</strong> 让调用侧代码高度可读</li>
+<li><strong>Director（指挥者）</strong> 封装不同预设方案，屏蔽内部组合细节</li>
+</ul>
+<blockquote>
+<p>与工厂模式的区别：工厂关注”创建哪类对象”，建造者关注”如何一步步组装对象”。</p>
+</blockquote>
+<hr>
+<h2 id="二、标准体系结构图（UML）"><a href="#二、标准体系结构图（UML）" class="headerlink" title="二、标准体系结构图（UML）"></a>二、标准体系结构图（UML）</h2><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    class Director {
+        -Builder builder
+        +construct()
+    }
+    class Builder {
+        &lt;&lt;interface&gt;&gt;
+        +buildPartA()
+        +buildPartB()
+        +buildPartC()
+        +getResult() Product
+    }
+    class ConcreteBuilder {
+        -Product product
+        +buildPartA()
+        +buildPartB()
+        +buildPartC()
+        +getResult() Product
+    }
+    class Product {
+        -String partA
+        -String partB
+        -String partC
+    }
+    
+    Director o--&gt; Builder
+    ConcreteBuilder ..|&gt; Builder
+    ConcreteBuilder ..&gt; Product : creates
+  </pre></div>
+
+<hr>
+<h2 id="三、场景推演：快餐店“全家桶”"><a href="#三、场景推演：快餐店“全家桶”" class="headerlink" title="三、场景推演：快餐店“全家桶”"></a>三、场景推演：快餐店“全家桶”</h2><p>想象去麦当劳或肯德基点一份“全家桶”套餐。 一个全家桶（复杂产品）通常包含：主食（汉堡&#x2F;炸鸡）、饮料（可乐&#x2F;果汁）、小食（薯条&#x2F;鸡块）。</p>
+<ul>
+<li><strong>同样的构建过程</strong>：无论你点什么套餐，服务员的准备流程都是：拿盒子 -&gt; 装主食 -&gt; 装小食 -&gt; 装饮料 -&gt; 打包。</li>
+<li><strong>不同的表示</strong>：<ul>
+<li><strong>儿童套餐（具体建造者A）</strong>：迷你汉堡 + 小份薯条 + 苹果汁。</li>
+<li><strong>巨无霸套餐（具体建造者B）</strong>：巨无霸汉堡 + 大份薯条 + 大杯可乐。</li>
+</ul>
+</li>
+</ul>
+<p>在这里，<strong>服务员就是指挥者（Director）</strong>，他不需要知道汉堡是怎么做的，他只需要按照固定的流程（调用Builder的方法）把东西放进托盘里。<strong>不同的套餐配方就是具体建造者（ConcreteBuilder）</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 产品类 (Product)：全家桶/套餐</span></span><br><span class="line"><span class="comment">// 包含主食、小食和饮料等复杂部件</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Meal</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String mainCourse; <span class="comment">// 主食</span></span><br><span class="line">    <span class="keyword">private</span> String snack;      <span class="comment">// 小食</span></span><br><span class="line">    <span class="keyword">private</span> String drink;      <span class="comment">// 饮料</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setMainCourse</span><span class="params">(String mainCourse)</span> &#123; <span class="built_in">this</span>.mainCourse = mainCourse; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setSnack</span><span class="params">(String snack)</span> &#123; <span class="built_in">this</span>.snack = snack; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setDrink</span><span class="params">(String drink)</span> &#123; <span class="built_in">this</span>.drink = drink; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;【套餐内容】: &quot;</span> + mainCourse + <span class="string">&quot; + &quot;</span> + snack + <span class="string">&quot; + &quot;</span> + drink;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 抽象建造者 (Builder)：定义装配流程</span></span><br><span class="line"><span class="comment">// 告诉具体建造者需要实现哪些步骤</span></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">MealBuilder</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">buildMainCourse</span><span class="params">()</span>; <span class="comment">// 装主食</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">buildSnack</span><span class="params">()</span>;      <span class="comment">// 装小食</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">buildDrink</span><span class="params">()</span>;      <span class="comment">// 装饮料</span></span><br><span class="line">    Meal <span class="title function_">getMeal</span><span class="params">()</span>;         <span class="comment">// 返回最终组合好的套餐</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 具体建造者A (ConcreteBuilder)：儿童套餐配方</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">KidsMealBuilder</span> <span class="keyword">implements</span> <span class="title class_">MealBuilder</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">Meal</span> <span class="variable">meal</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Meal</span>();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">buildMainCourse</span><span class="params">()</span> &#123; meal.setMainCourse(<span class="string">&quot;迷你汉堡&quot;</span>); &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">buildSnack</span><span class="params">()</span> &#123; meal.setSnack(<span class="string">&quot;小份薯条&quot;</span>); &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">buildDrink</span><span class="params">()</span> &#123; meal.setDrink(<span class="string">&quot;苹果汁&quot;</span>); &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Meal <span class="title function_">getMeal</span><span class="params">()</span> &#123; <span class="keyword">return</span> meal; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 具体建造者B (ConcreteBuilder)：巨无霸套餐配方</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BigMacMealBuilder</span> <span class="keyword">implements</span> <span class="title class_">MealBuilder</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">Meal</span> <span class="variable">meal</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Meal</span>();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">buildMainCourse</span><span class="params">()</span> &#123; meal.setMainCourse(<span class="string">&quot;巨无霸汉堡&quot;</span>); &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">buildSnack</span><span class="params">()</span> &#123; meal.setSnack(<span class="string">&quot;大份薯条&quot;</span>); &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">buildDrink</span><span class="params">()</span> &#123; meal.setDrink(<span class="string">&quot;大杯可乐&quot;</span>); &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Meal <span class="title function_">getMeal</span><span class="params">()</span> &#123; <span class="keyword">return</span> meal; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 4. 指挥者 (Director)：服务员</span></span><br><span class="line"><span class="comment">// 服务员不关心汉堡怎么做，只负责按照标准流程进行组装</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Waiter</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> Meal <span class="title function_">construct</span><span class="params">(MealBuilder builder)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;服务员开始准备套餐 (拿盒子)...&quot;</span>);</span><br><span class="line">        <span class="comment">// 按照固定且标准的流程组装</span></span><br><span class="line">        builder.buildMainCourse();</span><br><span class="line">        builder.buildSnack();</span><br><span class="line">        builder.buildDrink();</span><br><span class="line">        System.out.println(<span class="string">&quot;打包完成！&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> builder.getMeal();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 5. 客户端测试代码 (Client)：顾客点餐</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FastFoodClient</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Waiter</span> <span class="variable">waiter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Waiter</span>(); <span class="comment">// 召唤指挥者：服务员</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// --- 场景 1：顾客点儿童套餐 ---</span></span><br><span class="line">        System.out.println(<span class="string">&quot;--- 顾客A点儿童套餐 ---&quot;</span>);</span><br><span class="line">        <span class="type">MealBuilder</span> <span class="variable">kidsBuilder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">KidsMealBuilder</span>();</span><br><span class="line">        <span class="type">Meal</span> <span class="variable">kidsMeal</span> <span class="operator">=</span> waiter.construct(kidsBuilder);</span><br><span class="line">        System.out.println(<span class="string">&quot;交付产品: &quot;</span> + kidsMeal);</span><br><span class="line">        System.out.println();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// --- 场景 2：顾客点巨无霸套餐 ---</span></span><br><span class="line">        System.out.println(<span class="string">&quot;--- 顾客B点巨无霸套餐 ---&quot;</span>);</span><br><span class="line">        <span class="type">MealBuilder</span> <span class="variable">bigMacBuilder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BigMacMealBuilder</span>();</span><br><span class="line">        <span class="type">Meal</span> <span class="variable">bigMacMeal</span> <span class="operator">=</span> waiter.construct(bigMacBuilder);</span><br><span class="line">        System.out.println(<span class="string">&quot;交付产品: &quot;</span> + bigMacMeal);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、实战案例：装修套餐选择系统"><a href="#四、实战案例：装修套餐选择系统" class="headerlink" title="四、实战案例：装修套餐选择系统"></a>四、实战案例：装修套餐选择系统</h2><h3 id="4-1-需求分析"><a href="#4-1-需求分析" class="headerlink" title="4.1 需求分析"></a>4.1 需求分析</h3><h4 id="4-1-1-业务背景"><a href="#4-1-1-业务背景" class="headerlink" title="4.1.1 业务背景"></a>4.1.1 业务背景</h4><p>装修公司提供三种标准化套餐，每种套餐由<strong>吊顶</strong>、<strong>涂料</strong>、**地面（地板&#x2F;地砖）**三类物料组合而成：</p>
+<table>
+<thead>
+<tr>
+<th>套餐等级</th>
+<th>名称</th>
+<th>吊顶</th>
+<th>涂料</th>
+<th>地面</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Level 1</td>
+<td>豪华欧式</td>
+<td>二级顶（¥850&#x2F;㎡）</td>
+<td>多乐士 Dulux（¥719&#x2F;㎡）</td>
+<td>圣象地板（¥318&#x2F;㎡）</td>
+</tr>
+<tr>
+<td>Level 2</td>
+<td>轻奢田园</td>
+<td>二级顶（¥850&#x2F;㎡）</td>
+<td>立邦（¥650&#x2F;㎡）</td>
+<td>马可波罗地砖（¥140&#x2F;㎡）</td>
+</tr>
+<tr>
+<td>Level 3</td>
+<td>现代简约</td>
+<td>一级顶（¥260&#x2F;㎡）</td>
+<td>立邦（¥650&#x2F;㎡）</td>
+<td>东鹏地砖（¥102&#x2F;㎡）</td>
+</tr>
+</tbody></table>
+<h4 id="4-1-2-计价规则"><a href="#4-1-2-计价规则" class="headerlink" title="4.1.2 计价规则"></a>4.1.2 计价规则</h4><p>$$\text{吊顶费用} &#x3D; \text{房屋面积} \times 0.2 \times \text{吊顶单价}$$</p>
+<p>$$\text{涂料费用} &#x3D; \text{房屋面积} \times 1.4 \times \text{涂料单价}$$</p>
+<p>$$\text{地面费用} &#x3D; \text{房屋面积} \times \text{地面单价}$$</p>
+<blockquote>
+<p>吊顶系数 0.2 表示吊顶实际铺设面积约占总面积的 20%；涂料系数 1.4 表示四面墙体涂刷面积约为地面面积的 140%。</p>
+</blockquote>
+<h4 id="4-1-3-所有物料汇总（tutorials-6-0-0）"><a href="#4-1-3-所有物料汇总（tutorials-6-0-0）" class="headerlink" title="4.1.3 所有物料汇总（tutorials-6.0-0）"></a>4.1.3 所有物料汇总（tutorials-6.0-0）</h4><p><code>Matter</code> 接口定义了所有装修物料的统一契约：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Matter</span> &#123;</span><br><span class="line">    String <span class="title function_">scene</span><span class="params">()</span>;         <span class="comment">// 应用场景：吊顶/涂料/地板/地砖</span></span><br><span class="line">    String <span class="title function_">brand</span><span class="params">()</span>;         <span class="comment">// 品牌名称</span></span><br><span class="line">    String <span class="title function_">model</span><span class="params">()</span>;         <span class="comment">// 型号规格</span></span><br><span class="line">    BigDecimal <span class="title function_">price</span><span class="params">()</span>;     <span class="comment">// 平米报价</span></span><br><span class="line">    String <span class="title function_">desc</span><span class="params">()</span>;          <span class="comment">// 品牌描述</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>物料清单一览</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>类名</th>
+<th>品牌</th>
+<th>型号</th>
+<th>平米价格</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>吊顶</td>
+<td><code>LevelOneCeiling</code></td>
+<td>装修公司自带</td>
+<td>一级顶</td>
+<td>260 元</td>
+</tr>
+<tr>
+<td>吊顶</td>
+<td><code>LevelTwoCeiling</code></td>
+<td>装修公司自带</td>
+<td>二级顶</td>
+<td>850 元</td>
+</tr>
+<tr>
+<td>涂料</td>
+<td><code>DuluxCoat</code></td>
+<td>多乐士(Dulux)</td>
+<td>第二代</td>
+<td>719 元</td>
+</tr>
+<tr>
+<td>涂料</td>
+<td><code>LiBangCoat</code></td>
+<td>立邦</td>
+<td>默认级别</td>
+<td>650 元</td>
+</tr>
+<tr>
+<td>地板</td>
+<td><code>DerFloor</code></td>
+<td>德尔(Der)</td>
+<td>A+</td>
+<td>119 元</td>
+</tr>
+<tr>
+<td>地板</td>
+<td><code>ShengXiangFloor</code></td>
+<td>圣象</td>
+<td>一级</td>
+<td>318 元</td>
+</tr>
+<tr>
+<td>地砖</td>
+<td><code>DongPengTile</code></td>
+<td>东鹏瓷砖</td>
+<td>10001</td>
+<td>102 元</td>
+</tr>
+<tr>
+<td>地砖</td>
+<td><code>MarcoPoloTile</code></td>
+<td>马可波罗</td>
+<td>缺省</td>
+<td>140 元</td>
+</tr>
+</tbody></table>
+<p><strong>物料继承关系图</strong>：</p>
+<div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    class Matter {
+        &lt;&lt;interface&gt;&gt;
+        +scene() String
+        +brand() String
+        +model() String
+        +price() BigDecimal
+        +desc() String
+    }
+
+    class LevelOneCeiling {
+        一级顶 · 260元&#x2F;㎡
+    }
+    class LevelTwoCeiling {
+        二级顶 · 850元&#x2F;㎡
+    }
+    class DuluxCoat {
+        多乐士 · 719元&#x2F;㎡
+    }
+    class LiBangCoat {
+        立邦 · 650元&#x2F;㎡
+    }
+    class DerFloor {
+        德尔 · 119元&#x2F;㎡
+    }
+    class ShengXiangFloor {
+        圣象 · 318元&#x2F;㎡
+    }
+    class DongPengTile {
+        东鹏 · 102元&#x2F;㎡
+    }
+    class MarcoPoloTile {
+        马可波罗 · 140元&#x2F;㎡
+    }
+
+    Matter &lt;|.. LevelOneCeiling
+    Matter &lt;|.. LevelTwoCeiling
+    Matter &lt;|.. DuluxCoat
+    Matter &lt;|.. LiBangCoat
+    Matter &lt;|.. DerFloor
+    Matter &lt;|.. ShengXiangFloor
+    Matter &lt;|.. DongPengTile
+    Matter &lt;|.. MarcoPoloTile
+  </pre></div>
+
+<p>这些物料类分布在 <code>ceil</code>、<code>coat</code>、<code>floor</code>、<code>tile</code> 四个子包中，每个类都实现了 <code>Matter</code> 接口的 5 个方法，提供了各自的品牌、型号、价格等信息。</p>
+<hr>
+<h3 id="4-2-架构图"><a href="#4-2-架构图" class="headerlink" title="4.2 架构图"></a>4.2 架构图</h3><h4 id="4-2-1-面条代码架构图（tutorials-6-0-1）"><a href="#4-2-1-面条代码架构图（tutorials-6-0-1）" class="headerlink" title="4.2.1 面条代码架构图（tutorials-6.0-1）"></a>4.2.1 面条代码架构图（tutorials-6.0-1）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ApiTest</span><br><span class="line">  └── DecorationPackageController</span><br><span class="line">        └── getMatterList(area, level)</span><br><span class="line">              ├── if (level == 1) &#123; 直接 new 各物料，手动累加价格 &#125;</span><br><span class="line">              ├── if (level == 2) &#123; 直接 new 各物料，手动累加价格 &#125;</span><br><span class="line">              └── if (level == 3) &#123; 直接 new 各物料，手动累加价格 &#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260422110131510.png" alt="image-20260422110131510"></p>
+<p>所有逻辑堆砌在<strong>一个方法里</strong>，职责完全不分离。</p>
+<h4 id="4-2-2-建造者模式架构图（tutorials-6-0-2）"><a href="#4-2-2-建造者模式架构图（tutorials-6-0-2）" class="headerlink" title="4.2.2 建造者模式架构图（tutorials-6.0-2）"></a>4.2.2 建造者模式架构图（tutorials-6.0-2）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ApiTest</span><br><span class="line">  └── Builder（指挥者/Director）</span><br><span class="line">        ├── levelOne(area)   ──────────────────────────────────┐</span><br><span class="line">        ├── levelTwo(area)   ──────────────────────────────────┤</span><br><span class="line">        └── levelThree(area) ──────────────────────────────────┤</span><br><span class="line">                                                               ↓</span><br><span class="line">                                              new DecorationPackageMenu(area, grade)</span><br><span class="line">                                                  .appendCeiling(matter)   ← 返回 IMenu</span><br><span class="line">                                                  .appendCoat(matter)      ← 返回 IMenu</span><br><span class="line">                                                  .appendFloor/Tile(matter)← 返回 IMenu</span><br><span class="line">                                                  </span><br><span class="line">ApiTest 拿到 IMenu → 调用 .getDetail() 输出清单</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260422111511378.png" alt="image-20260422111511378"></p>
+<p>职责清晰：<strong>Builder</strong> 决定”用什么组合”，<strong>DecorationPackageMenu</strong> 负责”怎么计算和展示”。</p>
+<hr>
+<h3 id="4-3-类图对比"><a href="#4-3-类图对比" class="headerlink" title="4.3 类图对比"></a>4.3 类图对比</h3><h4 id="4-3-1-面条代码类图"><a href="#4-3-1-面条代码类图" class="headerlink" title="4.3.1 面条代码类图"></a>4.3.1 面条代码类图</h4><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260422140042816.png" alt="image-20260422140042816"></p>
+<p>问题：Controller <strong>直接依赖 7 个具体实现类</strong>，高度耦合，新增套餐必须修改此类。</p>
+<h4 id="4-3-2-建造者模式类图"><a href="#4-3-2-建造者模式类图" class="headerlink" title="4.3.2 建造者模式类图"></a>4.3.2 建造者模式类图</h4><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260422142234998.png" alt="image-20260422142234998"></p>
+<hr>
+<h3 id="4-4-时序图"><a href="#4-4-时序图" class="headerlink" title="4.4 时序图"></a>4.4 时序图</h3><h4 id="4-4-1-面条代码时序图"><a href="#4-4-1-面条代码时序图" class="headerlink" title="4.4.1 面条代码时序图"></a>4.4.1 面条代码时序图</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  sequenceDiagram
+    participant Client as Client (ApiTest)
+    participant Controller as DecorationPackageController
+    participant Ceiling as LevelTwoCeiling
+    participant Coat as DuluxCoat
+    participant Floor as ShengXiangFloor
+
+    Client-&gt;&gt;Controller: getMatterList(132.52, 1)
+    
+    Note over Controller: if (1 &#x3D;&#x3D; level) 进入豪华欧式分支
+    
+    Controller-&gt;&gt;Ceiling: new LevelTwoCeiling()
+    Ceiling--&gt;&gt;Controller: ceiling 实例
+    
+    Controller-&gt;&gt;Coat: new DuluxCoat()
+    Coat--&gt;&gt;Controller: coat 实例
+    
+    Controller-&gt;&gt;Floor: new ShengXiangFloor()
+    Floor--&gt;&gt;Controller: floor 实例
+    
+    Note over Controller: 手动计算价格：&lt;br&#x2F;&gt;price +&#x3D; area × 0.2 × ceiling.price()&lt;br&#x2F;&gt;price +&#x3D; area × 1.4 × coat.price()&lt;br&#x2F;&gt;price +&#x3D; area × floor.price()
+    
+    Note over Controller: 手动拼装字符串 detail
+    
+    Controller--&gt;&gt;Client: return detail (装修清单字符串)
+  </pre></div>
+
+
+
+<h4 id="4-4-2-建造者模式时序图"><a href="#4-4-2-建造者模式时序图" class="headerlink" title="4.4.2 建造者模式时序图"></a>4.4.2 建造者模式时序图</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  sequenceDiagram
+    participant Client as Client (BuilderTest)
+    participant B as Builder (指挥者)
+    participant Menu as DecorationPackageMenu (建造者+产品)
+    participant C as LevelTwoCeiling
+    participant Co as DuluxCoat
+    participant F as ShengXiangFloor
+
+    Client-&gt;&gt;B: levelOne(132.52)
+    
+    B-&gt;&gt;Menu: new DecorationPackageMenu(132.52, &quot;豪华欧式&quot;)
+    activate Menu
+    
+    B-&gt;&gt;C: new LevelTwoCeiling()
+    C--&gt;&gt;B: ceiling 实例
+    B-&gt;&gt;Menu: appendCeiling(ceiling)
+    Note over Menu: list.add(ceiling)&lt;br&#x2F;&gt;price +&#x3D; area × 0.2 × price
+    Menu--&gt;&gt;B: return this (链式)
+    
+    B-&gt;&gt;Co: new DuluxCoat()
+    Co--&gt;&gt;B: coat 实例
+    B-&gt;&gt;Menu: appendCoat(coat)
+    Note over Menu: list.add(coat)&lt;br&#x2F;&gt;price +&#x3D; area × 1.4 × price
+    Menu--&gt;&gt;B: return this (链式)
+    
+    B-&gt;&gt;F: new ShengXiangFloor()
+    F--&gt;&gt;B: floor 实例
+    B-&gt;&gt;Menu: appendFloor(floor)
+    Note over Menu: list.add(floor)&lt;br&#x2F;&gt;price +&#x3D; area × 1.0 × price
+    Menu--&gt;&gt;B: return this (链式)
+    
+    deactivate Menu
+    B--&gt;&gt;Client: return IMenu
+    
+    Client-&gt;&gt;Menu: getDetail()
+    Note over Menu: 遍历 list，拼装格式化清单
+    Menu--&gt;&gt;Client: return 装修清单字符串
+  </pre></div>
+
+<p>每一步都有清晰的职责划分：<strong>Builder 决定”选什么”，Menu 负责”怎么加”和”怎么算”</strong>。</p>
+<hr>
+<h3 id="4-5-代码分析"><a href="#4-5-代码分析" class="headerlink" title="4.5 代码分析"></a>4.5 代码分析</h3><h4 id="4-5-1-建造者模式代码（tutorials-6-0-2）"><a href="#4-5-1-建造者模式代码（tutorials-6-0-2）" class="headerlink" title="4.5.1 建造者模式代码（tutorials-6.0-2）"></a>4.5.1 建造者模式代码（tutorials-6.0-2）</h4><p><strong><code>IMenu</code> — 建造步骤接口</strong>（规定了装修套餐可以包含哪些步骤）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tutorials-6.0-2: IMenu.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">IMenu</span> &#123;</span><br><span class="line">    IMenu <span class="title function_">appendCeiling</span><span class="params">(Matter matter)</span>;  <span class="comment">// 返回 IMenu，支持链式调用</span></span><br><span class="line">    IMenu <span class="title function_">appendCoat</span><span class="params">(Matter matter)</span>;</span><br><span class="line">    IMenu <span class="title function_">appendFloor</span><span class="params">(Matter matter)</span>;</span><br><span class="line">    IMenu <span class="title function_">appendTile</span><span class="params">(Matter matter)</span>;</span><br><span class="line">    String <span class="title function_">getDetail</span><span class="params">()</span>;                  <span class="comment">// 最终构建产物：清单字符串</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>每个 <code>append</code> 方法都返回 <code>IMenu</code> 自身，这正是**链式调用（Fluent Interface）**的关键——使调用代码像自然语言一样流畅。</p>
+</blockquote>
+<hr>
+<p><strong><code>DecorationPackageMenu</code> — 具体建造者（Product + ConcreteBuilder 合二为一）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tutorials-6.0-2: DecorationPackageMenu.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DecorationPackageMenu</span> <span class="keyword">implements</span> <span class="title class_">IMenu</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> List&lt;Matter&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="type">BigDecimal</span> <span class="variable">price</span> <span class="operator">=</span> BigDecimal.ZERO;</span><br><span class="line">    <span class="keyword">private</span> BigDecimal area;</span><br><span class="line">    <span class="keyword">private</span> String grade;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">DecorationPackageMenu</span><span class="params">()</span> &#123;&#125; <span class="comment">// 禁止无参构建，强制传入面积和等级名</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">DecorationPackageMenu</span><span class="params">(Double area, String grade)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.area = <span class="keyword">new</span> <span class="title class_">BigDecimal</span>(area);</span><br><span class="line">        <span class="built_in">this</span>.grade = grade;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> IMenu <span class="title function_">appendCeiling</span><span class="params">(Matter matter)</span> &#123;</span><br><span class="line">        list.add(matter);</span><br><span class="line">        <span class="comment">// 吊顶：面积 × 0.2 × 单价</span></span><br><span class="line">        price = price.add(area.multiply(<span class="keyword">new</span> <span class="title class_">BigDecimal</span>(<span class="string">&quot;0.2&quot;</span>)).multiply(matter.price()));</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>; <span class="comment">// 链式调用核心</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> IMenu <span class="title function_">appendCoat</span><span class="params">(Matter matter)</span> &#123;</span><br><span class="line">        list.add(matter);</span><br><span class="line">        <span class="comment">// 涂料：面积 × 1.4 × 单价</span></span><br><span class="line">        price = price.add(area.multiply(<span class="keyword">new</span> <span class="title class_">BigDecimal</span>(<span class="string">&quot;1.4&quot;</span>)).multiply(matter.price()));</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> IMenu <span class="title function_">appendFloor</span><span class="params">(Matter matter)</span> &#123;</span><br><span class="line">        list.add(matter);</span><br><span class="line">        price = price.add(area.multiply(matter.price())); <span class="comment">// 地面：直接乘单价</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> IMenu <span class="title function_">appendTile</span><span class="params">(Matter matter)</span> &#123;</span><br><span class="line">        list.add(matter);</span><br><span class="line">        price = price.add(area.multiply(matter.price()));</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getDetail</span><span class="params">()</span> &#123; <span class="comment">/* 格式化输出清单 */</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关键设计点：</p>
+<ul>
+<li><strong>私有无参构造</strong>：强制调用方必须提供面积和套餐名，避免漏填</li>
+<li><strong>每步独立计算</strong>：吊顶&#x2F;涂料&#x2F;地面的计价系数各自封装在对应方法中，互不干扰</li>
+<li><strong><code>return this</code></strong>：使链式调用成为可能，调用侧十分简洁</li>
+</ul>
+<hr>
+<p><strong><code>Builder</code> — 指挥者（Director），封装预设组合方案</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tutorials-6.0-2: Builder.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Builder</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> IMenu <span class="title function_">levelOne</span><span class="params">(Double area)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">DecorationPackageMenu</span>(area, <span class="string">&quot;豪华欧式&quot;</span>)</span><br><span class="line">                .appendCeiling(<span class="keyword">new</span> <span class="title class_">LevelTwoCeiling</span>())   <span class="comment">// 二级顶</span></span><br><span class="line">                .appendCoat(<span class="keyword">new</span> <span class="title class_">DuluxCoat</span>())             <span class="comment">// 多乐士</span></span><br><span class="line">                .appendFloor(<span class="keyword">new</span> <span class="title class_">ShengXiangFloor</span>());     <span class="comment">// 圣象地板</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> IMenu <span class="title function_">levelTwo</span><span class="params">(Double area)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">DecorationPackageMenu</span>(area, <span class="string">&quot;轻奢田园&quot;</span>)</span><br><span class="line">                .appendCeiling(<span class="keyword">new</span> <span class="title class_">LevelTwoCeiling</span>())   <span class="comment">// 二级顶</span></span><br><span class="line">                .appendCoat(<span class="keyword">new</span> <span class="title class_">LiBangCoat</span>())            <span class="comment">// 立邦</span></span><br><span class="line">                .appendTile(<span class="keyword">new</span> <span class="title class_">MarcoPoloTile</span>());        <span class="comment">// 马可波罗</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> IMenu <span class="title function_">levelThree</span><span class="params">(Double area)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">DecorationPackageMenu</span>(area, <span class="string">&quot;现代简约&quot;</span>)</span><br><span class="line">                .appendCeiling(<span class="keyword">new</span> <span class="title class_">LevelOneCeiling</span>())   <span class="comment">// 一级顶</span></span><br><span class="line">                .appendCoat(<span class="keyword">new</span> <span class="title class_">LiBangCoat</span>())            <span class="comment">// 立邦</span></span><br><span class="line">                .appendTile(<span class="keyword">new</span> <span class="title class_">DongPengTile</span>());         <span class="comment">// 东鹏</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>调用方（<code>ApiTest</code>）只需 <code>builder.levelOne(132.52D).getDetail()</code>，<strong>完全不需要知道套餐由哪些物料构成</strong>，细节全部被 <code>Builder</code> 封装。</p>
+</blockquote>
+<hr>
+<p><strong>调用侧对比（ApiTest）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 建造者模式 —— 简洁、语义清晰</span></span><br><span class="line"><span class="type">Builder</span> <span class="variable">builder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Builder</span>();</span><br><span class="line">System.out.println(builder.levelOne(<span class="number">132.52D</span>).getDetail());</span><br><span class="line">System.out.println(builder.levelTwo(<span class="number">98.25D</span>).getDetail());</span><br><span class="line">System.out.println(builder.levelThree(<span class="number">85.43D</span>).getDetail());</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="4-5-2-面条代码（if-else-硬编码）"><a href="#4-5-2-面条代码（if-else-硬编码）" class="headerlink" title="4.5.2 面条代码（if-else 硬编码）"></a>4.5.2 面条代码（if-else 硬编码）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tutorials-6.0-1: DecorationPackageController.java</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">getMatterList</span><span class="params">(BigDecimal area, Integer level)</span> &#123;</span><br><span class="line">    List&lt;Matter&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="type">BigDecimal</span> <span class="variable">price</span> <span class="operator">=</span> BigDecimal.ZERO;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="number">1</span> == level) &#123;                                  <span class="comment">// ← 硬编码条件</span></span><br><span class="line">        <span class="type">LevelTwoCeiling</span> <span class="variable">levelTwoCeiling</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">LevelTwoCeiling</span>();</span><br><span class="line">        <span class="type">DuluxCoat</span> <span class="variable">duluxCoat</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DuluxCoat</span>();</span><br><span class="line">        <span class="type">ShengXiangFloor</span> <span class="variable">shengXiangFloor</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ShengXiangFloor</span>();</span><br><span class="line">        list.add(levelTwoCeiling);</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        price = price.add(area.multiply(<span class="keyword">new</span> <span class="title class_">BigDecimal</span>(<span class="string">&quot;0.2&quot;</span>)).multiply(levelTwoCeiling.price())); <span class="comment">// 计价逻辑重复</span></span><br><span class="line">        price = price.add(area.multiply(<span class="keyword">new</span> <span class="title class_">BigDecimal</span>(<span class="string">&quot;1.4&quot;</span>)).multiply(duluxCoat.price()));       <span class="comment">// 计价逻辑重复</span></span><br><span class="line">        price = price.add(area.multiply(shengXiangFloor.price()));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="number">2</span> == level) &#123; <span class="comment">/* 相同结构再写一遍 */</span> &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="number">3</span> == level) &#123; <span class="comment">/* 相同结构再写一遍 */</span> &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>面条代码问题清单：</strong></p>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>违反开闭原则</strong></td>
+<td>新增套餐级别必须修改此方法，加一个 <code>if</code> 块</td>
+</tr>
+<tr>
+<td><strong>计价逻辑重复</strong></td>
+<td><code>area × 0.2 × price</code>、<code>area × 1.4 × price</code> 散落在每个 <code>if</code> 块中</td>
+</tr>
+<tr>
+<td><strong>高度耦合</strong></td>
+<td>方法直接依赖 7 个具体物料类，任何物料变化都可能影响此方法</td>
+</tr>
+<tr>
+<td><strong>可读性差</strong></td>
+<td>方法体随套餐增多急剧膨胀，难以快速理解每种套餐的组成</td>
+</tr>
+<tr>
+<td><strong>无法复用</strong></td>
+<td>套餐组合逻辑无法在其他场景（如导出报价单）复用</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>面条代码（if-else）</th>
+<th>建造者模式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>扩展性</td>
+<td>差：新增套餐需改原方法</td>
+<td>好：新增 <code>levelFour()</code> 完全不影响已有代码</td>
+</tr>
+<tr>
+<td>可读性</td>
+<td>差：大量重复代码堆砌</td>
+<td>好：链式调用如同描述套餐配置</td>
+</tr>
+<tr>
+<td>职责划分</td>
+<td>无：一个方法做所有事</td>
+<td>清晰：Builder 定义方案，Menu 负责计算与展示</td>
+</tr>
+<tr>
+<td>测试难度</td>
+<td>高：修改一处可能影响全部分支</td>
+<td>低：每种套餐独立构建，互不干扰</td>
+</tr>
+<tr>
+<td>计价逻辑</td>
+<td>散落各处，容易遗漏</td>
+<td>统一封装在 <code>appendXxx()</code> 方法内</td>
+</tr>
+</tbody></table>
+<p><strong>建造者模式适用场景总结：</strong></p>
+<ol>
+<li>构建对象需要<strong>多个步骤</strong>，且步骤顺序相对固定</li>
+<li>需要创建<strong>同一类型但内部组成不同</strong>的多种对象（如不同档次套餐）</li>
+<li>希望<strong>屏蔽复杂构建过程</strong>，让调用方只关注最终结果</li>
+<li>构建过程的<strong>每一步都有独立的业务语义</strong>（如”选吊顶”、”选涂料”），适合用方法名表达意图</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Like</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://likerhood.github.io/2026/04/22/015%20%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/">https://likerhood.github.io/2026/04/22/015%20%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://likerhood.github.io" target="_blank">Liker's Blog</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/javabuilder_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://fastly.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2026/04/21/014%20java%E4%B8%AD%E7%9A%84return%20this%E5%92%8C%E9%93%BE%E5%BC%8F%E7%BC%96%E7%A8%8B/"><img class="next-cover" src="/img/javareturnthis_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">java中的return this和链式编程</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%EF%BC%88Builder-Pattern%EF%BC%89"><span class="toc-text">建造者模式（Builder Pattern）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A0%B8%E5%BF%83%E5%AE%9A%E4%B9%89"><span class="toc-text">一、核心定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A0%87%E5%87%86%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%9B%BE%EF%BC%88UML%EF%BC%89"><span class="toc-text">二、标准体系结构图（UML）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%9C%BA%E6%99%AF%E6%8E%A8%E6%BC%94%EF%BC%9A%E5%BF%AB%E9%A4%90%E5%BA%97%E2%80%9C%E5%85%A8%E5%AE%B6%E6%A1%B6%E2%80%9D"><span class="toc-text">三、场景推演：快餐店“全家桶”</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B%EF%BC%9A%E8%A3%85%E4%BF%AE%E5%A5%97%E9%A4%90%E9%80%89%E6%8B%A9%E7%B3%BB%E7%BB%9F"><span class="toc-text">四、实战案例：装修套餐选择系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="toc-text">4.1 需求分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-1-%E4%B8%9A%E5%8A%A1%E8%83%8C%E6%99%AF"><span class="toc-text">4.1.1 业务背景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-2-%E8%AE%A1%E4%BB%B7%E8%A7%84%E5%88%99"><span class="toc-text">4.1.2 计价规则</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-3-%E6%89%80%E6%9C%89%E7%89%A9%E6%96%99%E6%B1%87%E6%80%BB%EF%BC%88tutorials-6-0-0%EF%BC%89"><span class="toc-text">4.1.3 所有物料汇总（tutorials-6.0-0）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-text">4.2 架构图</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-1-%E9%9D%A2%E6%9D%A1%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84%E5%9B%BE%EF%BC%88tutorials-6-0-1%EF%BC%89"><span class="toc-text">4.2.1 面条代码架构图（tutorials-6.0-1）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-2-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%E6%9E%B6%E6%9E%84%E5%9B%BE%EF%BC%88tutorials-6-0-2%EF%BC%89"><span class="toc-text">4.2.2 建造者模式架构图（tutorials-6.0-2）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E7%B1%BB%E5%9B%BE%E5%AF%B9%E6%AF%94"><span class="toc-text">4.3 类图对比</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-1-%E9%9D%A2%E6%9D%A1%E4%BB%A3%E7%A0%81%E7%B1%BB%E5%9B%BE"><span class="toc-text">4.3.1 面条代码类图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-2-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%E7%B1%BB%E5%9B%BE"><span class="toc-text">4.3.2 建造者模式类图</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="toc-text">4.4 时序图</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-1-%E9%9D%A2%E6%9D%A1%E4%BB%A3%E7%A0%81%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="toc-text">4.4.1 面条代码时序图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-2-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="toc-text">4.4.2 建造者模式时序图</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-text">4.5 代码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-5-1-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%E4%BB%A3%E7%A0%81%EF%BC%88tutorials-6-0-2%EF%BC%89"><span class="toc-text">4.5.1 建造者模式代码（tutorials-6.0-2）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-5-2-%E9%9D%A2%E6%9D%A1%E4%BB%A3%E7%A0%81%EF%BC%88if-else-%E7%A1%AC%E7%BC%96%E7%A0%81%EF%BC%89"><span class="toc-text">4.5.2 面条代码（if-else 硬编码）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div></div></main><footer id="footer" style="background: #FFFFFF"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2026 By Like</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">Bcxm</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = async () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+      mermaid.initialize({ startOnLoad: false, theme: theme, securityLevel: 'loose' })
+
+      for (let i = 0; i < $mermaidWrap.length; i++) {
+        const item = $mermaidWrap[i]
+        const mermaidSrc = item.firstElementChild
+        const mermaidID = 'mermaid-' + i
+        const mermaidDefinition = mermaidSrc.textContent.trim()
+        try {
+          const result = await mermaid.render(mermaidID, mermaidDefinition)
+          const svgCode = result && result.svg ? result.svg : result
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        } catch (e) {
+          console.error('Mermaid render error:', mermaidID, e)
+        }
+      }
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://fastly.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/leancloud-storage@4.10.0/dist/av-min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
