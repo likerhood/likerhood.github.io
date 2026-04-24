@@ -1,0 +1,376 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Android Studio 安装配置教程Windows(详细版)</title><meta name="author" content="Like"><meta name="copyright" content="Like"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Android Studio 安装配置教程Windows(详细版)前言 转载声明 本文是对 CSDN 博主 qq_38436214 文章的整理与实践记录。 原文链接：https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_38436214&#x2F;article&#x2F;details&#x2F;105073213  在 Android 开发领域，Android Studio (AS) 无疑是 Google 官方主推且不可或缺的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Studio 安装配置教程Windows(详细版)">
+<meta property="og:url" content="https://likerhood.github.io/2026/04/24/020%20Android%20Studio%20%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B%20Windows(%E8%AF%A6%E7%BB%86%E7%89%88)/index.html">
+<meta property="og:site_name" content="Liker&#39;s Blog">
+<meta property="og:description" content="Android Studio 安装配置教程Windows(详细版)前言 转载声明 本文是对 CSDN 博主 qq_38436214 文章的整理与实践记录。 原文链接：https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_38436214&#x2F;article&#x2F;details&#x2F;105073213  在 Android 开发领域，Android Studio (AS) 无疑是 Google 官方主推且不可或缺的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likerhood.github.io/img/javaandroid_cover.png">
+<meta property="article:published_time" content="2026-04-24T13:24:00.140Z">
+<meta property="article:modified_time" content="2026-04-24T13:46:35.185Z">
+<meta property="article:author" content="Like">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likerhood.github.io/img/javaandroid_cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/04/24/020%20Android%20Studio%20%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B%20Windows(%E8%AF%A6%E7%BB%86%E7%89%88)/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Like","link":"链接: ","source":"来源: Liker's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Android Studio 安装配置教程Windows(详细版)',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-04-24 21:46:35'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Liker's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Android Studio 安装配置教程Windows(详细版)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-04-24T13:24:00.140Z" title="发表于 2026-04-24 21:24:00">2026-04-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/">工具教程</a></span></div><div class="meta-secondline"></div></div></div><article class="post-content" id="article-container"><h1 id="Android-Studio-安装配置教程Windows-详细版"><a href="#Android-Studio-安装配置教程Windows-详细版" class="headerlink" title="Android Studio 安装配置教程Windows(详细版)"></a>Android Studio 安装配置教程Windows(详细版)</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p><strong>转载声明</strong></p>
+<p>本文是对 CSDN 博主 qq_38436214 文章的整理与实践记录。</p>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38436214/article/details/105073213">https://blog.csdn.net/qq_38436214/article/details/105073213</a></p>
+</blockquote>
+<p>在 Android 开发领域，Android Studio (AS) 无疑是 Google 官方主推且不可或缺的核心生产力工具。随着版本的不断迭代，如今的 Android Studio 已经变得更加智能和开箱即用，<strong>通常直接下载就是免费版本，完全够用。</strong></p>
+<p>对于许多初学者或从老版本迁移过来的开发者来说，开发环境的配置往往是“万事开头难”的第一步。例如，早期的 AS 需要开发者手动配置 Java JDK 的环境变量才能正常编译项目，而现在的新版本（如本文使用的 2025.1.1 版本）已经内置了 JDK（最低要求 JDK 17），极大简化了初始配置的繁琐度。</p>
+<p><strong>我需要配置 JDK 环境变量吗？</strong></p>
+<ul>
+<li><strong>仅做 Android 开发</strong>：通常不需要，直接使用 AS 内置的 JDK 即可。</li>
+<li><strong>兼顾常规 Java 开发</strong>：建议配置系统的 JDK 环境变量（注意 JDK 11&#x2F;17 与 JDK 8 的配置略有不同，前者可能需要手动生成 jre 目录）。</li>
+</ul>
+<p>本文将从下载、安装、项目创建（区分全新的 Compose 模板与常规的 Views 模板），到核心开发组件（如 ViewBinding）的使用，以及 Gradle&#x2F;SDK&#x2F;JDK 环境版本的排查与切换，提供一份保姆级的图文避坑指南。</p>
+<h2 id="一、Android-Studio-下载"><a href="#一、Android-Studio-下载" class="headerlink" title="一、Android Studio 下载"></a>一、Android Studio 下载</h2><p><a target="_blank" rel="noopener" href="https://developer.android.google.cn/studio">Android Studio下载地址-谷歌中国</a> ，最新版本目前是 <code>Android Studio Narwhal | 2025.1.1 Patch 1</code> ，你可以到官网上去找之前的版本，手上有工作项目的不要去轻易尝试，说不定你就编译失败了，失败了也不要担心，解决就可以了。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_14.png" alt="在这里插入图片描述"></p>
+<p>点击 <strong>Download Android Studio</strong> 进行下载，会出现一个弹窗告诉这个版本的一些信息。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_15.png" alt="在这里插入图片描述"></p>
+<p>不用管他，直接滑动到最后。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_16.png" alt="在这里插入图片描述"></p>
+<p>勾选上，点击按钮下载即可，下载好之后会在本地有一个exe安装程序，下面来安装。</p>
+<h2 id="二、Android-Studio-安装"><a href="#二、Android-Studio-安装" class="headerlink" title="二、Android Studio 安装"></a>二、Android Studio 安装</h2><p>双击运行安装。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_17.png" alt="在这里插入图片描述"></p>
+<p>点击 <strong>Next</strong> 下一步。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_18.png" alt="在这里插入图片描述"></p>
+<p>点击 <strong>Next</strong> 下一步。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_19.png" alt="在这里插入图片描述"></p>
+<p>默认会给你装到C盘，这里我修改到了D盘( <mark>PS: 这里一定要改路径，否则随着你开发过程中，你的C盘空间会越来越小，这里我放的是D盘，只要不装在系统盘里，其他盘随意，不过也要有一定空间才行。</mark> ),点击 <strong>Next</strong> 下一步。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_20.png" alt="在这里插入图片描述"></p>
+<p>点击 <strong>Next</strong> 下一步( <mark>PS：这里没有其他骚操作，不要乱来</mark> )</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_21.png" alt="在这里插入图片描述"></p>
+<p>等安装完成。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_22.png" alt="在这里插入图片描述"></p>
+<p>点击 <strong>Next</strong> 下一步。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_23.png" alt="在这里插入图片描述"></p>
+<p>点击 <strong>Finish</strong> 进行第一次运行了,如果你不是第一安装了，那么就是覆盖安装，也是一步到位，没啥好讲的。现在我们运行一下：</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_24.png" alt="在这里插入图片描述"></p>
+<p>如果你选择上面那个就会在你电脑安装默认的配置，这里不导入配置，直接 <strong>OK</strong> 即可，然后你就会看到AS的启动图片：</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_25.png" alt="在这里插入图片描述"></p>
+<p>不得不说比之前的要好看一些，然后会弹出。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_26.png" alt="在这里插入图片描述"></p>
+<p>就是让发送使用的信息给谷歌，发个锤子，点击 “ <strong>Don’t send</strong> ”。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_27.png" alt="在这里插入图片描述"></p>
+<p>然后我们进入了欢迎页面，这个图片是告诉你，Android能做的事情有手机、穿戴设备、TV、车载，还有智能设备等，点击 <strong>Next</strong> 。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_28.png" alt="在这里插入图片描述"></p>
+<p>这个地方是说你没有SDK，让你设置代码，这里不设置，点击 <strong>Cancel</strong> 。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_29.png" alt="在这里插入图片描述"></p>
+<p>Android Studio 默认会把你的SDK下载放在C盘，到时候你的C盘就炸了，谷歌太坏了，很多新手都会直接下一步，这里你需要选择 <strong>Custom</strong> ，切记切记，然后点击 <strong>Next</strong> 下一步。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_30.png" alt="在这里插入图片描述"></p>
+<p>之前我们选择自定义SDK的路径，在这里就需要自己设置路径了，如果你之前有下载过Sdk，而这次又将Sdk的目录选择为之前的目录，那么就会出现一些组件提示(installed)，我选择在D盘下，改好之后就点击 <strong>Next</strong> 。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_31.png" alt="在这里插入图片描述"></p>
+<p>这里是给Android模拟器进行内存设置，推荐4G，这里直接 <strong>Next</strong> 。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_32.png" alt="在这里插入图片描述"></p>
+<p>这里是安装Android虚拟器管理驱动，点击 <code>Next</code> 即可。<br> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_33.png" alt="在这里插入图片描述"></p>
+<p>接下来就是下载需要的一些SDK了，点击 <code>Next</code> 。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_34.png" alt="在这里插入图片描述"></p>
+<p>在下载前，需要你接受一些协议，你不会真去看这些协议的，除非你是想摸鱼，左侧的三项，每一项选中之后点击 <code>Accpet</code> ，接受协议，三项都通过之后，你会看到 <code>Finish</code> 按钮亮起，点击 <code>Finish</code> 。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_35.png" alt="在这里插入图片描述"></p>
+<p>这一步比较考验网络，通俗一点就是看命了，命硬的一步到位，命苦的喝杯咖啡以毒攻毒。如果你的网络不支持很有可能导致失败，那么你可能需要更换网络环境再进行重新安装尝试，这一点就很烦了，很多人都会遇到这个问题。运气好的网速好的情况下也就几分钟，不好几个小时都是有可能的。很明显，我的这个网速就不这么样，这个时候你就可以泡一杯咖啡，说到咖啡你有没有想到Java的图标呢？</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_36.png" alt="在这里插入图片描述"></p>
+<p>终于组件下载完毕了，这里你看到有一项安装失败的，先不管他，点击 <code>Finish</code> 。现在我们已经安装好了Android Studio，下面就可以开始使用了。</p>
+<h2 id="三、Android-Studio-使用"><a href="#三、Android-Studio-使用" class="headerlink" title="三、Android Studio 使用"></a>三、Android Studio 使用</h2><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_37.png" alt="在这里插入图片描述"></p>
+<p>这里我们点击 <strong>New Project</strong> ，创建一个新的项目。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_38.png" alt="在这里插入图片描述"></p>
+<p>这里选中的是 <code>Empty Activity</code> ，在新版本的 <code>Android Studio</code> 中 <code>Empty Activity</code> 模板默认的就是 <code>Compose</code> 模板，如果你没有接触过，可以去了解一下，如果你希望创建Java或者Kotlin语言模板的项目，那么就选择 <code>Empty Views Activity</code> ，点击 <strong>Next</strong> ，这里我选择的是 <code>Empty Activity</code> 模板， <code>Empty Views Activity</code> 模板后面会提到。</p>
+<h3 id="3-1-创建默认项目（Compose）"><a href="#3-1-创建默认项目（Compose）" class="headerlink" title="3.1 创建默认项目（Compose）"></a>3.1 创建默认项目（Compose）</h3><p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_39.png" alt="在这里插入图片描述"></p>
+<p>这里会默认创建一个 <code>Jetpack Compose</code> 项目，默认语言就是Kotlin，Compose和之前的XML布局的方式还是有很大区别，然后我们改了项目的名称，改了项目存放的路径，默认在C盘，我改到了D盘，而这里最低兼容SDK为API 24，对应Android7.0，这里有一个需要注意的地方那就是， <code>Build configuration language</code> ，在之前的AS中已经可以使用Kotlin作为Gradle的语言了，只不过没有主推，而现在的这个默认选项的意思就是使用Kotlin作为Gradle的构建语言了，之前一直都是使用Groovy进行构建的，点击下拉框可以看到，如下图所示。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_40.png" alt="在这里插入图片描述"></p>
+<p>那么选择什么类型呢？我们分情况来看，分为如下三种情况，就以开发者自身来看。</p>
+<ul>
+<li><p>小白开发者：建议你选择 <code>Groovy DSL</code> ，这样Gradle的语言就和之前你是用的AS一样，同时，如果你遇到相关的问题去网上搜索大部分资料也都是基于Groovy语言的，Kotlin语言的比较少，毕竟推出的时间不长。更何况如果你还有一些老项目的话，更加要选择Groovy，听人劝，吃饱饭。</p>
+</li>
+<li><p>专一开发者：这个不是说感情专一，而是对于AS编辑器只用一个版本，比如现在还有使用Android Studio3.5、4.1的，但是实际工作中需要他升级AS的版本，那么到这个版本时，如果对自己有信心并且有时间解决相关的问题，那么可以选择Kotlin，也可以选择Groovy。</p>
+</li>
+<li><p>老油条开发者：爱咋咋地。</p>
+</li>
+</ul>
+<p>如果你选择Kotlin DSL，点击 <code>Finish</code> 。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_41.png" alt="在这里插入图片描述"></p>
+<p>直接进入项目页面，并且你会看到底部在下载一些SDK文件，这个过程也需要你的网络条件比较好，否则轻则速度很慢，重则直接连接超时，你会看到一些报错的字样。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_42.png" alt="在这里插入图片描述"></p>
+<p>我这里比较顺利，如果不顺利的话，可能就是不断的提示你超时或者连接失败，如下图所示：</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_43.png" alt="在这里插入图片描述"></p>
+<p>第一次创建项目，下载的内容会比较多，这里以gradle为主要内容，其他内容就是支持项目编译运行所需要的插件，组件等内容，而这个gradle如果网络不好就会直接停止下载，你可以切换网络环境继续下载，直到你的项目可以正常运行为止。这段话很重要，评论区很多人都会遇到这个问题，问我怎么办，其实就是你当前的网络下载资源受限或者是很慢导致编译时候，这个时候你就手机开个热点，电脑连上然后 <code>Try Again</code> 就行了，另外也和手机卡的网络有关系，三大运营商都可以试试，一个人不可能集齐三个运营商，一堆人就很简单了。</p>
+<p>我们还可以通过更换镜像源，因为国内访问Google有时候不稳定，没有条件搭梯子翻墙的话，那就可以使用国内的镜像源，这样我们访问起来就很快了，尤其是项目配置的时候，那么怎么去替换呢？打开项目的 <code>gradle-wrapper.properties</code> ，位置如下图所示：</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_44.png" alt="在这里插入图片描述"></p>
+<p>注意我标注的地方，实际上我们只需要改一部分，比如我们改成腾讯的源</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">distributionUrl=https\:<span class="comment">//mirrors.cloud.tencent.com/gradle/gradle-8.9-bin.zip</span></span><br></pre></td></tr></table></figure>
+
+<p>就是从</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">services.gradle.org/distributions</span><br></pre></td></tr></table></figure>
+
+<p>改成</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mirrors.cloud.tencent.com/gradle</span><br></pre></td></tr></table></figure>
+
+<p>改完之后 <code>Sync Now</code> ，等待下载</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_45.png" alt="在这里插入图片描述"></p>
+<p>完成之后我们可以直接启动运行，你也可以使用快捷键 <code>Shift + F10</code> ，顺利的话你就运行成功了，否则你可能会出现下面的弹窗提示。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_46.png" alt="在这里插入图片描述"></p>
+<p>需要你安装HAXM，这个前面我们就已经是安装失败了，那么点击OK，然后继续下一步。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_47.png" alt="在这里插入图片描述"></p>
+<p>到这里为止你会发现还是不行，那么我们就需要检查一下自己的电脑有没有开启 <code>“Intel (VMX) Virtual Technology” (或者叫虚拟化技术)</code> ，这个根据自己的电脑品牌去进行操作，那么换个方式，都需要进入BIOS里面，这里我就不多说了，自行百度解决。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_48.png" alt="在这里插入图片描述"></p>
+<p>开启VT之后，再打开AS运行项目，这次就会成功了。</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/0_49.png" alt="在这里插入图片描述"></p>
+<p>已经运行到虚拟机上了，到这里创建Compose项目，就完成了。</p>
+<h3 id="3-2-创建常规项目"><a href="#3-2-创建常规项目" class="headerlink" title="3.2 创建常规项目"></a>3.2 创建常规项目</h3><p>相信会Compose的还是少数，虽然Google官方在推这个组件，但是在国内，用的还是在少数，大部分人不会轻易去使用，尤其是在你不熟悉的时候，但是学习还是可以的，因此我们下面来创建常规的项目，常规的项目就分Java和Kotlin两种语言了，据我所知，目前很多学校里就是用Kotlin作为主要语言的，那么我们就来创建一个Kotlin语言的项目吧。</p>
+<p>![image-20260424210130286](<a target="_blank" rel="noopener" href="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210130286.png">https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210130286.png</a></p>
+<p><code>File → New → New Project</code> ，会出现一个弹窗。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210229031.png" alt="image-20260424210229031"></p>
+<p>这里我们选择 <code>Empty Views Activity</code> ，点击 <strong>Next</strong> 。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210304920.png" alt="image-20260424210304920"></p>
+<p>这里的项目就和我们之前Android Studio创建项目的方式一样了，语言你可以切换Java，Kotlin，这里就选择Kotlin，点击 <strong>Finish</strong> 。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210330644.png" alt="image-20260424210330644"></p>
+<p>这里也会下载一堆插件，同样需要网络比较好的情况，我大概花了31分钟，下载完成之后我们直接运行看看。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210400545.png" alt="image-20260424210400545"></p>
+<p>很顺利，我们又运行成功了，这是Kotlin的项目，Kotlin项目的开发你需要掌握Kotlin语言，不然很多的特性你都看不懂，学会了就用起来很爽，下面我们来使用ViewBinding，这是Google官方推出的一个Jetpack 组件，下面我将会分别在Kotlin语言和Java语言中使用，至于Compose中是不需要这个组件的，因为Compose项目中没有xml，注意。</p>
+<h3 id="3-3-使用ViewBinding"><a href="#3-3-使用ViewBinding" class="headerlink" title="3.3 使用ViewBinding"></a>3.3 使用ViewBinding</h3><p>在使用ViewBinding之前，我们先了解它是用来干什么的，一句话概括就是可以让你不用再写 <code>findViewById()</code> ，因为常规的Android项目都是代码和布局XML构成页面，我们在页面上去完成自己的业务需求逻辑，业务功能，而代码中使用XML中的控件，首先要给控件Id，其次要实例化，通过 <code>findViewById()</code> 来完成，这个步骤在XML中控件很多的时候就尤为繁琐，因此Google推出ViewBinding来解决这一问题，如果你想知道ViewBinding是怎么实现的，可以留言，下面我们来讲述怎么使用ViewBinding。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210431311.png" alt="image-20260424210431311"></p>
+<p>打开app模块的build.gradle，然后添加如下代码：</p>
+<p>Groovy版本：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">buildFeatures &#123;</span><br><span class="line">    viewBinding <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Kotlin版本：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">buildFeatures &#123;</span><br><span class="line">    viewBinding = <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后右上角会出现 <code>Sync Now</code> ，点击一下就会下载相应的资源，如上图所示，现在我们就是相当于打开了 <code>ViewBinding</code> 的开关，然后我们使用它，在activity_main.xml中为TextView写一个id。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210507181.png" alt="image-20260424210507181"></p>
+<p>然后回到MainActivity中使用。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210533534.png" alt="image-20260424210533534"></p>
+<p>这里的使用也很简单，如果你了解Kotlin语法的话，首先是创建一个binding变量，类型是ActivityMainBinding，这是一个编译时生成的类，它源于你的 <code>activity_main.xml</code> ，就是将你的xml进行驼峰名称再加上Binding后缀，如果你的布局是item_device.xml，那么生成的类就是ItemDeviceBinding，这样你应该好理解了，参考上图的写法即可，下面我们再用一张图来说明Java项目中的ViewBinding的用法。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210555933.png" alt="image-20260424210555933"></p>
+<p>配置开关和为控件增加Id都是一样的，只是语法上有区别，如上图所示。</p>
+<h3 id="3-4-查看Gradle版本、SDK版本、JDK版本"><a href="#3-4-查看Gradle版本、SDK版本、JDK版本" class="headerlink" title="3.4 查看Gradle版本、SDK版本、JDK版本"></a>3.4 查看Gradle版本、SDK版本、JDK版本</h3><p>一个项目能否正常编译取决于我们的Gradle、SDK以及JDK，不同版本之间是由不同的配置关系的，这对于你来说是否有些复杂呢？</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424212607722.png" alt="image-20260424212607722"></p>
+<blockquote>
+<ol>
+<li><p>JDK (Java Development Kit) </p>
+<ul>
+<li><p><strong>代表什么</strong>：Java 语言的软件开发工具包。</p>
+</li>
+<li><p><strong>具体职责</strong>：它提供了编译、调试和运行 Java 代码所必需的基础环境。包含了 JRE（Java 运行环境）、Java 虚拟机（JVM）以及核心类库（如 <code>String</code>、<code>List</code>、多线程等最基础的语法组件）。</p>
+</li>
+<li><p><strong>在 Android 中的角色</strong>：虽然现在 Android 主推 Kotlin，但 Kotlin 也是跑在 JVM 上的，底层依然依赖 Java 的生态。JDK 就像是扳手、电焊机和基础物理定律，没有它，你连最基本的代码指令都无法执行。</p>
+</li>
+<li><p><strong>JDK</strong> 只负责 Java 语言本身的编译和运行。它不关心你是用来做网站后台、大数据处理，还是写 Android 应用。</p>
+</li>
+</ul>
+</li>
+<li><p>SDK (Software Development Kit) </p>
+<ul>
+<li><p><strong>代表什么</strong>：软件开发工具包。在本文语境下，特指 <strong>Android SDK</strong>。</p>
+</li>
+<li><p><strong>具体职责</strong>：它是 Google 官方提供的，专门用于开发 Android 应用的接口、工具和模拟器。它包含了 Android 特有的核心类（如 <code>Activity</code>、<code>TextView</code>、<code>Toast</code> 等），以及打包工具和调试桥（ADB）。</p>
+</li>
+<li><p><strong>在 Android 中的角色</strong>：如果你只有 JDK，你只能写出能在电脑黑框框里跑的通用 Java 程序。要让程序在手机上跑，并且能调用手机的摄像头、屏幕绘制 UI，就需要使用 Android SDK。它就像是汽车厂商提供的底盘、方向盘和发动机图纸。</p>
+</li>
+<li><p><strong>Android SDK</strong> 只负责提供 Android 手机特有的功能和 API。它不需要关心底层的编译原理是怎样的。</p>
+</li>
+</ul>
+</li>
+<li><p>Gradle</p>
+<ul>
+<li><p><strong>代表什么</strong>：项目自动化构建工具。</p>
+</li>
+<li><p><strong>具体职责</strong>：在现代开发中，一个项目往往包含成百上千个代码文件，还需要引用外部的第三方库（比如网络请求库 Retrofit、图片加载库 Glide）。如果全靠手动去敲命令编译代码、下载库、打包，会极其繁琐且容易出错。Gradle 就是用来自动化处理这些事情的。</p>
+</li>
+<li><p><strong>在 Android 中的角色</strong>：Gradle 会读取你的配置文件（<code>build.gradle</code>），自动去网络上下载你需要的第三方库，然后调用 JDK 将代码编译成字节码，再调用 Android SDK 的工具将其转换为 Android 能识别的格式，最后把资源文件（图片、XML）一起打包成一个完整的安装包（APK 或 AAB）。它就是掌控全局的装配流水线主管。</p>
+</li>
+<li><p><strong>Gradle</strong> 只负责项目构建与依赖管理。它不仅能构建 Android 项目，也能构建纯 Java 项目、C++ 项目。</p>
+</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<p>不过不用担心，当你可以正常安装Android Studio并且能够正常运行时，你的这三个配置就是可以的，属于默认搭配，你只管写代码就好了。</p>
+<p>然而，世事无常，也许有时候项目的开发者不是自己，那么别人的项目你想要运行，有两个选择，第一：配置项目所需要的Gradle和SDK，第二：更改项目的Gradle和SDK满足当前环境。</p>
+<h4 id="3-4-1-Gradle版本"><a href="#3-4-1-Gradle版本" class="headerlink" title="3.4.1 Gradle版本"></a>3.4.1 Gradle版本</h4><p>Gradle再细分就是Gradle版本和Gradle插件版本，两者之间是有关联的，你可以参考 <a target="_blank" rel="noopener" href="https://developer.android.google.cn/studio/releases/gradle-plugin?hl=zh_cn">Android Gradle 插件版本说明</a> ，下面我们先看Gradle版本，如下图所示查看：</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210618924.png" alt="image-20260424210618924"></p>
+<p>Gradle插件版本，如下图所示查看：</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210637881.png" alt="image-20260424210637881"></p>
+<p>怎么查看就怎么修改，修改后记得要Sync Now点击一下。</p>
+<h4 id="3-4-2-SDK版本"><a href="#3-4-2-SDK版本" class="headerlink" title="3.4.2 SDK版本"></a>3.4.2 SDK版本</h4><p>SDK版本就是当前项目所编译的版本，下面我们查看一下当前项目的配置Android版本，如下图所示：</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210700472.png" alt="image-20260424210700472"></p>
+<p>这里 <code>compileSdk 33</code> 表示编译版本为API 33，对应的是Android13.0版本， <code>minSdk 24</code> 表示最低编译版本为API 24，对应Android 7.0版本，换句话来说，你的项目可以在Android7.0到Android13.0这个区间的的Android设备上运行，当然也包括7.0和13.0， <code>targetSdk 33</code> 表示当前SDK版本为API 33，当你的项目低于或者高于这个环境的时候你就需要配置相关的SDK了，在哪里配置呢？顶部导航栏点击 <code>File → Settings...</code> 如下图所示：</p>
+<p> <img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210727196.png" alt="image-20260424210727196"></p>
+<p>这里我们可以看到当前下载Android 13.0的SDK，还能看到其他的Android版本，也可以看到Android版本所对应的API版本，这里我们看到的是简略信息，你可以勾选右下方的 <code>Show Package Details</code> ，就能查看详情信息了，当我们下载其他版本的SDK时，勾选上，要下载的目标版本SDK，此时弹窗右下角底部的 <code>Apply</code> 按钮就可以点击了，点击之后就会下载相关的SDK，然后你就可以切换其他的API版本了。</p>
+<h4 id="3-4-3-JDK版本"><a href="#3-4-3-JDK版本" class="headerlink" title="3.4.3 JDK版本"></a>3.4.3 JDK版本</h4><p>JDK版本如下图所示：</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260424210753336.png" alt="image-20260424210753336"></p>
+<p>这里就很简单了，默认的是JDK 17，这里就关系到你的项目能否正常运行，点击下拉框就可以看到这个JDK的版本信息了，或者你添加自己本地的JDK也行。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>完成环境搭建并成功运行项目后，开发才刚刚开始。为了巩固本教程涉及的环境配置要点，我们通过 Q&amp;A 的形式进行回顾，这些也是后续排查编译错误的常见思路：</p>
+<p><strong>Q1：安装 SDK 时为什么一定要自定义路径？</strong></p>
+<p> <strong>A：</strong> Android Studio 默认会将 SDK 及其相关镜像文件下载到 C 盘。随着项目的增加和 SDK 版本的更新，这些文件会占用巨大的磁盘空间（动辄几十GB）。因此，在初始安装时选择非系统盘（如 D 盘）进行 Custom 安装，是保持系统流畅运行的关键习惯。</p>
+<p><strong>Q2：新建项目时，Gradle 构建语言应该选择 Kotlin DSL 还是 Groovy DSL？</strong></p>
+<p> <strong>A：</strong> 视你的项目经验和维护需求而定：</p>
+<ul>
+<li><strong>新手&#x2F;维护老项目</strong>：推荐选择 <strong>Groovy DSL</strong>。目前网上绝大多数的教程、解决方案以及历史项目的构建脚本都是基于 Groovy 的，遇到问题更容易查到资料。</li>
+<li><strong>追求前沿</strong>：如果是一个全新的项目，且团队&#x2F;个人对 Kotlin 比较熟悉，可以选择 Kotlin DSL，它是 Google 推荐的未来趋势。</li>
+</ul>
+<p><strong>Q3：项目一直在 Sync 且报错，大概率是什么原因？</strong> </p>
+<p><strong>A：</strong> 这是新手最常遇到的问题。90% 的概率是因为网络环境受限，导致 Gradle 本体或相关依赖库下载超时。</p>
+<ul>
+<li><strong>解决方案</strong>：建议配置国内镜像源（如将 <code>services.gradle.org</code> 替换为腾讯或阿里云的镜像源），或者尝试切换手机热点（尝试不同运营商的网络）后点击 <code>Try Again</code>。</li>
+</ul>
+<p><strong>Q4：为什么有了 ViewBinding，我们就不需要写 <code>findViewById</code> 了？</strong> </p>
+<p><strong>A：</strong> ViewBinding 是一种编译时技术。只要开启了此功能，系统就会为你项目中的每一个 XML 布局文件自动生成一个对应的绑定类（例如 <code>activity_main.xml</code> 对应 <code>ActivityMainBinding</code>）。通过实例化这个绑定类，你可以直接以属性的方式安全、快速地访问布局中的所有控件，既减少了模板代码，又避免了因 ID 错误导致的空指针异常。</p>
+<p><strong>Q5：接手别人的项目跑不起来，通常需要检查哪“三件套”的版本匹配？</strong></p>
+<p> <strong>A：</strong></p>
+<ol>
+<li><strong>JDK 版本</strong>：确认项目 <code>Settings</code> 中的 Gradle JDK 是否符合项目要求（新版本 AS 默认自带并推荐 JDK 17）。</li>
+<li><strong>Gradle 版本</strong>：包括 Gradle 本体版本（<code>gradle-wrapper.properties</code>）和 Android Gradle Plugin 插件版本（项目根目录的 <code>build.gradle</code>），两者需互相匹配。</li>
+<li><strong>SDK 版本</strong>：检查模块 <code>build.gradle</code> 中的 <code>compileSdk</code> 和 <code>targetSdk</code>。如果本地缺少对应的 API 版本，需要进入 SDK Manager 中进行下载补充。</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Like</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://likerhood.github.io/2026/04/24/020%20Android%20Studio%20%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B%20Windows(%E8%AF%A6%E7%BB%86%E7%89%88)/">https://likerhood.github.io/2026/04/24/020%20Android%20Studio%20%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B%20Windows(%E8%AF%A6%E7%BB%86%E7%89%88)/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://likerhood.github.io" target="_blank">Liker's Blog</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/javaandroid_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://fastly.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2026/04/24/019%20%E5%A4%9A%E4%B8%AA%20JDK%20%E7%89%88%E6%9C%AC%EF%BC%88Java%208%E3%80%8117%E3%80%8121%EF%BC%89%E4%B8%8B%E8%BD%BD%E5%92%8C%E5%88%87%E6%8D%A2/"><img class="next-cover" src="/img/jdk_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">多个 JDK 版本（Java 8、17、21）下载和切换</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Android-Studio-%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8BWindows-%E8%AF%A6%E7%BB%86%E7%89%88"><span class="toc-text">Android Studio 安装配置教程Windows(详细版)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81Android-Studio-%E4%B8%8B%E8%BD%BD"><span class="toc-text">一、Android Studio 下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Android-Studio-%E5%AE%89%E8%A3%85"><span class="toc-text">二、Android Studio 安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81Android-Studio-%E4%BD%BF%E7%94%A8"><span class="toc-text">三、Android Studio 使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%88%9B%E5%BB%BA%E9%BB%98%E8%AE%A4%E9%A1%B9%E7%9B%AE%EF%BC%88Compose%EF%BC%89"><span class="toc-text">3.1 创建默认项目（Compose）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%88%9B%E5%BB%BA%E5%B8%B8%E8%A7%84%E9%A1%B9%E7%9B%AE"><span class="toc-text">3.2 创建常规项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E4%BD%BF%E7%94%A8ViewBinding"><span class="toc-text">3.3 使用ViewBinding</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E6%9F%A5%E7%9C%8BGradle%E7%89%88%E6%9C%AC%E3%80%81SDK%E7%89%88%E6%9C%AC%E3%80%81JDK%E7%89%88%E6%9C%AC"><span class="toc-text">3.4 查看Gradle版本、SDK版本、JDK版本</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-1-Gradle%E7%89%88%E6%9C%AC"><span class="toc-text">3.4.1 Gradle版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-2-SDK%E7%89%88%E6%9C%AC"><span class="toc-text">3.4.2 SDK版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-3-JDK%E7%89%88%E6%9C%AC"><span class="toc-text">3.4.3 JDK版本</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div></div></main><footer id="footer" style="background: #FFFFFF"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2026 By Like</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">Bcxm</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = async () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+      mermaid.initialize({ startOnLoad: false, theme: theme, securityLevel: 'loose' })
+
+      for (let i = 0; i < $mermaidWrap.length; i++) {
+        const item = $mermaidWrap[i]
+        const mermaidSrc = item.firstElementChild
+        const mermaidID = 'mermaid-' + i
+        const mermaidDefinition = mermaidSrc.textContent.trim()
+        try {
+          const result = await mermaid.render(mermaidID, mermaidDefinition)
+          const svgCode = result && result.svg ? result.svg : result
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        } catch (e) {
+          console.error('Mermaid render error:', mermaidID, e)
+        }
+      }
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://fastly.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/leancloud-storage@4.10.0/dist/av-min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
