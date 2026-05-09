@@ -1,0 +1,566 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Java 反射与注解的详细讲解</title><meta name="author" content="Like"><meta name="copyright" content="Like"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Java 反射与注解的详细讲解前言初学 Java SE 时，我们习惯手动 new 对象、调用方法，一切直白可控。 但进入 Spring、MyBatis 等框架后，@Autowired 自动装配依赖，@Transactional 即可生效事务……看似神奇，其实底层依然是 反射与注解的默默支撑。 一、 为什么有反射？在真正接触框架之前，很多开发者会觉得反射又慢又麻烦，直接 new 对象不好吗？ 要回答">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 反射与注解的详细讲解">
+<meta property="og:url" content="https://likerhood.github.io/2026/05/09/032%20java%E5%8F%8D%E5%B0%84%E5%92%8C%E6%B3%A8%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Liker&#39;s Blog">
+<meta property="og:description" content="Java 反射与注解的详细讲解前言初学 Java SE 时，我们习惯手动 new 对象、调用方法，一切直白可控。 但进入 Spring、MyBatis 等框架后，@Autowired 自动装配依赖，@Transactional 即可生效事务……看似神奇，其实底层依然是 反射与注解的默默支撑。 一、 为什么有反射？在真正接触框架之前，很多开发者会觉得反射又慢又麻烦，直接 new 对象不好吗？ 要回答">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likerhood.github.io/img/001javafanshe_cover.png">
+<meta property="article:published_time" content="2026-05-09T14:13:12.343Z">
+<meta property="article:modified_time" content="2026-05-09T14:19:28.738Z">
+<meta property="article:author" content="Like">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likerhood.github.io/img/001javafanshe_cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/05/09/032%20java%E5%8F%8D%E5%B0%84%E5%92%8C%E6%B3%A8%E8%A7%A3/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Like","link":"链接: ","source":"来源: Liker's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Java 反射与注解的详细讲解',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-05-09 22:19:28'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Liker's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Java 反射与注解的详细讲解</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-05-09T14:13:12.343Z" title="发表于 2026-05-09 22:13:12">2026-05-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/java%E5%AD%A6%E4%B9%A0/">java学习</a></span></div><div class="meta-secondline"></div></div></div><article class="post-content" id="article-container"><h1 id="Java-反射与注解的详细讲解"><a href="#Java-反射与注解的详细讲解" class="headerlink" title="Java 反射与注解的详细讲解"></a>Java 反射与注解的详细讲解</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>初学 Java SE 时，我们习惯手动 <code>new</code> 对象、调用方法，一切直白可控。</p>
+<p>但进入 Spring、MyBatis 等框架后，<code>@Autowired</code> 自动装配依赖，<code>@Transactional</code> 即可生效事务……看似神奇，其实底层依然是 <strong>反射与注解</strong>的默默支撑。</p>
+<h2 id="一、-为什么有反射？"><a href="#一、-为什么有反射？" class="headerlink" title="一、 为什么有反射？"></a>一、 为什么有反射？</h2><p>在真正接触框架之前，很多开发者会觉得反射又慢又麻烦，直接 <code>new</code> 对象不好吗？</p>
+<p>要回答这个问题，我们需要从代码的演进思维说起。</p>
+<h3 id="1-1-硬编码"><a href="#1-1-硬编码" class="headerlink" title="1.1 硬编码"></a>1.1 硬编码</h3><p>日常业务开发中，我们绝大部分代码都是硬编码。所谓硬编码，就是<strong>在写代码的时候（编译期），就已经完全确定了要使用哪个具体的类。</strong></p>
+<p><strong>代码演示：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义一个接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">serve</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 具体的实现类 A</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">serve</span><span class="params">()</span> &#123; System.out.println(<span class="string">&quot;执行旧版业务逻辑...&quot;</span>); &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 我们的主程序</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyApp</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 【硬编码痛点】：主程序强依赖了 UserServiceImpl 这个具体的实现类</span></span><br><span class="line">        <span class="type">UserService</span> <span class="variable">service</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UserServiceImpl</span>(); </span><br><span class="line">        service.serve();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>分析：</strong></p>
+<p>编译器清清楚楚地知道你要实例化 <code>UserServiceImpl</code>。这种写法的优点是运行速度极快、类型绝对安全。</p>
+<p>但它的缺点是<strong>极度僵化（高耦合）</strong>。假设随着业务发展，你写了一个更好的实现类 <code>UserServiceNewImpl</code>，你必须打开 <code>MyApp.java</code> 的源代码，把 <code>new UserServiceImpl()</code> 改成 <code>new UserServiceNewImpl()</code>，<strong>然后重新编译整个项目，打包，停机发布。这在大型工程中是不可接受的。</strong></p>
+<h3 id="1-2-软编码"><a href="#1-2-软编码" class="headerlink" title="1.2 软编码"></a>1.2 软编码</h3><p>为了解决硬编码带来的耦合问题，前人想出了一个聪明的办法：<strong>把“到底用哪个类”的决定权，从源代码里抽离出来，放到外部的配置文件里。</strong></p>
+<p><strong>代码演示：</strong></p>
+<p>假设我们有一个外部配置文件 <code>application.properties</code>：</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在不修改源代码的情况下，只需修改这里的字符串即可切换实现类</span></span><br><span class="line"><span class="attr">service.class</span>=<span class="string">com.example.UserServiceNewImpl</span></span><br></pre></td></tr></table></figure>
+
+<p>我们的主程序变成这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyApp</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// 1. 读取外部配置文件，拿到类名的字符串（这里用硬编码字符串模拟读取过程）</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">className</span> <span class="operator">=</span> <span class="string">&quot;com.example.UserServiceNewImpl&quot;</span>; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 利用反射，把一个“字符串”变成活生生的“对象”</span></span><br><span class="line">        Class&lt;?&gt; clazz = Class.forName(className);</span><br><span class="line">        <span class="type">UserService</span> <span class="variable">service</span> <span class="operator">=</span> (UserService) clazz.getDeclaredConstructor().newInstance();</span><br><span class="line">        </span><br><span class="line">        service.serve();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>分析：</strong></p>
+<p>这时候，<code>MyApp.java</code> 在编译阶段根本不知道自己最终要创建什么对象，它只依赖 <code>UserService</code> 这个抽象的接口。</p>
+<p>只有在程序<strong>运行那一刻</strong>，读取到了配置文件的字符串，才知道要加载谁。</p>
+<p>这就是<strong>软编码</strong>。而<strong>反射机制，就是跨越“字符串”和“运行时对象”之间那道鸿沟的唯一桥梁。</strong></p>
+<h3 id="1-3-框架的核心诉求：对象工厂模式"><a href="#1-3-框架的核心诉求：对象工厂模式" class="headerlink" title="1.3 框架的核心诉求：对象工厂模式"></a>1.3 框架的核心诉求：对象工厂模式</h3><p>Spring 这样的 IoC（控制反转）框架，本质上就是一个<strong>超级、通用的对象工厂（Object Factory）</strong>。</p>
+<p>框架的作者（比如 Spring 的创始人 Rod Johnson）在写 Spring 的时候，完全不可能预知你（使用者）未来会写出什么奇怪的类（比如 <code>OrderController</code>、<code>UserMapper</code>）。</p>
+<p>框架为了能帮你统一管理这些未知的对象，只能采用这样的设计：</p>
+<p><strong>代码演示（极简版 Spring 容器雏形）：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这是一个通用的对象工厂（模拟 Spring 的 ApplicationContext）</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SimpleBeanFactory</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 容器内部维护一个 Map，存放：&lt;Bean的名字, 类的全限定名&gt;</span></span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, String&gt; beanDefinitionMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">SimpleBeanFactory</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 框架在启动时，会去扫描你的 XML 配置文件或 @Component 注解</span></span><br><span class="line">        <span class="comment">// 解析出你需要管理的类，并放进 Map 中</span></span><br><span class="line">        beanDefinitionMap.put(<span class="string">&quot;userService&quot;</span>, <span class="string">&quot;com.example.UserServiceNewImpl&quot;</span>);</span><br><span class="line">        beanDefinitionMap.put(<span class="string">&quot;orderService&quot;</span>, <span class="string">&quot;com.example.OrderServiceImpl&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 核心的工厂方法：你给我一个 Bean 的名字，我给你一个可用的对象</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">getBean</span><span class="params">(String beanName)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">className</span> <span class="operator">=</span> beanDefinitionMap.get(beanName);</span><br><span class="line">        <span class="keyword">if</span> (className == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;容器中找不到对应的 Bean 定义&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 框架利用反射，动态地替你把对象造出来</span></span><br><span class="line">        <span class="keyword">return</span> Class.forName(className).getDeclaredConstructor().newInstance();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 开发者使用框架时的样子：</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DeveloperApp</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">SimpleBeanFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SimpleBeanFactory</span>();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 开发者再也不需要自己去 new 对象了，全权交给框架的反射去创建</span></span><br><span class="line">        <span class="type">UserService</span> <span class="variable">userService</span> <span class="operator">=</span> (UserService) factory.getBean(<span class="string">&quot;userService&quot;</span>);</span><br><span class="line">        userService.serve();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>总结：</strong></p>
+<p>从这三个步骤的演进，你就能深刻体会到：<strong>没有反射，就没有软编码；没有软编码，就写不出任何具备扩展性的现代 Java 框架。</strong></p>
+<p> <strong>反射就是为了解决在“运行时处理未知类”这一核心诉求而诞生的。</strong></p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260509123343182.png" alt="image-20260509123343182"></p>
+<hr>
+<h2 id="二、-什么是反射？"><a href="#二、-什么是反射？" class="headerlink" title="二、 什么是反射？"></a>二、 什么是反射？</h2><h3 id="2-1-万物皆对象"><a href="#2-1-万物皆对象" class="headerlink" title="2.1 万物皆对象"></a>2.1 万物皆对象</h3><p>在 Java 中，“一切皆对象”这条箴言需要更精确的表述：不仅类的<strong>实例</strong>是对象，<strong>类本身</strong>也是一个对象。</p>
+<p>在常规的面向对象编程中，我们的认知是这样的：</p>
+<ul>
+<li><strong>类（Class）</strong> 是图纸、是模具。</li>
+<li><strong>对象（Object）</strong> 是根据图纸造出来的汽车、是模具刻出来的饼干。</li>
+</ul>
+<p>图纸就是图纸，汽车就是汽车，两者截然不同。但是，<strong>在 JVM 的世界里，为了能让程序在运行时去读取和修改图纸，JVM 把“图纸”本身也封装成了一个“产品”（对象）。</strong></p>
+<h4 id="2-1-1-概念理解"><a href="#2-1-1-概念理解" class="headerlink" title="2.1.1 概念理解"></a>2.1.1 概念理解</h4><p>假设你现在就是詹姆斯·高斯林（Java 之父），你需要设计一种数据结构，用来在内存中保存程序员写出来的 <code>User</code>、<code>Order</code>、<code>Product</code> 等各种各样的类的信息。你会怎么设计？</p>
+<p>你肯定会专门写一个类，用来描述“类”这种抽象事物。<strong>这个用来描述“类”的类，就叫 <code>java.lang.Class</code>。</strong></p>
+<p>它的底层逻辑（伪代码）大概长这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这是 JDK 源码里真实存在的 java.lang.Class 类的缩影</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">Class</span>&lt;T&gt; &#123;</span><br><span class="line">    <span class="keyword">private</span> String name;           <span class="comment">// 记录类的全限定名（如 com.example.User）</span></span><br><span class="line">    <span class="keyword">private</span> Field[] fields;        <span class="comment">// 记录类里面有哪些属性</span></span><br><span class="line">    <span class="keyword">private</span> Method[] methods;      <span class="comment">// 记录类里面有哪些方法</span></span><br><span class="line">    <span class="keyword">private</span> Constructor[] cons;    <span class="comment">// 记录类里面有哪些构造器</span></span><br><span class="line">    <span class="keyword">private</span> Class superclass;      <span class="comment">// 记录它的父类是谁</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// ... 各种获取这些信息的方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 Java 中，实例化（创建对象）不仅发生在业务层面，也发生在底层系统层面。这其实是一个<strong>三层结构</strong>：</p>
+<ol>
+<li><p><strong>第一层：万物之母 <code>java.lang.Class</code></strong> 。</p>
+<ul>
+<li><p>这是 JDK 源码里自带的一个类。你可以把它理解为一家「专门生产 3D 打印机的工业母机」。</p>
+</li>
+<li><p>它的工作只有一个：定义“3D打印机（图纸）”应该长什么样（必须有类名、有字段数组、有方法数组）。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>第二层：图纸对象 <code>User.class</code> （中间态）</strong>。</p>
+<ul>
+<li><p>当 JVM 启动，加载到你写的 <code>User</code> 代码时，这台“工业母机”就自动启动了，它为你生产出了一台「印着 User 标签的专属 3D 打印机」**。 **</p>
+</li>
+<li><p>这台印着 User 标签的 3D 打印机，本身就是一个实实在在的 <strong>产品（对象）</strong>！它是 <code>java.lang.Class</code> 生产出来的实例。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>第三层：业务对象 <code>new User()</code> （最终态）</strong>。</p>
+<ul>
+<li><p>现在，你在代码里写下了 <code>new User()</code>（或者用反射 <code>newInstance</code>），就相当于启动了这台专属的 User 3D 打印机。</p>
+</li>
+<li><p>最后打印出了一个个具体的「塑料小人（user 业务对象）」。</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>代码证明如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">User</span> <span class="variable">userObj</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">User</span>(); <span class="comment">// 这是一个 User 对象</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 证明 1：userObj 是谁的实例？</span></span><br><span class="line">System.out.println(userObj <span class="keyword">instanceof</span> User); <span class="comment">// true (塑料小人是 3D 打印机印出来的)</span></span><br><span class="line"></span><br><span class="line">Class&lt;?&gt; userClassObj = User.class; <span class="comment">// 这是一个 Class 对象</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 证明 2：User.class 是谁的实例？</span></span><br><span class="line">System.out.println(userClassObj <span class="keyword">instanceof</span> java.lang.Class); <span class="comment">// true (3D 打印机是工业母机造出来的)</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260509142349987.png" alt="image-20260509142349987"></p>
+<h4 id="2-1-2-底层分析"><a href="#2-1-2-底层分析" class="headerlink" title="2.1.2 底层分析"></a>2.1.2 底层分析</h4><p><strong>当你的程序启动，执行到 <code>User user = new User();</code> 时，背后发生了两件事：</strong></p>
+<ol>
+<li><strong>印户口本（仅一次）</strong>：JVM 的类加载器读取了 <code>User.class</code> 字节码文件，并在堆内存中实例化了一个 <code>java.lang.Class</code> 对象。这个对象里的 <code>name</code> 属性被填上了 <code>&quot;com.example.User&quot;</code>，<code>fields</code> 数组被填上了你写的属性。<strong>这面“镜子”就此诞生。</strong></li>
+<li><strong>造汽车（可无数次）</strong>：JVM 照着这面镜子（图纸），在堆内存的另一块区域，为你开辟空间，真正造出了那个包含数据的 <code>user</code> 实例对象。</li>
+</ol>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260509141939171.png" alt="image-20260509141939171"></p>
+<p><strong>核心总结</strong>：<code>User</code> 类的实例是 <code>user</code> 对象；而 <code>User</code> 类本身，则是 <code>java.lang.Class</code> 这个类的实例对象！这就是所谓的“万物皆对象”。</p>
+<h3 id="2-2-Class-对象"><a href="#2-2-Class-对象" class="headerlink" title="2.2 Class 对象"></a>2.2 Class 对象</h3><h4 id="2-2-1-概念理解"><a href="#2-2-1-概念理解" class="headerlink" title="2.2.1 概念理解"></a>2.2.1 概念理解</h4><p><code>Class</code> 是 Java 中<strong>用来描述「类本身」的最终类</strong>（<code>java.lang.Class</code>），无法被继承。</p>
+<p>每一个被 JVM 加载的类 &#x2F; 类型，<strong>在内存中</strong>都会生成<strong>唯一的 Class 对象</strong>，这个对象封装了该类的全部元数据信息（类名、父类、接口、字段、方法、构造器等），是 Java 反射、动态代理、多态实现的核心基石。</p>
+<p><strong>通俗类比：</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">概念</th>
+<th align="center">生活类比</th>
+<th align="center">核心作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">类（Class 代码）</td>
+<td align="center">建筑图纸</td>
+<td align="center">定义「结构、能力」的模板</td>
+</tr>
+<tr>
+<td align="center">Class 对象（类对象）</td>
+<td align="center">图纸的官方唯一备案档案</td>
+<td align="center">记录图纸的全部信息，全局唯一</td>
+</tr>
+<tr>
+<td align="center">实例对象（Instance）</td>
+<td align="center">按图纸建成的房子</td>
+<td align="center">按模板生成的具体个体，有独立属性</td>
+</tr>
+</tbody></table>
+<p><strong>三个核心概念的精准区分</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">概念</th>
+<th align="center">代码示例</th>
+<th align="center">核心本质</th>
+<th align="center">生命周期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">类（普通类）</td>
+<td align="center"><code>public class Dog {}</code></td>
+<td align="center">编译期生成的<code>.class</code>字节码文件，是代码模板</td>
+<td align="center">编译期生成，运行期被 JVM 加载</td>
+</tr>
+<tr>
+<td align="center">Class 对象（类对象）</td>
+<td align="center"><code>Dog.class</code></td>
+<td align="center">类加载后 JVM 在内存中生成的<strong>唯一对象</strong>，代表类本身</td>
+<td align="center">和类的生命周期绑定，类卸载时回收</td>
+</tr>
+<tr>
+<td align="center">实例对象</td>
+<td align="center"><code>new Dog()</code></td>
+<td align="center">基于类模板创建的具体实例，堆内存中的对象</td>
+<td align="center">随 new 创建，无引用时被 GC 回收</td>
+</tr>
+</tbody></table>
+<p><strong>Class 对象的核心特性（必记）</strong></p>
+<ol>
+<li><strong>绝对单例性（有边界）</strong>：同一个类，在<strong>同一个 JVM 实例 + 同一个类加载器</strong>下，只会生成一个 Class 对象，<code>==</code> 比对永远返回 true。</li>
+<li>全类型覆盖：所有 Java 类型都有对应的 Class 对象，包括：</li>
+<li><strong>只读性</strong>：Class 对象封装的类元数据，运行期常规手段无法修改（仅可通过字节码注入等特殊技术修改）。</li>
+<li><strong>JVM 私有创建</strong>：Class 类的构造方法是 private，只有 JVM 能创建 Class 对象，开发者无法通过<code>new Class()</code>手动生成。</li>
+</ol>
+<h4 id="2-2-2-使用操作"><a href="#2-2-2-使用操作" class="headerlink" title="2.2.2 使用操作"></a>2.2.2 使用操作</h4><p><strong>关于泛型 <code>Class&lt;?&gt;</code>：</strong></p>
+<p>平时代码中常看到 <code>Class&lt;?&gt;</code>。</p>
+<p>这里的 <code>?</code> 是通配符，表示未知的类型。因为我们在编写反射通用代码时，通常不知道要处理的具体是哪个类，使用 <code>Class&lt;?&gt;</code> 可以避免编译器的未经检查警告（Unchecked Warning），保持代码的泛型安全。</p>
+<p>有三种常见方式，应用场景各不相同：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. Class.forName(&quot;全限定名&quot;)：最常用，适用于完全不知道类，只有类名字符串的情况（如加载数据库驱动）</span></span><br><span class="line">Class&lt;?&gt; clazz1 = Class.forName(<span class="string">&quot;com.example.User&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 类名.class：适用于在编译前就已经明确知道并且引入了该类的情况（常用于锁对象、参数类型传递）</span></span><br><span class="line">Class&lt;?&gt; clazz2 = User.class;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 对象.getClass()：适用于已经有了该类的实例对象，想反推它属于哪个类</span></span><br><span class="line"><span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">User</span>();</span><br><span class="line">Class&lt;?&gt; clazz3 = user.getClass();</span><br></pre></td></tr></table></figure>
+
+<p><strong>一个类在同一个类加载器中，只有一个唯一的 <code>Class</code> 对象</strong>。无论通过哪种方式获取，得到的都是同一个实例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;User&gt; c1 = User.class;</span><br><span class="line">Class&lt;?&gt; c2 = Class.forName(<span class="string">&quot;com.example.User&quot;</span>); </span><br><span class="line">Class&lt;?&gt; c3 = <span class="keyword">new</span> <span class="title class_">User</span>().getClass(); </span><br><span class="line">System.out.println(c1 == c2);    <span class="comment">// true</span></span><br><span class="line">System.out.println(c2 == c3);    <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>这个唯一性保障了同步锁（<code>User.class</code> 可作为同步监视器）、类型比较（<code>instanceof</code> 底层用到 <code>Class</code> 对象）等基础机制的正确运行。</p>
+<h3 id="2-3-反射的定义"><a href="#2-3-反射的定义" class="headerlink" title="2.3 反射的定义"></a>2.3 反射的定义</h3><p><strong>反射（Reflection）</strong> 是 Java 语言提供的一种机制。它允许程序在<strong>运行时（Runtime）</strong>：</p>
+<ol>
+<li><p><strong>动态探索</strong>：获取任意一个类的所有内部结构（包含私有属性、方法、构造器、注解等）。</p>
+</li>
+<li><p><strong>动态操作</strong>：动态调用任意一个对象的方法，修改其属性。</p>
+</li>
+</ol>
+<blockquote>
+<p>理解编译期和运行期，可以看我的另一篇博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_61875563/article/details/160897450?spm=1011.2124.3001.6209">java的运行机制：编译期、运行期和半编译半解释性-CSDN博客</a></p>
+</blockquote>
+<p><strong>反射的本质</strong>：</p>
+<ol>
+<li><p><strong>先拿到目标类的 Class 对象</strong>（反射的入口）</p>
+</li>
+<li><p><strong>通过 Class 对象获取它的 “全息档案”</strong>（动态探索）</p>
+</li>
+<li><p><strong>通过档案里的信息，去操作具体的实例对象</strong>（动态操作）</p>
+</li>
+</ol>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260509154541814.png" alt="image-20260509154541814"></p>
+<h3 id="2-4-反射的核心-API-详解"><a href="#2-4-反射的核心-API-详解" class="headerlink" title="2.4 反射的核心 API 详解"></a>2.4 反射的核心 API 详解</h3><p><code>java.lang.reflect</code> 包下提供了反射的核心组件：</p>
+<ol>
+<li><p><strong><code>Constructor</code></strong>：用来「造对象」，核心是 <code>newInstance</code>，私有构造器记得 <code>setAccessible(true)</code>。</p>
+</li>
+<li><p><strong><code>Field</code></strong>：用来「改属性」，核心是 <code>get</code> 和 <code>set</code>，static 字段传 <code>null</code>。</p>
+</li>
+<li><p><strong><code>Method</code></strong>：用来「调方法」，核心是 <code>invoke</code>，异常记得用 <code>getCause()</code> 解包。</p>
+</li>
+</ol>
+<p>它们就是三个类，和 <code>String</code>、<code>ArrayList</code> 一样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">java.lang.reflect.Constructor&lt;T&gt;   <span class="comment">// 代表一个构造方法</span></span><br><span class="line">java.lang.reflect.Field            <span class="comment">// 代表一个成员变量（字段）</span></span><br><span class="line">java.lang.reflect.Method           <span class="comment">// 代表一个成员方法</span></span><br></pre></td></tr></table></figure>
+
+<p>当你调用 <code>clazz.getConstructor()</code> 时，JVM 并不是返回了一团神秘的东西，而是老老实实地 <strong>new 了一个 <code>Constructor</code> 对象</strong>给你。</p>
+<p>同理，<code>getDeclaredField()</code> 返回一个 <code>Field</code> 实例，<code>getMethod()</code> 返回一个 <code>Method</code> 实例。</p>
+<p>Java 虚拟机（JVM）在加载一个类时，不仅会把类本身封装成一个 <code>Class</code> 对象，还会把这个<strong>类里面的每一个成员（构造器、字段、方法）都解析并封装成对应的 <code>Constructor</code>、<code>Field</code> 和 <code>Method</code> 对象。</strong></p>
+<p><strong>真正的构造器、字段、方法的定义，在 JVM 底层是以 C++ 数据结构的形式</strong>，存放在<strong>元空间（Metaspace）</strong> 的。</p>
+<p>这些原始数据对 Java 程序是不可见的。</p>
+<p><code>Constructor</code>、<code>Field</code>、<code>Method</code> 的作用，就是把那些黑盒的底层元数据，<strong>包装成 Java 对象</strong>，让你能通过调用这些对象的方法，去间接操纵底层的实际内容。</p>
+<p>在常规开发中，我们是这样想的：<em>“我要调用 user 对象的 getName 方法”</em>。</p>
+<p> 在反射开发中，思维模型要倒转过来：<em>“我拿到了一个名为 getName 的 Method 对象，我要让这个 Method 对象去作用于 user 实例”</em>。</p>
+<h4 id="2-4-1-Constructor（构造器对象）"><a href="#2-4-1-Constructor（构造器对象）" class="headerlink" title="2.4.1  Constructor（构造器对象）"></a>2.4.1  <code>Constructor</code>（构造器对象）</h4><p>用于动态创建实例。</p>
+<ul>
+<li><code>getConstructor(Class&lt;?&gt;... parameterTypes)</code>：获取 public 构造器。</li>
+<li><code>getDeclaredConstructor(...)</code>：获取所有声明的构造器（包含 private）。</li>
+<li><code>newInstance(Object... initargs)</code>：执行构造器创建对象。</li>
+<li><code>setAccessible(true)</code>： 突破 private 限制</li>
+</ul>
+<p>**注意：**当我们使用单例模式或某些隐藏了实例创建逻辑的框架时，类的构造器往往是 <code>private</code> 的。此时，必须配合 <code>setAccessible(true)</code> 使用，否则会抛出 <code>IllegalAccessException</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="comment">// 私有构造器</span></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">User</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 反射调用测试</span></span><br><span class="line">Class&lt;?&gt; clazz = User.class;</span><br><span class="line"><span class="comment">// 1. 获取私有构造器 (注意：这里用 getDeclaredConstructor)</span></span><br><span class="line">Constructor&lt;?&gt; constructor = clazz.getDeclaredConstructor(String.class);</span><br><span class="line"><span class="comment">// 2. 打破封装，允许访问私有成员</span></span><br><span class="line">constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="comment">// 3. 动态实例化对象</span></span><br><span class="line"><span class="type">Object</span> <span class="variable">userInstance</span> <span class="operator">=</span> constructor.newInstance(<span class="string">&quot;ReflectUser&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4-2-Field（字段对象）"><a href="#2-4-2-Field（字段对象）" class="headerlink" title="2.4.2  Field（字段对象）"></a>2.4.2  <code>Field</code>（字段对象）</h4><p>用于动态读取和修改属性。</p>
+<ul>
+<li><code>getDeclaredField(String name)</code>：获取当前类声明的指定名称的字段（无论什么访问修饰符）。</li>
+<li><code>setAccessible(true)</code>：<strong>反射的破壁者</strong>。操作 private 字段前必须调用此方法打破封装。</li>
+<li><code>get(Object obj)</code>：获取指定对象 <code>obj</code> 中该字段的值。</li>
+<li><code>set(Object obj, Object value)</code>：将指定对象 <code>obj</code> 中该字段的值修改为 <code>value</code>。</li>
+</ul>
+<p><strong>注意：</strong></p>
+<ul>
+<li><strong>静态（static）字段操作</strong>：由于静态字段属于类级别而不是对象级别，所以在调用 <code>get()</code> 或 <code>set()</code> 时，传入的对象实例可以直接写 <code>null</code>。</li>
+<li><strong>类型安全检查</strong>：如果 <code>set</code> 时传入的数据类型与字段实际类型不匹配，会引发 <code>IllegalArgumentException</code>。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 假设前面的 userInstance 已经创建</span></span><br><span class="line"><span class="type">Field</span> <span class="variable">nameField</span> <span class="operator">=</span> clazz.getDeclaredField(<span class="string">&quot;name&quot;</span>);</span><br><span class="line"><span class="comment">// 打破私有属性的封装</span></span><br><span class="line">nameField.setAccessible(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 读取属性值</span></span><br><span class="line"><span class="type">String</span> <span class="variable">currentName</span> <span class="operator">=</span> (String) nameField.get(userInstance);</span><br><span class="line">System.out.println(<span class="string">&quot;修改前: &quot;</span> + currentName); <span class="comment">// 输出: ReflectUser</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改属性值</span></span><br><span class="line">nameField.set(userInstance, <span class="string">&quot;NewName&quot;</span>);</span><br><span class="line">System.out.println(<span class="string">&quot;修改后: &quot;</span> + nameField.get(userInstance)); <span class="comment">// 输出: NewName</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4-3-Method（方法对象）"><a href="#2-4-3-Method（方法对象）" class="headerlink" title="2.4.3  Method（方法对象）"></a>2.4.3  <code>Method</code>（方法对象）</h4><p>用于动态执行方法。</p>
+<ul>
+<li><code>getDeclaredMethod(String name, Class&lt;?&gt;... parameterTypes)</code>：根据方法名和参数列表获取当前类声明的方法。</li>
+<li><code>invoke(Object obj, Object... args)</code>：<strong>核心执行方法</strong>。<ul>
+<li><code>obj</code>：要执行该方法的具体对象实例。</li>
+<li><code>args</code>：方法运行所需的实际参数。</li>
+</ul>
+</li>
+</ul>
+<p><strong>注意：</strong></p>
+<ul>
+<li><strong>静态方法调用</strong>：如果反射调用的方法是 <code>static</code> 的，<code>invoke</code> 的第一个参数 <code>obj</code> 传 <code>null</code> 即可（因为静态方法不依赖于具体的对象实例）。</li>
+<li><strong>异常解包机制</strong>：当被反射调用的目标方法内部抛出异常时，反射机制会将其包装成一个 <code>InvocationTargetException</code> 抛出。要获取目标方法真实抛出的业务异常，必须调用 <code>exception.getCause()</code> 进行解包。</li>
+</ul>
+<p>代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Calculator</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> a + b;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">staticMethod</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;静态方法被调用&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Class&lt;?&gt; calcClass = Calculator.class;</span><br><span class="line"><span class="type">Object</span> <span class="variable">calcInstance</span> <span class="operator">=</span> calcClass.getDeclaredConstructor().newInstance();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 调用私有实例方法</span></span><br><span class="line"><span class="type">Method</span> <span class="variable">addMethod</span> <span class="operator">=</span> calcClass.getDeclaredMethod(<span class="string">&quot;add&quot;</span>, <span class="type">int</span>.class, <span class="type">int</span>.class);</span><br><span class="line">addMethod.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="comment">// obj 传实例对象，后面传实参</span></span><br><span class="line"><span class="type">Object</span> <span class="variable">result</span> <span class="operator">=</span> addMethod.invoke(calcInstance, <span class="number">10</span>, <span class="number">20</span>); </span><br><span class="line">System.out.println(<span class="string">&quot;10 + 20 = &quot;</span> + result);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 调用静态方法</span></span><br><span class="line"><span class="type">Method</span> <span class="variable">staticMethod</span> <span class="operator">=</span> calcClass.getDeclaredMethod(<span class="string">&quot;staticMethod&quot;</span>);</span><br><span class="line"><span class="comment">// 静态方法不需要实例，obj 传 null</span></span><br><span class="line">staticMethod.invoke(<span class="literal">null</span>);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、注解"><a href="#三、注解" class="headerlink" title="三、注解"></a>三、注解</h2><p>如果说反射是底层执行的引擎，那么注解就是指挥引擎运行的“路标”。</p>
+<h3 id="3-1-为什么要使用注解？"><a href="#3-1-为什么要使用注解？" class="headerlink" title="3.1 为什么要使用注解？"></a>3.1 为什么要使用注解？</h3><p>在早期 Spring 或 Struts，软编码大量依赖庞大且冗长的 XML 配置文件。</p>
+<p>这被称为“XML 地狱”。开发人员不得不在 Java 代码和 XML 文件之间反复横跳。</p>
+<p>案例：<strong>声明一个 UserService，并给它注入一个 Dao 对象。</strong></p>
+<p><strong>Java 代码本身极其干净（但毫无线索）：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> UserDao userDao;</span><br><span class="line">    <span class="comment">// 必须写又长又啰嗦的 setter 方法供 XML 调用</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setUserDao</span><span class="params">(UserDao userDao)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.userDao = userDao;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>对应的 XML 配置文件（灾难的开始）：</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- applicationContext.xml 里面可能堆积了成百上千个这样的标签 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;userDao&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.example.dao.UserDaoImpl&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;userService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.example.service.UserService&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 靠全限定类名和字符串来匹配，极易写错 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;userDao&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;userDao&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>痛点解析：</strong></p>
+<ol>
+<li><strong>反复横跳</strong>：开发者看代码时，不知道这个类被谁用、怎么配的；看 XML 时，又不知道这个类的具体逻辑。必须在 <code>.java</code> 和 <code>.xml</code> 文件之间疯狂切换。</li>
+<li><strong>重构灾难</strong>：一旦修改了类名或包名，如果在 XML 里忘了同步修改（由于是纯字符串，编译器不会报错），程序在运行时就会直接崩溃。</li>
+<li><strong>极度臃肿</strong>：大型项目的 XML 文件动辄几千行，甚至需要拆分成几十个 XML 互相引入，维护成本极高。</li>
+</ol>
+<p>注解的出现解决了这个问题：它允许将<strong>元数据（Metadata）直接标记在代码本身上（类、方法、字段上），做到了配置与代码的高内聚</strong>，大大提升了可读性和开发效率。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @Service 路标：告诉 Spring 引擎，这是一个业务逻辑类，请帮我实例化</span></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// @Autowired 路标：告诉 Spring 引擎，请把我需要的 UserDao 自动拿过来给我</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserDao userDao;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 连 setter 方法都不需要写了！</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一个极其容易陷入误区的点：很多人认为 <code>@Autowired</code> 能自动注入对象，是因为这个注解里写了注入的代码。</p>
+<p><strong>其实不是，因为：“注解本身不包含任何逻辑，它没有任何行为能力。”</strong></p>
+<p><strong>注意</strong>：注解在本质上只是一个标记、一个标签。就好比你在超市商品上贴了一个“打八折”的红色贴纸（注解）。贴纸本身不能改变商品的价格，真正改变价格的，是收银员（反射机制）看到了这个贴纸，然后按照收银机里的逻辑给你减钱。</p>
+<h3 id="3-2-注解是什么"><a href="#3-2-注解是什么" class="headerlink" title="3.2 注解是什么"></a>3.2 注解是什么</h3><h4 id="3-2-1-基本概念"><a href="#3-2-1-基本概念" class="headerlink" title="3.2.1 基本概念"></a>3.2.1 基本概念</h4><p>注解（Annotation），也叫元数据（Metadata）。简单来说，它就是一种<strong>代码级别的说明和标签</strong>。</p>
+<p>它是 JDK 1.5 引入的特性，与类、接口、枚举属于同一个层次。它可以像“便利贴”一样，贴在包、类、字段、方法、局部变量、方法参数等的前面。</p>
+<p>那么，贴上这些“便利贴”到底有什么用呢？总体来说，注解的作用可以分为三大类：</p>
+<ol>
+<li><strong>编译检查</strong>：通过注解让编译器实现基本的编译检查（比如告诉编译器这个方法是重写的，帮我盯紧点）。</li>
+<li><strong>编写文档</strong>：配合工具（如 javadoc），通过代码里标识的注解生成 API 文档。</li>
+<li><strong>代码分析与运行（核心）</strong>：在运行期，框架可以通过反射机制读取这些注解，进而动态地改变程序的运行逻辑。</li>
+</ol>
+<p> JDK 提供的最常用的三个基础注解，它们主要负责<strong>编译阶段的检查与提示</strong>。</p>
+<blockquote>
+<p>@Override： 标记在成员方法上，用于标识当前方法是重写父类（父接口）方法，编译器在对该方法进行编译时会检查是否符合重写规则，如果不符合，编译报错。<br>@Deprecated： 用于标记当前类、成员变量、成员方法或者构造方法过时如果开发者调用了被标记为过时的方法，编译器在编译期进行警告。<br>@SuppressWarnings： 压制警告注解，可放置在类和方法上，该注解的作用是阻止编译器发出某些警告信息。</p>
+</blockquote>
+<h5 id="1-JDK自带三种注解"><a href="#1-JDK自带三种注解" class="headerlink" title="1. JDK自带三种注解"></a>1. JDK自带三种注解</h5><ol>
+<li><p><code>@Override</code>:这个注解只能标记在方法上，用来告诉编译器：“我这个方法是重写父类（或接口）的，请帮我检查一下方法名和参数对不对”。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">speak</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;动物发声&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Dog</span> <span class="keyword">extends</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line">    <span class="comment">// 加上 @Override 后，如果下面方法名错写成 spaek()，编译器会直接标红报错！</span></span><br><span class="line">    <span class="comment">// 如果不加注解，写成 spaek() 编译器只会认为你写了一个新方法，导致潜藏 bug。</span></span><br><span class="line">    <span class="meta">@Override</span> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">speak</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;汪汪汪&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>@Deprecated</code>:随着软件迭代，有些老方法或老类存在缺陷或性能问题，不推荐大家继续使用了，但为了向前兼容又不能直接删除。这时就可以用它。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StringUtils</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 标记为已过时。如果你在其他地方调用这个方法，IDEA 会给它划上一条删除线</span></span><br><span class="line">    <span class="meta">@Deprecated</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">oldFormat</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;这个方法太老了，不安全，别用了！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">newFormat</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;请使用全新的格式化方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>@SuppressWarnings</code>：有时候我们的代码会产生一些黄色的警告（比如未使用的变量、未经检查的泛型转换等）。如果你确信代码没问题，可以用它来让编译器“闭嘴”。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="comment">// 压制“未使用”和“未检查的强转”警告，让代码看起来干干净净</span></span><br><span class="line">    <span class="meta">@SuppressWarnings(&#123;&quot;unused&quot;, &quot;unchecked&quot;&#125;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> <span class="number">10</span>; <span class="comment">// 虽然没被使用，但加了注解后，IDEA 不会再报黄色的警告</span></span><br><span class="line">        </span><br><span class="line">        <span class="type">List</span> <span class="variable">list</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ArrayList</span>();</span><br><span class="line">        list.add(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">        <span class="comment">// 泛型强转警告也会被压制</span></span><br><span class="line">        List&lt;String&gt; strList = (List&lt;String&gt;) list; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h5 id="2-现代-Web-框架中的注解"><a href="#2-现代-Web-框架中的注解" class="headerlink" title="2. 现代 Web 框架中的注解"></a>2. 现代 Web 框架中的注解</h5><p>JDK 内置注解只是牛刀小试。</p>
+<p>注解真正的威力，在于结合<strong>反射机制</strong>，彻底改变了现代 Java 后端（如 Spring MVC）的开发模式，改进了老版本的了让人头疼的“XML 配置文件”。</p>
+<p>在现代开发中，注解就像是<strong>指挥框架运行的路标</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @RestController：告诉 Spring，这是一个处理 Web 请求的类，帮我把它变成一个 Bean 放到容器里。</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="comment">// @RequestMapping：定义这个类处理所有以 &quot;/api/users&quot; 开头的请求。</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/api/users&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// @Autowired：自动装配。告诉 Spring，请帮我在内存里找一个 UserService 对象，强行塞到这个字段里，不用我自己 new 了！</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserService userService;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// @GetMapping：处理 HTTP 的 GET 请求。如果浏览器访问 &quot;/api/users/1&quot;，就会进到这里。</span></span><br><span class="line">    <span class="comment">// @PathVariable：告诉框架，把 URL 里的 &quot;&#123;id&#125;&quot; 抠出来，赋值给入参 userId。</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> User <span class="title function_">getUserById</span><span class="params">(<span class="meta">@PathVariable(&quot;id&quot;)</span> Long userId)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> userService.findById(userId);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，代码极其简洁，没有任何多余的配置代码。</p>
+<p>这全都归功于注解：开发者负责<strong>贴标签</strong>，Spring 框架在底层负责<strong>用反射读取标签并执行对应的操作</strong>。</p>
+<h3 id="3-3-注解的本质"><a href="#3-3-注解的本质" class="headerlink" title="3.3 注解的本质"></a>3.3 注解的本质</h3><p>注解并不是什么凭空出现的全新数据结构，<strong>它的本质，就是一个普普通通的 Java 接口（Interface）。</strong></p>
+<p>我们可以通过代码反编译，来拆穿编译器的这层“语法糖”。</p>
+<p>假设我们自定义了一个极其简单的注解：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.annotation.Retention;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.RetentionPolicy;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 【步骤一：定义注解】</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span> <span class="comment">// 关键：告诉JVM在运行时保留这个注解</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> MyAnnotation &#123;</span><br><span class="line">    String <span class="title function_">value</span><span class="params">()</span> <span class="keyword">default</span> <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">    <span class="type">int</span> <span class="title function_">age</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 【步骤二：使用注解（贴标签）】</span></span><br><span class="line"><span class="meta">@MyAnnotation(value = &quot;张三&quot;, age = 18)</span> <span class="comment">// 贴在类上</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Student</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@MyAnnotation(age = 20)</span> <span class="comment">// 贴在方法上（value有默认值，可以省略）</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">study</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;好好学习！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 【步骤三：解析注解（读标签）】</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 1. 获取类上的注解数据</span></span><br><span class="line">        <span class="type">MyAnnotation</span> <span class="variable">classAnno</span> <span class="operator">=</span> Student.class.getAnnotation(MyAnnotation.class);</span><br><span class="line">        <span class="keyword">if</span> (classAnno != <span class="literal">null</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;类上的注解 -&gt; 值: &quot;</span> + classAnno.value() + <span class="string">&quot;, 年龄: &quot;</span> + classAnno.age());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 获取方法上的注解数据</span></span><br><span class="line">        <span class="type">Method</span> <span class="variable">method</span> <span class="operator">=</span> Student.class.getMethod(<span class="string">&quot;study&quot;</span>);</span><br><span class="line">        <span class="type">MyAnnotation</span> <span class="variable">methodAnno</span> <span class="operator">=</span> method.getAnnotation(MyAnnotation.class);</span><br><span class="line">        <span class="keyword">if</span> (methodAnno != <span class="literal">null</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;方法上的注解 -&gt; 值: &quot;</span> + methodAnno.value() + <span class="string">&quot;, 年龄: &quot;</span> + methodAnno.age());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>赋值</strong>：在 <code>Student</code> 类中写下 <code>@MyAnnotation(value = &quot;张三&quot;, age = 18)</code> 时，其实就是给注解的属性赋了值。</p>
+<p><strong>取值</strong>：在 <code>Main</code> 类中，通过 <code>getAnnotation()</code> 方法，就可以把刚刚赋进去的 <code>&quot;张三&quot;</code> 和 <code>18</code> 动态拿出来。</p>
+<p><strong>本质</strong>：注解本身是不包含任何逻辑的，它仅仅是用来“存数据”的标签。必须配合<strong>反射</strong>把数据取出来，它才有意义。</p>
+<p>当我们使用 <code>javac</code> 将其编译成 <code>.class</code> 字节码文件，然后再使用 <code>javap -c</code> 命令对其进行反编译后，你看到的真实代码形态是这样的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 是一个接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">MyAnnotation</span> <span class="keyword">extends</span> <span class="title class_">java</span>.lang.annotation.Annotation &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 所谓的属性，变成了抽象方法</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title function_">value</span><span class="params">()</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="type">int</span> <span class="title function_">age</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>解析：</strong></p>
+<ol>
+<li><strong>隐式继承</strong>：所有的注解类，在编译后都会自动继承 <code>java.lang.annotation.Annotation</code> 接口。</li>
+<li>**<code>@interface</code> **：仅仅是 Java 编译器提供的一个语法糖，作用是告诉编译器：“嘿，请帮我把这个类编译成继承了 <code>Annotation</code> 的接口”。</li>
+</ol>
+<h3 id="3-4-为什么注解里的“属性”要带括号"><a href="#3-4-为什么注解里的“属性”要带括号" class="headerlink" title="3.4 为什么注解里的“属性”要带括号"></a>3.4 为什么注解里的“属性”要带括号</h3><p>注解声明属性时，一般要在后面加上一对括号，比如 <code>String value();</code> 而不是 <code>String value;</code>。</p>
+<p>现在知道了它的本质是接口，一切就豁然开朗了：</p>
+<ul>
+<li>在 Java 的接口中，不允许定义普通的成员变量（只能定义 <code>public static final</code> 的常量）。</li>
+<li>为了让接口能够“携带”数据，Java 的设计者只能<strong>利用抽象方法来模拟属性</strong>。</li>
+<li>当你写下 <code>String value();</code> 时，你不是在定义一个变量，而是在<strong>定义一个有返回值的方法</strong>。当你在代码中使用 <code>@MyAnnotation(value = &quot;Test&quot;)</code> 时，其实是在告诉 JVM：“待会儿如果有人调用 <code>value()</code> 这个方法，你就给他返回 <code>&quot;Test&quot;</code> 这个字符串”。</li>
+</ul>
+<h3 id="3-5-既然是接口，那是谁实例化了它"><a href="#3-5-既然是接口，那是谁实例化了它" class="headerlink" title="3.5 既然是接口，那是谁实例化了它"></a>3.5 既然是接口，那是谁实例化了它</h3><p>我们知道，接口是不能直接 <code>new</code> 的。既然注解是接口，那么当我们在运行期通过反射调用 <code>clazz.getAnnotation(MyAnnotation.class)</code> 时，拿到的那个注解对象，究竟是个什么东西？是谁实现了这个接口？</p>
+<p><strong>答案是：JDK 动态代理。</strong></p>
+<p>当我们在代码里写下 <code>@MyAnnotation</code> 并通过反射去获取它时，JVM 在底层做了一系列非常隐蔽的操作：</p>
+<ol>
+<li><strong>解析常量池</strong>：JVM 会读取 .class 文件常量池中关于这个注解的配置信息。</li>
+<li><strong>生成代理类</strong>：JVM 在内存中动态生成了一个实现了 <code>MyAnnotation</code> 接口的代理类（类似于 <code>$Proxy1</code>）。</li>
+<li><strong>拦截方法调用</strong>：这个代理类内部持有一个 <code>AnnotationInvocationHandler</code>（注解调用处理器）。这个处理器内部维护了一个 <code>Map&lt;String, Object&gt;</code>，里面存储了你写在代码里的属性名和属性值（比如 <code>key=&quot;value&quot;</code>, <code>value=&quot;Test&quot;</code>）。</li>
+<li><strong>返回结果</strong>：当你调用 <code>myAnnotation.value()</code> 时，实际上是被代理类拦截了。代理类会去那个 Map 里面，根据方法名（”value”）取出对应的值，并返回给你。</li>
+</ol>
+<p>所以整体流程是这样的：</p>
+<ul>
+<li><strong>编写期</strong>：你写下 <code>@interface</code>，看起来像个标签。</li>
+<li><strong>编译期</strong>：编译器把它转成 <code>interface extends Annotation</code>，属性变方法。</li>
+<li><strong>运行期</strong>：JVM 通过 <strong>动态代理</strong> 生成这个接口的实现类对象，并通过反射把你在代码里配的值，存进代理对象内部的 Map 里。最后，你调用方法获取值。</li>
+</ul>
+<p>简单总结：</p>
+<ol>
+<li><p><strong>表象</strong>：反射拿到的并不是真正的注解实现类，而是 JVM 在运行期临时生成的一个<strong>动态代理对象</strong>（Proxy）。</p>
+</li>
+<li><p><strong>核心</strong>：这个代理对象内部持有一个名为 <code>AnnotationInvocationHandler</code> 的调用处理器。</p>
+</li>
+<li><p><strong>机制</strong>：这个处理器里面维护了一个 <code>Map</code>，里面存着我们写注解时赋的值（比如 <code>age=18</code>）。当我们通过反射调用注解的属性方法时，其实是被这个处理器拦截了，它直接从 Map 里查出对应的值返回给我们。<strong>所以调用注解方法，本质上是在查 Map 字典！</strong></p>
+</li>
+</ol>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260509212703170.png" alt="image-20260509212703170"></p>
+<h3 id="3-6-自定义注解的使用举例"><a href="#3-6-自定义注解的使用举例" class="headerlink" title="3.6 自定义注解的使用举例"></a>3.6 自定义注解的使用举例</h3><p>“元注解”就是<strong>用来标注注解的注解</strong>，它们定义了你的自定义注解的作用域和生命周期。</p>
+<ol>
+<li><p><code>@Retention</code>（保留策略）</p>
+<p>定义注解存活的时间，由 <code>RetentionPolicy</code> 枚举控制：</p>
+<ul>
+<li><p><code>SOURCE</code>：只在源码中存在，编译后被抹除（如 <code>@Override</code>，只是给编译器看的）。</p>
+</li>
+<li><p><code>CLASS</code>：保留到字节码文件中，但 JVM 运行时不加载。</p>
+</li>
+<li><p><strong><code>RUNTIME</code></strong>：<strong>最重要！</strong> 保留到运行时，可以通过反射读取。<strong>所有需要配合反射使用的注解，必须设置为 RUNTIME。</strong></p>
+</li>
+</ul>
+</li>
+<li><p><code>@Target</code>（作用目标）</p>
+</li>
+</ol>
+<p>   定义注解可以贴在谁身上，由 <code>ElementType</code> 枚举控制：</p>
+<ul>
+<li><p><code>TYPE</code>：类、接口。</p>
+</li>
+<li><p><code>FIELD</code>：字段属性。</p>
+</li>
+<li><p><code>METHOD</code>：方法。</p>
+</li>
+<li><p><code>PARAMETER</code>：方法参数。</p>
+</li>
+</ul>
+<p>代码测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.annotation.*;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 元注解：指定注解的保留策略为运行时（只有这个策略才能被反射读取）</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="comment">// 元注解：指定注解可以标注在字段和方法上</span></span><br><span class="line"><span class="meta">@Target(&#123;ElementType.FIELD, ElementType.METHOD&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> MyAnnotation &#123;</span><br><span class="line">    <span class="comment">// 注解的属性，本质上是接口的抽象方法</span></span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">required</span><span class="params">()</span> <span class="keyword">default</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 类上的注解</span></span><br><span class="line"><span class="meta">@MyAnnotation(&quot;类注解&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line">    <span class="comment">// 字段上的注解</span></span><br><span class="line">    <span class="meta">@MyAnnotation(&quot;字段注解&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 方法上的注解</span></span><br><span class="line">    <span class="meta">@MyAnnotation(&quot;方法注解&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sayHi</span><span class="params">()</span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 反射读取注解</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AnnotationReadDemo</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        Class&lt;User&gt; userClass = User.class;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 1. 读取类上的注解</span></span><br><span class="line">        <span class="keyword">if</span> (userClass.isAnnotationPresent(MyAnnotation.class)) &#123;</span><br><span class="line">            <span class="type">MyAnnotation</span> <span class="variable">classAnnotation</span> <span class="operator">=</span> userClass.getAnnotation(MyAnnotation.class);</span><br><span class="line">            System.out.println(<span class="string">&quot;类注解值：&quot;</span> + classAnnotation.value());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 读取字段上的注解</span></span><br><span class="line">        <span class="type">Field</span> <span class="variable">nameField</span> <span class="operator">=</span> userClass.getDeclaredField(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (nameField.isAnnotationPresent(MyAnnotation.class)) &#123;</span><br><span class="line">            <span class="type">MyAnnotation</span> <span class="variable">fieldAnnotation</span> <span class="operator">=</span> nameField.getAnnotation(MyAnnotation.class);</span><br><span class="line">            System.out.println(<span class="string">&quot;字段注解值：&quot;</span> + fieldAnnotation.value());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 读取方法上的注解</span></span><br><span class="line">        <span class="type">Method</span> <span class="variable">sayHiMethod</span> <span class="operator">=</span> userClass.getDeclaredMethod(<span class="string">&quot;sayHi&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (sayHiMethod.isAnnotationPresent(MyAnnotation.class)) &#123;</span><br><span class="line">            <span class="type">MyAnnotation</span> <span class="variable">methodAnnotation</span> <span class="operator">=</span> sayHiMethod.getAnnotation(MyAnnotation.class);</span><br><span class="line">            System.out.println(<span class="string">&quot;方法注解值：&quot;</span> + methodAnnotation.value());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、-反射与注解的结合"><a href="#四、-反射与注解的结合" class="headerlink" title="四、 反射与注解的结合"></a>四、 反射与注解的结合</h2><p>只有反射，只能盲目地操作类；</p>
+<p>只有注解，它只是一堆不会生效的死文本；</p>
+<p><strong>当反射去读取注解时，两个机制就产生了非常好的效果。</strong></p>
+<h3 id="4-1-结合的底层原理"><a href="#4-1-结合的底层原理" class="headerlink" title="4.1 结合的底层原理"></a>4.1 结合的底层原理</h3><p>怎么让注解生效？原理其实极其朴素，归纳起来就是“一套 API，三个步骤”。</p>
+<p>在程序运行时，框架的底层其实就在无限循环地做下面这三件事：</p>
+<ol>
+<li><strong>全面扫描（找位置）</strong>：利用反射 API 获取目标类的所有结构（<code>Class.getDeclaredFields()</code>、<code>getDeclaredMethods()</code> 等）。</li>
+<li><strong>精准定位（看路标）</strong>：遍历这些结构，调用 <code>isAnnotationPresent(TargetAnnotation.class)</code> 方法，像雷达一样探测上面有没有贴特定的注解。</li>
+<li><strong>强行介入（做逻辑）</strong>：一旦探测到注解（返回 <code>true</code>），就利用 <code>getAnnotation()</code> 把注解里配置的数据（如 <code>value</code>）读出来。然后根据业务需求，利用反射 API（如 <code>Field.set()</code> 或 <code>Method.invoke()</code>）打破封装，执行特殊的逻辑。</li>
+</ol>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260509215107152.png" alt="image-20260509215107152"></p>
+<h3 id="4-2-Spring-Boot-中的经典应用：依赖注入"><a href="#4-2-Spring-Boot-中的经典应用：依赖注入" class="headerlink" title="4.2 Spring Boot 中的经典应用：依赖注入"></a>4.2 Spring Boot 中的经典应用：依赖注入</h3><p>在 Spring 时代之前，我们写代码最大的痛苦就是无休止地 <code>new</code> 对象。而现在，我们在开发 Spring MVC 或 Spring Boot 项目时，极其常用 <code>@Autowired</code> 注解来实现<strong>依赖注入（Dependency Injection）</strong>。</p>
+<p>当我们写下这行极简的代码时：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span> </span><br><span class="line"><span class="keyword">private</span> UserService userService;</span><br></pre></td></tr></table></figure>
+
+<p><strong>表面上看：</strong> 我们只是声明了一个私有变量，连对象都没创建，更没有写 <code>setter</code> 方法。</p>
+<p><strong>实际上：</strong> Spring 容器在后台偷偷把一切都打理好了，简单来说步骤如下：</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260509220440841.png" alt="image-20260509220440841"></p>
+<p>流程如下：</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260509220037762.png" alt="image-20260509220037762"></p>
+<h3 id="4-3-代码实战"><a href="#4-3-代码实战" class="headerlink" title="4.3 代码实战"></a>4.3 代码实战</h3><p>结合我们上面学到的所有知识，写一个最简陋的 DI 容器来展示这一过程：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 定义测试类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">OrderService</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">pay</span><span class="params">()</span> &#123; System.out.println(<span class="string">&quot;订单支付成功！&quot;</span>); &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">OrderController</span> &#123;</span><br><span class="line">    <span class="meta">@AutoInject</span> <span class="comment">// 使用我们刚才自定义的注解</span></span><br><span class="line">    <span class="keyword">private</span> OrderService orderService;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doOrder</span><span class="params">()</span> &#123;</span><br><span class="line">        orderService.pay();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 手写迷你容器</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MiniDiContainer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// 第一步：反射实例化目标对象 (模拟框架启动)</span></span><br><span class="line">        Class&lt;?&gt; controllerClass = OrderController.class;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">controllerObj</span> <span class="operator">=</span> controllerClass.getDeclaredConstructor().newInstance();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 第二步：依赖注入的核心逻辑</span></span><br><span class="line">        Field[] fields = controllerClass.getDeclaredFields();</span><br><span class="line">        <span class="keyword">for</span> (Field field : fields) &#123;</span><br><span class="line">            <span class="comment">// 检查字段上是否有 @AutoInject 注解</span></span><br><span class="line">            <span class="keyword">if</span> (field.isAnnotationPresent(AutoInject.class)) &#123;</span><br><span class="line">                <span class="comment">// 拿到需要注入的类型 (这里是 OrderService)</span></span><br><span class="line">                Class&lt;?&gt; fieldType = field.getType();</span><br><span class="line">                <span class="comment">// 实例化依赖的对象</span></span><br><span class="line">                <span class="type">Object</span> <span class="variable">dependencyObj</span> <span class="operator">=</span> fieldType.getDeclaredConstructor().newInstance();</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 暴力注入！</span></span><br><span class="line">                field.setAccessible(<span class="literal">true</span>);</span><br><span class="line">                field.set(controllerObj, dependencyObj);</span><br><span class="line">                System.out.println(<span class="string">&quot;完成自动注入: &quot;</span> + field.getName());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 第三步：测试调用</span></span><br><span class="line">        <span class="type">OrderController</span> <span class="variable">controller</span> <span class="operator">=</span> (OrderController) controllerObj;</span><br><span class="line">        controller.doOrder(); <span class="comment">// 如果不报错并打印成功，说明注入生效了！</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li><strong>反射</strong>：让程序在运行时动态探索类的结构，并操作对象，实现软编码与高度可扩展的框架设计。</li>
+<li><strong>注解</strong>：提供元数据标记，告诉框架“做什么”，自身不具逻辑，通过反射才能生效。</li>
+<li><strong>结合应用</strong>：现代框架（如 Spring）靠反射读取注解，实现依赖注入、事务控制、路由映射等“开箱即用”的功能。</li>
+</ol>
+<blockquote>
+<p><strong>核心理念</strong>：反射是执行引擎，注解是指令标记，两者结合才成就现代 Java 框架的便捷。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Like</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://likerhood.github.io/2026/05/09/032%20java%E5%8F%8D%E5%B0%84%E5%92%8C%E6%B3%A8%E8%A7%A3/">https://likerhood.github.io/2026/05/09/032%20java%E5%8F%8D%E5%B0%84%E5%92%8C%E6%B3%A8%E8%A7%A3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://likerhood.github.io" target="_blank">Liker's Blog</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/001javafanshe_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://fastly.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2026/05/09/031%20java%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6%EF%BC%9A%E7%BC%96%E8%AF%91%E6%9C%9F-%E9%9D%99%E6%80%81%E5%92%8C%E8%BF%90%E8%A1%8C%E6%97%B6-%E5%8A%A8%E6%80%81%E7%9A%84%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3/"><img class="next-cover" src="/img/javaclass_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">java的运行机制：编译期、运行期和半编译半解释性</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java-%E5%8F%8D%E5%B0%84%E4%B8%8E%E6%B3%A8%E8%A7%A3%E7%9A%84%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3"><span class="toc-text">Java 反射与注解的详细讲解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89%E5%8F%8D%E5%B0%84%EF%BC%9F"><span class="toc-text">一、 为什么有反射？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E7%A1%AC%E7%BC%96%E7%A0%81"><span class="toc-text">1.1 硬编码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E8%BD%AF%E7%BC%96%E7%A0%81"><span class="toc-text">1.2 软编码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E6%A1%86%E6%9E%B6%E7%9A%84%E6%A0%B8%E5%BF%83%E8%AF%89%E6%B1%82%EF%BC%9A%E5%AF%B9%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="toc-text">1.3 框架的核心诉求：对象工厂模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8D%E5%B0%84%EF%BC%9F"><span class="toc-text">二、 什么是反射？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E4%B8%87%E7%89%A9%E7%9A%86%E5%AF%B9%E8%B1%A1"><span class="toc-text">2.1 万物皆对象</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-%E6%A6%82%E5%BF%B5%E7%90%86%E8%A7%A3"><span class="toc-text">2.1.1 概念理解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-%E5%BA%95%E5%B1%82%E5%88%86%E6%9E%90"><span class="toc-text">2.1.2 底层分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Class-%E5%AF%B9%E8%B1%A1"><span class="toc-text">2.2 Class 对象</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-%E6%A6%82%E5%BF%B5%E7%90%86%E8%A7%A3"><span class="toc-text">2.2.1 概念理解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-%E4%BD%BF%E7%94%A8%E6%93%8D%E4%BD%9C"><span class="toc-text">2.2.2 使用操作</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E5%8F%8D%E5%B0%84%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-text">2.3 反射的定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E5%8F%8D%E5%B0%84%E7%9A%84%E6%A0%B8%E5%BF%83-API-%E8%AF%A6%E8%A7%A3"><span class="toc-text">2.4 反射的核心 API 详解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-1-Constructor%EF%BC%88%E6%9E%84%E9%80%A0%E5%99%A8%E5%AF%B9%E8%B1%A1%EF%BC%89"><span class="toc-text">2.4.1  Constructor（构造器对象）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-2-Field%EF%BC%88%E5%AD%97%E6%AE%B5%E5%AF%B9%E8%B1%A1%EF%BC%89"><span class="toc-text">2.4.2  Field（字段对象）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-3-Method%EF%BC%88%E6%96%B9%E6%B3%95%E5%AF%B9%E8%B1%A1%EF%BC%89"><span class="toc-text">2.4.3  Method（方法对象）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%B3%A8%E8%A7%A3"><span class="toc-text">三、注解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E6%B3%A8%E8%A7%A3%EF%BC%9F"><span class="toc-text">3.1 为什么要使用注解？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E6%B3%A8%E8%A7%A3%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-text">3.2 注解是什么</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-1-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-text">3.2.1 基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-JDK%E8%87%AA%E5%B8%A6%E4%B8%89%E7%A7%8D%E6%B3%A8%E8%A7%A3"><span class="toc-text">1. JDK自带三种注解</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-%E7%8E%B0%E4%BB%A3-Web-%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84%E6%B3%A8%E8%A7%A3"><span class="toc-text">2. 现代 Web 框架中的注解</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E6%B3%A8%E8%A7%A3%E7%9A%84%E6%9C%AC%E8%B4%A8"><span class="toc-text">3.3 注解的本质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%B3%A8%E8%A7%A3%E9%87%8C%E7%9A%84%E2%80%9C%E5%B1%9E%E6%80%A7%E2%80%9D%E8%A6%81%E5%B8%A6%E6%8B%AC%E5%8F%B7"><span class="toc-text">3.4 为什么注解里的“属性”要带括号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E6%97%A2%E7%84%B6%E6%98%AF%E6%8E%A5%E5%8F%A3%EF%BC%8C%E9%82%A3%E6%98%AF%E8%B0%81%E5%AE%9E%E4%BE%8B%E5%8C%96%E4%BA%86%E5%AE%83"><span class="toc-text">3.5 既然是接口，那是谁实例化了它</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3%E7%9A%84%E4%BD%BF%E7%94%A8%E4%B8%BE%E4%BE%8B"><span class="toc-text">3.6 自定义注解的使用举例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81-%E5%8F%8D%E5%B0%84%E4%B8%8E%E6%B3%A8%E8%A7%A3%E7%9A%84%E7%BB%93%E5%90%88"><span class="toc-text">四、 反射与注解的结合</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E7%BB%93%E5%90%88%E7%9A%84%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86"><span class="toc-text">4.1 结合的底层原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Spring-Boot-%E4%B8%AD%E7%9A%84%E7%BB%8F%E5%85%B8%E5%BA%94%E7%94%A8%EF%BC%9A%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5"><span class="toc-text">4.2 Spring Boot 中的经典应用：依赖注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E4%BB%A3%E7%A0%81%E5%AE%9E%E6%88%98"><span class="toc-text">4.3 代码实战</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div></div></main><footer id="footer" style="background: #FFFFFF"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2026 By Like</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">Bcxm</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = async () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+      mermaid.initialize({ startOnLoad: false, theme: theme, securityLevel: 'loose' })
+
+      for (let i = 0; i < $mermaidWrap.length; i++) {
+        const item = $mermaidWrap[i]
+        const mermaidSrc = item.firstElementChild
+        const mermaidID = 'mermaid-' + i
+        const mermaidDefinition = mermaidSrc.textContent.trim()
+        try {
+          const result = await mermaid.render(mermaidID, mermaidDefinition)
+          const svgCode = result && result.svg ? result.svg : result
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        } catch (e) {
+          console.error('Mermaid render error:', mermaidID, e)
+        }
+      }
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://fastly.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/leancloud-storage@4.10.0/dist/av-min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
