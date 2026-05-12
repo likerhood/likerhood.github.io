@@ -1,0 +1,456 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>学习ConcurrentHashMap使用和并发基础（java）</title><meta name="author" content="Like"><meta name="copyright" content="Like"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="学习ConcurrentHashMap使用和并发（java）前言  参考学习视频链接：带你透彻理解ConcurrentHashMap，最新最全的面试题及解答_哔哩哔哩_bilibili   一、 为什么用ConcurrentHashMap1.1 什么是 ConcurrentHashMap简单来说，ConcurrentHashMap 是 Java 并发包（java.util.concurrent）中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习ConcurrentHashMap使用和并发基础（java）">
+<meta property="og:url" content="https://likerhood.github.io/2026/05/12/035%20ConcurrentHashMap%E8%AF%AD%E6%B3%95%E5%92%8C%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80%E4%B8%B2%E8%AE%B2/index.html">
+<meta property="og:site_name" content="Liker&#39;s Blog">
+<meta property="og:description" content="学习ConcurrentHashMap使用和并发（java）前言  参考学习视频链接：带你透彻理解ConcurrentHashMap，最新最全的面试题及解答_哔哩哔哩_bilibili   一、 为什么用ConcurrentHashMap1.1 什么是 ConcurrentHashMap简单来说，ConcurrentHashMap 是 Java 并发包（java.util.concurrent）中">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likerhood.github.io/img/005javaconcurrentHashMap_cover.png">
+<meta property="article:published_time" content="2026-05-12T10:41:00.977Z">
+<meta property="article:modified_time" content="2026-05-12T10:42:20.075Z">
+<meta property="article:author" content="Like">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likerhood.github.io/img/005javaconcurrentHashMap_cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/05/12/035%20ConcurrentHashMap%E8%AF%AD%E6%B3%95%E5%92%8C%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80%E4%B8%B2%E8%AE%B2/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Like","link":"链接: ","source":"来源: Liker's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '学习ConcurrentHashMap使用和并发基础（java）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-05-12 18:42:20'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Liker's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">学习ConcurrentHashMap使用和并发基础（java）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-05-12T10:41:00.977Z" title="发表于 2026-05-12 18:41:00">2026-05-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/java%E5%AD%A6%E4%B9%A0/">java学习</a></span></div><div class="meta-secondline"></div></div></div><article class="post-content" id="article-container"><h1 id="学习ConcurrentHashMap使用和并发（java）"><a href="#学习ConcurrentHashMap使用和并发（java）" class="headerlink" title="学习ConcurrentHashMap使用和并发（java）"></a>学习ConcurrentHashMap使用和并发（java）</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260511224954744.png" alt="image-20260511224954744"></p>
+<blockquote>
+<p>参考学习视频链接：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1oUGbzxEu7/?spm_id_from=333.337.search-card.all.click&vd_source=4df08d069d45f57cba1a350ccb2bbd75">带你透彻理解ConcurrentHashMap，最新最全的面试题及解答_哔哩哔哩_bilibili</a></p>
+</blockquote>
+<hr>
+<h2 id="一、-为什么用ConcurrentHashMap"><a href="#一、-为什么用ConcurrentHashMap" class="headerlink" title="一、 为什么用ConcurrentHashMap"></a>一、 为什么用ConcurrentHashMap</h2><h3 id="1-1-什么是-ConcurrentHashMap"><a href="#1-1-什么是-ConcurrentHashMap" class="headerlink" title="1.1 什么是 ConcurrentHashMap"></a>1.1 什么是 ConcurrentHashMap</h3><p>简单来说，<code>ConcurrentHashMap</code> 是 Java 并发包（<code>java.util.concurrent</code>）中提供的一个<strong>线程安全的高效哈希表</strong>。</p>
+<p>它的核心功能和 <code>HashMap</code> 一样，都是用来存储键值对（Key-Value）数据的，但它允许多个线程同时对它进行读写操作而不会把数据搞乱。</p>
+<p>在单线程的 <code>HashMap</code> 中，key 和 value 都允许为 null。但在<code>ConcurrentHashMap</code>中，<strong>key 和 value 绝对不能为 null</strong>。</p>
+<p><strong>原因：</strong> 这是为了防范并发环境下的“二义性（歧义）”问题。如果 <code>get(key)</code> 返回了 null，你根本无法确认是“这个 key 不存在”，还是“这个 key 的 value 被设置成了 null”。在单线程中，你可以通过 <code>containsKey(key)</code> 去验证；但在多线程中，你验证的瞬间数据可能已经被其他线程篡改了。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260511222303767.png" alt="image-20260511222303767"></p>
+<h3 id="1-2-为什么用ConcurrentHashMap"><a href="#1-2-为什么用ConcurrentHashMap" class="headerlink" title="1.2 为什么用ConcurrentHashMap"></a>1.2 为什么用ConcurrentHashMap</h3><p>单线程时，<code>HashMap</code> 跑得飞快。但一旦在多线程情况下，就会暴露出<strong>数据不一致问题</strong>。</p>
+<p>归根结底，这种不一致是由 <strong>Java 内存模型（JMM）</strong> 导致的，在宏观上主要表现为两类冲突：</p>
+<ul>
+<li><p><strong>写-写冲突：</strong> 两个线程同时对同一个位置进行修改，导致其中一个线程的数据被无情覆盖（数据丢失）。</p>
+</li>
+<li><p><strong>写-读冲突：</strong> 一个线程刚刚修改了数据，但由于工作内存未及时刷入主内存，另一个线程去读的时候，拿到的依然是旧数据（读到脏数据）。</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260511220340265.png" alt="image-20260511220340265"></p>
+<p>为了解决数据不一致问题，最直观的解法就是<strong>加锁</strong>，这也是 <code>HashMap</code> 向 <code>ConcurrentHashMap</code> 演进的核心推手。 </p>
+<p>然而，粗暴的加锁会极大拖累系统性能。因此，提升高并发容器性能的关键思路在于：<strong>尽量减小锁的粒度，并尽可能找出可以“无锁化”的操作</strong>。</p>
+<p>在设计时，需要对读写操作“分而治之”：</p>
+<ul>
+<li><p><strong>写操作：</strong> 只要涉及数据的改动，必然需要加锁兜底，此时架构设计的核心考量就是<strong>尽力缩小锁的粒度</strong>（例如从锁整个 Map 缩小到只锁一个节点）。</p>
+</li>
+<li><p><strong>读操作：</strong> 在写操作保证不出错的前提下，读操作相对好办。核心在于取舍“是否需要实时读到最新数据”：</p>
+<ul>
+<li><p><strong>强一致性：</strong> 读写双重加锁，绝对安全但性能最差（如 <code>HashTable</code>）。</p>
+</li>
+<li><p><strong>顺序一致性：</strong> 使用 <code>volatile</code> 关键字，不加锁但能保证数据的可见性。</p>
+</li>
+<li><p><strong>弱一致性：</strong> 读完全不加锁，容忍极端情况下的微小延迟，追求极致性能</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260511220530653.png" alt="image-20260511220530653"></p>
+<p>为了在“安全”与“性能”之间平衡，<code>ConcurrentHashMap</code> 并没有采用单一的加锁手段，而是综合运用了以下三种核心底层方案：</p>
+<ul>
+<li><p><strong>synchronized：</strong> 用于保证特定代码块的<strong>原子性</strong>和<strong>可见性</strong>（使操作局部串行化，保证有序）。</p>
+</li>
+<li><p><strong>volatile：</strong> 轻量级同步机制，作用于单个共享变量。它像是一个全网广播，既能<strong>保证数据的可见性</strong>，又能<strong>禁止指令重排序</strong>。</p>
+</li>
+<li><p><strong>CAS (Compare-And-Swap)：</strong> 乐观锁机制，利用底层硬件指令实现针对单个共享变量的<strong>无锁原子操作</strong>。</p>
+</li>
+</ul>
+<p>简而言之，<code>ConcurrentHashMap</code> 正是巧妙地运用这三点，解决了 <code>HashMap</code> 的多线程问题。</p>
+<hr>
+<h2 id="二、-语法讲解"><a href="#二、-语法讲解" class="headerlink" title="二、 语法讲解"></a>二、 语法讲解</h2><p>理解了为什么需要 <code>ConcurrentHashMap</code> 之后，回到日常编码：它本质上仍然是一个 Map，只是把并发读写的安全性和性能优化封装好了。使用时重点记住三点：</p>
+<ol>
+<li><p><code>key</code> 和 <code>value</code> 都不能为 <code>null</code>。</p>
+</li>
+<li><p>单次 <code>put/get/remove</code> 是线程安全的。</p>
+</li>
+<li><p>“先查再改”这类复合逻辑，要优先用 <code>putIfAbsent</code>、<code>compute</code>、<code>computeIfAbsent</code>、<code>merge</code> 这类原子 API。</p>
+</li>
+</ol>
+<h3 id="2-1-常用-API-速查"><a href="#2-1-常用-API-速查" class="headerlink" title="2.1 常用 API 速查"></a>2.1 常用 API 速查</h3><p>下面这段代码把日常最常见的 <code>put</code>、<code>get</code>、<code>putIfAbsent</code>、<code>replace</code>、<code>remove</code>、<code>compute</code>、<code>merge</code> 都放在一起，适合当成语法模板看：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ConcurrentHashMap;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ConcurrentHashMapBasicUsage</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line"></span><br><span class="line">        ConcurrentHashMap&lt;String, Integer&gt; scoreMap = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line">        <span class="comment">// 1. put：新增或覆盖</span></span><br><span class="line">        scoreMap.put(<span class="string">&quot;Java&quot;</span>, <span class="number">90</span>);</span><br><span class="line">        scoreMap.put(<span class="string">&quot;MySQL&quot;</span>, <span class="number">85</span>);</span><br><span class="line">        scoreMap.put(<span class="string">&quot;Java&quot;</span>, <span class="number">95</span>); <span class="comment">// key 已存在时会覆盖旧值</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. get / getOrDefault：读取</span></span><br><span class="line">        <span class="type">Integer</span> <span class="variable">javaScore</span> <span class="operator">=</span> scoreMap.get(<span class="string">&quot;Java&quot;</span>);</span><br><span class="line">        <span class="type">int</span> <span class="variable">redisScore</span> <span class="operator">=</span> scoreMap.getOrDefault(<span class="string">&quot;Redis&quot;</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. containsKey：判断 key 是否存在</span></span><br><span class="line">        <span class="keyword">if</span> (scoreMap.containsKey(<span class="string">&quot;MySQL&quot;</span>)) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;MySQL 分数存在&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 4. putIfAbsent：不存在才写入，适合初始化默认值</span></span><br><span class="line">        scoreMap.putIfAbsent(<span class="string">&quot;Redis&quot;</span>, <span class="number">88</span>);</span><br><span class="line">        scoreMap.putIfAbsent(<span class="string">&quot;Java&quot;</span>, <span class="number">100</span>); <span class="comment">// Java 已存在，不会覆盖 95</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 5. replace：只有 key 存在时才替换；三参数版本会比较旧值</span></span><br><span class="line">        scoreMap.replace(<span class="string">&quot;Redis&quot;</span>, <span class="number">89</span>);</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">replaced</span> <span class="operator">=</span> scoreMap.replace(<span class="string">&quot;Java&quot;</span>, <span class="number">95</span>, <span class="number">96</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 6. remove：删除；双参数版本会比较 value，避免误删新值</span></span><br><span class="line">        scoreMap.remove(<span class="string">&quot;MySQL&quot;</span>);</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">removed</span> <span class="operator">=</span> scoreMap.remove(<span class="string">&quot;Redis&quot;</span>, <span class="number">89</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 7. compute：基于旧值计算新值，整个计算过程对当前 key 原子化</span></span><br><span class="line">        scoreMap.compute(<span class="string">&quot;Java&quot;</span>, (key, oldValue) -&gt; oldValue == <span class="literal">null</span> ? <span class="number">1</span> : oldValue + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 8. merge：常用于累加、合并统计</span></span><br><span class="line">        scoreMap.merge(<span class="string">&quot;Java&quot;</span>, <span class="number">1</span>, Integer::sum);</span><br><span class="line">        scoreMap.merge(<span class="string">&quot;Go&quot;</span>, <span class="number">1</span>, Integer::sum);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 9. 遍历：弱一致性遍历，不会抛 ConcurrentModificationException</span></span><br><span class="line">        scoreMap.forEach((key, value) -&gt; System.out.println(key + <span class="string">&quot; =&gt; &quot;</span> + value));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 10. 规模估算：高并发场景更推荐 mappingCount()</span></span><br><span class="line">        <span class="type">long</span> <span class="variable">count</span> <span class="operator">=</span> scoreMap.mappingCount();</span><br><span class="line">        <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> scoreMap.size();</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;Java=&quot;</span> + javaScore + <span class="string">&quot;, Redis默认值=&quot;</span> + redisScore);</span><br><span class="line">        System.out.println(<span class="string">&quot;replace结果=&quot;</span> + replaced + <span class="string">&quot;, remove结果=&quot;</span> + removed);</span><br><span class="line">        System.out.println(<span class="string">&quot;mappingCount=&quot;</span> + count + <span class="string">&quot;, size=&quot;</span> + size);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>小提醒：<code>ConcurrentHashMap</code> 的线程安全只覆盖它自己的结构更新。如果 <code>value</code> 本身是一个可变对象，比如 <code>ArrayList</code> 或自定义对象，修改对象内部字段时仍然要额外考虑线程安全。</p>
+</blockquote>
+<h3 id="2-2-场景一：本地高并发缓存-Local-Cache"><a href="#2-2-场景一：本地高并发缓存-Local-Cache" class="headerlink" title="2.2 场景一：本地高并发缓存 (Local Cache)"></a>2.2 场景一：本地高并发缓存 (Local Cache)</h3><p>在一些无需动用庞大 Redis 集群的轻量级场景下，它可以作为服务本地的热点数据缓存，抗住极高的并发读取。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ConcurrentHashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LocalConfigCache</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ConcurrentHashMap&lt;String, ConfigObject&gt; CONFIG_CACHE = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> ConfigObject <span class="title function_">getConfig</span><span class="params">(String key)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// computeIfAbsent 是“如果没有就加载并放入”的原子操作</span></span><br><span class="line">        <span class="comment">// 高并发缓存击穿时，同一个 key 通常只会触发一次加载逻辑</span></span><br><span class="line">        <span class="keyword">return</span> CONFIG_CACHE.computeIfAbsent(key, <span class="built_in">this</span>::loadConfigFromDatabase);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">refreshConfig</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        <span class="comment">// put：主动刷新缓存，直接覆盖旧配置</span></span><br><span class="line">        CONFIG_CACHE.put(key, loadConfigFromDatabase(key));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">removeConfig</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        <span class="comment">// remove：配置下线或失效时清理缓存</span></span><br><span class="line">        CONFIG_CACHE.remove(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ConfigObject <span class="title function_">loadConfigFromDatabase</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        <span class="comment">// 模拟从数据库、配置中心或远程接口加载</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ConfigObject</span>(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">ConfigObject</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> String key;</span><br><span class="line">        ConfigObject(String key) &#123;</span><br><span class="line">            <span class="built_in">this</span>.key = key;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-3-场景二：实时数据统计汇总"><a href="#2-3-场景二：实时数据统计汇总" class="headerlink" title="2.3 场景二：实时数据统计汇总"></a>2.3 场景二：实时数据统计汇总</h3><p>非常适合用作多线程环境下的计数器，例如统计 API 接口的实时访问次数、视频的实时弹幕数等。通常需要配合 <code>AtomicInteger</code> 或更加高效的 <code>LongAdder</code> 一起使用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.ConcurrentHashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.atomic.LongAdder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ApiMetrics</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ConcurrentHashMap&lt;String, LongAdder&gt; API_REQUEST_COUNTER = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">recordApiAccess</span><span class="params">(String apiName)</span> &#123;</span><br><span class="line">        <span class="comment">// computeIfAbsent：没有计数器就创建；LongAdder.increment() 负责高并发累加</span></span><br><span class="line">        API_REQUEST_COUNTER.computeIfAbsent(apiName, key -&gt; <span class="keyword">new</span> <span class="title class_">LongAdder</span>()).increment();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">getApiAccessCount</span><span class="params">(String apiName)</span> &#123;</span><br><span class="line">        <span class="type">LongAdder</span> <span class="variable">adder</span> <span class="operator">=</span> API_REQUEST_COUNTER.get(apiName);</span><br><span class="line">        <span class="keyword">return</span> adder == <span class="literal">null</span> ? <span class="number">0</span> : adder.sum();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">resetApiAccessCount</span><span class="params">(String apiName)</span> &#123;</span><br><span class="line">        <span class="comment">// replace：只有这个接口已经存在统计项时才替换</span></span><br><span class="line">        API_REQUEST_COUNTER.replace(apiName, <span class="keyword">new</span> <span class="title class_">LongAdder</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如果只是做简单的整数合并，也可以直接用 <code>merge</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.ConcurrentHashMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WordCounter</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ConcurrentHashMap&lt;String, Integer&gt; wordCountMap = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addWord</span><span class="params">(String word)</span> &#123;</span><br><span class="line">        <span class="comment">// 如果 word 不存在，初始值为 1；如果存在，就执行 Integer::sum</span></span><br><span class="line">        wordCountMap.merge(word, <span class="number">1</span>, Integer::sum);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getWordCount</span><span class="params">(String word)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> wordCountMap.getOrDefault(word, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、-并发和锁的基础知识"><a href="#三、-并发和锁的基础知识" class="headerlink" title="三、 并发和锁的基础知识"></a>三、 并发和锁的基础知识</h2><h3 id="3-1-java内存模型"><a href="#3-1-java内存模型" class="headerlink" title="3.1 java内存模型"></a>3.1 java内存模型</h3><p>计算机的核心硬件在发展过程中存在巨大的速度鸿沟：<strong>CPU 最快，内存次之，I&#x2F;O 设备（硬盘）最慢</strong>。为了不让 CPU 闲着等数据，计算机体系结构、操作系统和编译器分别做出了妥协与优化，但这恰恰是并发问题的根源：</p>
+<ol>
+<li><p>CPU 增加了<strong>高速缓存（Cache）</strong>，以均衡与内存的速度差异。</p>
+</li>
+<li><p>操作系统增加了<strong>进程&#x2F;线程</strong>，以分时复用 CPU（任务切换），均衡 CPU 与 I&#x2F;O 的差异。</p>
+</li>
+<li><p>编译器<strong>优化指令执行次序</strong>，使得缓存能够得到更合理的利用。</p>
+</li>
+</ol>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260512150229766.png" alt="image-20260512150229766"></p>
+<p>为了屏蔽各种硬件和操作系统的内存访问差异，让 Java 程序在各平台下都能达到一致的效果，<strong>Java 内存模型（JMM，Java Memory Model）</strong> 应运而生。 JMM 规定：</p>
+<ul>
+<li><p>所有的<strong>共享变量</strong>都存储在<strong>主内存</strong>中。</p>
+</li>
+<li><p>每个线程都有自己的<strong>工作内存</strong>，里面保存了被该线程使用的共享变量的副本。</p>
+</li>
+<li><p>线程对共享变量的所有操作（读、写）都必须在工作内存中进行，<strong>绝对不能直接读写主内存</strong>。不同线程之间也无法直接访问对方工作内存中的变量。</p>
+</li>
+</ul>
+<p>这种架构虽然高效，<strong>但在多线程下也存在并发编程的三大危机</strong>。</p>
+<h3 id="3-2-并发编程的三大核心危机"><a href="#3-2-并发编程的三大核心危机" class="headerlink" title="3.2 并发编程的三大核心危机"></a>3.2 并发编程的三大核心危机</h3><h4 id="3-2-1-可见性问题：CPU-缓存引发的“盲区”"><a href="#3-2-1-可见性问题：CPU-缓存引发的“盲区”" class="headerlink" title="3.2.1 可见性问题：CPU 缓存引发的“盲区”"></a>3.2.1 可见性问题：CPU 缓存引发的“盲区”</h4><p><strong>定义：</strong> 一个线程对共享变量的修改，另一个线程能够立刻看到，这就叫可见性。</p>
+<p><strong>危机成因：</strong> 在多核心架构下，线程 A 运行在 CPU-1 上，线程 B 运行在 CPU-2 上。线程 A 修改了工作内存（对应 CPU-1 缓存）中的变量 <code>val</code>，但还没来得及同步到主内存；此时线程 B 去读 <code>val</code>，读到的依然是 CPU-2 缓存或主内存中的旧值。这就是 CPU 缓存导致的可见性盲区。</p>
+<h4 id="3-2-2-原子性问题：线程切换带来的“半途而废”"><a href="#3-2-2-原子性问题：线程切换带来的“半途而废”" class="headerlink" title="3.2.2 原子性问题：线程切换带来的“半途而废”"></a>3.2.2 原子性问题：线程切换带来的“半途而废”</h4><p><strong>定义：</strong> 我们把一个或者多个操作在 CPU 执行的过程中不被中断的特性称为原子性。 <strong>危机成因：</strong> 高级语言里看似简单的一条语句，往往需要多条 CPU 指令才能完成。这就是违背我们直觉的地方。</p>
+<ul>
+<li><p><strong>经典场景：</strong> <code>count += 1</code>。在 CPU 层面，它分为三步：</p>
+<ol>
+<li><p><strong>Load：</strong> 把变量 <code>count</code> 从内存加载到 CPU 寄存器。</p>
+</li>
+<li><p><strong>Add：</strong> 在寄存器中执行 <code>+1</code> 操作。</p>
+</li>
+<li><p><strong>Store：</strong> 将结果写入内存（缓存）。</p>
+</li>
+</ol>
+</li>
+<li><p>操作系统的任务切换可以发生在<strong>任何一条 CPU 指令</strong>执行完之后。如果线程 A 刚做完“加法”还没写回内存，就被切换到了线程 B，线程 B 拿到的还是旧的 <code>count</code> 值进行操作。最终两个线程各加了一次，结果却只增加了 1。</p>
+</li>
+</ul>
+<h4 id="3-2-3-有序性问题：编译优化的“移花接木”"><a href="#3-2-3-有序性问题：编译优化的“移花接木”" class="headerlink" title="3.2.3 有序性问题：编译优化的“移花接木”"></a>3.2.3 有序性问题：编译优化的“移花接木”</h4><p><strong>定义：</strong> 程序执行的顺序按照代码的先后顺序执行。 <strong>危机成因：</strong> 编译器和处理器为了优化性能，会对没有数据依赖性的指令进行<strong>重排序</strong>。</p>
+<ul>
+<li><p><strong>经典场景：</strong> 双重检查锁（DCL）实现单例模式。<code>instance = new Singleton();</code> 这行代码底层分为三步：</p>
+<ol>
+<li><p>分配一块内存空间 M。</p>
+</li>
+<li><p>在内存 M 上初始化 Singleton 对象。</p>
+</li>
+<li><p>将 M 的地址赋值给 <code>instance</code> 变量。</p>
+</li>
+</ol>
+</li>
+<li><p><strong>重排序灾难：</strong> 编译器可能将执行顺序优化为 <code>1 -&gt; 3 -&gt; 2</code>。当线程 A 执行完 1 和 3 时，<code>instance</code> 已经不是 null 了，但对象还没初始化。此时如果线程 B 进来判断 <code>instance == null</code> 为 false，直接拿走这个半成品对象去使用，就会触发空指针异常。</p>
+</li>
+</ul>
+<h3 id="3-3-解决并发问题的工具"><a href="#3-3-解决并发问题的工具" class="headerlink" title="3.3 解决并发问题的工具"></a>3.3 解决并发问题的工具</h3><p>为了解决上述的可见性、原子性和有序性问题，JMM 定义了 8 种底层操作（<code>lock, unlock, read, load, assign, use, store, write</code>），并提供了以下并发控制工具：</p>
+<h4 id="3-3-1-synchronized（宏观锁）"><a href="#3-3-1-synchronized（宏观锁）" class="headerlink" title="3.3.1 synchronized（宏观锁）"></a>3.3.1 synchronized（宏观锁）</h4><h5 id="1-synchronized是什么"><a href="#1-synchronized是什么" class="headerlink" title="1. synchronized是什么"></a>1. synchronized是什么</h5><p><code>synchronized</code> 是 Java 语言提供的一个<strong>内置关键字</strong>，在多线程编程中被称为“隐式锁”<strong>或</strong>“内置锁”。</p>
+<ul>
+<li><p><strong>底层本质：</strong> 它基于 JVM 内部的管程（Monitor）对象实现。在底层字节码层面，它通过插入 <code>monitorenter</code>（获取锁）和 <code>monitorexit</code>（释放锁）指令来实现同步。</p>
+</li>
+<li><p><strong>物理依托：</strong> 它的加锁动作必须依赖于一个真实的、已实例化的 Java 对象。锁的各种状态（如无锁、偏向锁、轻量级锁、重量级锁）都记录在这个对象的对象头（Mark Word）中。</p>
+</li>
+</ul>
+<h5 id="2-synchronized的作用"><a href="#2-synchronized的作用" class="headerlink" title="2. synchronized的作用"></a>2. synchronized的作用</h5><p>在多线程并发环境下，<code>synchronized</code> 提供以下保障：</p>
+<ul>
+<li><p><strong>保证原子性（互斥与排队）：</strong> 它确保同一时刻，只有一个线程能拿到锁并进入被保护的代码区域。其他试图进入的线程会被系统阻塞，必须排队等待。这保证了被包裹的代码逻辑（比如先读取、再计算、后写入）像一个不可分割的整体，不会被其他线程打断。</p>
+</li>
+<li><p><strong>保证可见性（内存刷新）：</strong> 当一个线程执行完 <code>synchronized</code> 块并释放锁（<code>monitorexit</code>）时，JVM 会强制将该线程工作内存中的所有共享变量修改<strong>刷新回主内存</strong>；而下一个获取同一把锁的线程，会被强制要求从主内存中重新读取这些变量。这彻底消除了多线程间的数据滞后现象。</p>
+</li>
+<li><p><strong>保证有序性：</strong> 虽然在 <code>synchronized</code> 代码块内部，编译器和 CPU 仍然可能进行指令重排序优化，但由于外界看来这块代码是“单线程串行”执行的，因此它能保证并发环境下的最终执行结果是正确且一致的。</p>
+</li>
+</ul>
+<h5 id="3-如何使用synchronized"><a href="#3-如何使用synchronized" class="headerlink" title="3. 如何使用synchronized"></a>3. 如何使用synchronized</h5><p><code>synchronized</code> 的使用心法只有一条：<strong>认清你锁的是哪个对象</strong>。</p>
+<p>如果多个线程竞争的是同一个对象锁，它们就会排队；如果竞争的是不同的对象锁，它们就互不干扰，主要用法如下：</p>
+<ol>
+<li><p>修饰代码块，锁是你指定的任何非空对象。</p>
+</li>
+<li><p>修饰实例方法（锁是当前实例 <code>this</code>）。</p>
+</li>
+<li><p>修饰静态方法（锁是当前类的 <code>Class</code> 对象）</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Counter</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ================== 变量定义区 ==================</span></span><br><span class="line">    <span class="comment">// 静态变量（全局共享），配合静态方法使用</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">globalCount</span> <span class="operator">=</span> <span class="number">0</span>; </span><br><span class="line">    <span class="comment">// 实例变量（每个对象专属），配合实例方法或代码块使用</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="number">0</span>; </span><br><span class="line">    <span class="comment">// 专门准备的锁对象（极其轻量级），配合代码块使用</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">Object</span> <span class="variable">lockObj</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Object</span>(); </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ================== 用法展示区 ==================</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 用法一：修饰代码块（减小锁粒度，推荐）</span></span><br><span class="line"><span class="comment">     * 锁对象：指定的 lockObj 实例</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addWithBlock</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 这里是耗时操作或不需要同步的代码，所有线程可以并发执行</span></span><br><span class="line">        System.out.println(Thread.currentThread().getName() + <span class="string">&quot; 准备执行累加&quot;</span>);</span><br><span class="line">        <span class="comment">// 进入同步块，必须获得 lockObj 的锁</span></span><br><span class="line">        <span class="keyword">synchronized</span> (lockObj) &#123; </span><br><span class="line">            count++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 用法二：修饰实例方法</span></span><br><span class="line"><span class="comment">     * 锁对象：当前类的实例对象 (this)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">addWithInstanceMethod</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 整个方法都在同步范围内</span></span><br><span class="line">        count++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 用法三：修饰静态方法</span></span><br><span class="line"><span class="comment">     * 锁对象：Counter 类的 Class 对象 (Counter.class)，全局唯一</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">addWithStaticMethod</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 保护的是静态全局变量</span></span><br><span class="line">        globalCount++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-2-volatile-与-Happens-Before-原则"><a href="#3-3-2-volatile-与-Happens-Before-原则" class="headerlink" title="3.3.2 volatile 与 Happens-Before 原则"></a>3.3.2 volatile 与 Happens-Before 原则</h4><h5 id="1-volatile是什么"><a href="#1-volatile是什么" class="headerlink" title="1. volatile是什么"></a>1. volatile是什么</h5><p><code>volatile</code> 是 Java 中的一个关键字，专门用来修饰变量（包括实例变量和静态变量）。</p>
+<ul>
+<li><p><strong>本质：</strong> 它是 Java 虚拟机（JVM）提供的一种<strong>最轻量级的同步机制</strong>。</p>
+</li>
+<li><p><strong>不加锁：</strong> 与 <code>synchronized</code> 不同，使用 <code>volatile</code> <strong>不会发生上下文切换，也不会让线程阻塞排队</strong>。它仅仅是在底层通过硬件级别的“内存屏障（Memory Barrier）”来干预 CPU 的读写操作。</p>
+</li>
+<li><p><strong>大白话比喻：</strong> 假设每个线程都有一个小本子（工作内存&#x2F;CPU缓存），主存是一块公共大黑板。平时线程都是看着自己的小本子干活。如果把一个变量加上 <code>volatile</code>，就等于告诉所有线程：“这个数据你<strong>绝对不能</strong>抄在小本子上，每次读写必须亲自跑到公共大黑板上去看”</p>
+</li>
+</ul>
+<h5 id="2-volatile的作用"><a href="#2-volatile的作用" class="headerlink" title="2. volatile的作用"></a>2. volatile的作用</h5><p><strong><code>volatile</code> 主要针对并发编程中的两个痛点：</strong></p>
+<p><strong>作用一：保证可见性（数据立刻刷新）</strong></p>
+<p>在默认情况下，线程为了追求速度，会把主存中的变量缓存到 CPU 寄存器或 L1&#x2F;L2 缓存中。</p>
+<p>如果线程 A 修改了变量，没有及时写回主存，线程 B 是看不到的（这就是“可见性问题”）。</p>
+<ul>
+<li><strong>加上 <code>volatile</code> 后：</strong> 只要线程 A 修改了这个变量，JVM 会强制要求它<strong>立刻刷回主存</strong>，并且发出信号，让其他所有线程缓存中的这个变量<strong>立刻失效</strong>。其他线程下次再用时，必须重新去主存里读最新值。</li>
+</ul>
+<blockquote>
+<p><strong>⚠️ 重点避坑：你提到的“数组元素无法保证可见性”是怎么回事？</strong> 当你写下 <code>volatile int[] arr = new int[10];</code> 时，<code>volatile</code> 锁定的仅仅是 <code>arr</code> 这个<strong>引用地址</strong>。</p>
+<ul>
+<li>如果你执行 <code>arr = new int[20];</code>（改变了引用），其他线程立刻可见。</li>
+<li>但如果你执行 <code>arr[0] = 1;</code>（改变了数组内部的元素），因为 <code>arr</code> 的引用地址没变，触发不了 <code>volatile</code> 的刷新机制，其他线程可能根本看不见 <code>arr[0]</code> 变成了 1！</li>
+<li><strong>怎么解决？</strong> 这就是为什么 <code>ConcurrentHashMap</code> 底层必须借助 <code>Unsafe</code> 类（或者 Java 9 之后的 <code>VarHandle</code>），直接操作内存偏移量去强制读取&#x2F;写入数组的内部元素，以此来保证数组元素的可见性。</li>
+</ul>
+</blockquote>
+<p><strong>作用二：保证有序性（禁止指令重排）与 Happens-Before</strong></p>
+<p>为了提高执行效率，编译器和 CPU 会在不改变单线程最终结果的前提下，把你的代码顺序打乱执行（这叫指令重排）。</p>
+<p>但在多线程下，打乱顺序可能会引发灾难。</p>
+<ul>
+<li><p><strong>内存屏障：</strong> <code>volatile</code> 会在底层的汇编指令中插入“内存屏障”，告诉 CPU：“在这个变量前后的指令，谁也不许越过界限排序。”</p>
+</li>
+<li><p><strong>Happens-Before（先行发生原则）：</strong> 它是 JMM（Java 内存模型）对程序员的承诺。其中“volatile 变量规则”是说：<strong>“对一个 volatile 变量的写操作，必定先行发生于（Happens-Before）后面对这个变量的读操作。”</strong></p>
+<ul>
+<li><em>深层含义：</em> 这不仅意味着你能读到最新的 <code>volatile</code> 变量，还意味着<strong>在写入 <code>volatile</code> 变量之前发生的所有其他操作，对读取该 <code>volatile</code> 变量的线程也是可见的。</strong>（这就好比 <code>volatile</code> 是一个邮戳，盖了邮戳之前的信件内容，对方全都能看到）。</li>
+</ul>
+</li>
+</ul>
+<h5 id="3-如何使用volatile"><a href="#3-如何使用volatile" class="headerlink" title="3. 如何使用volatile"></a>3. 如何使用volatile</h5><p>因为 <code>volatile</code> <strong>不保证原子性</strong>，所以它不能用来做计数器（不能用来修饰 <code>count++</code>）。它最经典的使用场景只有两个：</p>
+<p><strong>场景一：作为状态标志位（最常用）</strong></p>
+<p>用于在一个线程中控制另一个线程的执行流。这种场景下，变量的修改不依赖于它原来的值（只有 <code>true</code> 或 <code>false</code> 之间的切换）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TaskRunner</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用 volatile 修饰标志位，保证只要主线程修改了，工作线程立刻能看到</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="type">boolean</span> <span class="variable">isRunning</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">startTask</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;工作线程启动...&quot;</span>);</span><br><span class="line">            <span class="comment">// 如果不加 volatile，这个循环可能会变成死循环（一直读缓存里的 true）</span></span><br><span class="line">            <span class="keyword">while</span> (isRunning) &#123;</span><br><span class="line">                <span class="comment">// 模拟正在疯狂干活...</span></span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="string">&quot;工作线程收到停止信号，安全退出！&quot;</span>);</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">stopTask</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 主线程将标志位改为 false</span></span><br><span class="line">        isRunning = <span class="literal">false</span>; </span><br><span class="line">        System.out.println(<span class="string">&quot;主线程发出停止信号！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>场景二：单例模式中的 DCL（双重检查锁）</strong></p>
+<p>这是面试中最爱考的一段代码。这里使用 <code>volatile</code> 的目的完全是为了<strong>禁止指令重排</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 必须加 volatile！</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Singleton instance;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 第一次检查：如果已经实例化了，直接返回，避免性能损耗</span></span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 同步代码块，保证只有一个线程能进去创建对象</span></span><br><span class="line">            <span class="keyword">synchronized</span> (Singleton.class) &#123;</span><br><span class="line">                <span class="comment">// 第二次检查：防止排队的线程进去后又 new 了一个对象</span></span><br><span class="line">                <span class="keyword">if</span> (instance == <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="comment">// 【高危操作！】</span></span><br><span class="line">                    instance = <span class="keyword">new</span> <span class="title class_">Singleton</span>(); </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么单例模式必须加 <code>volatile</code>？</strong> </p>
+<p>因为 <code>instance = new Singleton();</code> 在底层并不是一步完成的，它分为三条机器指令：</p>
+<ol>
+<li><p>分配内存空间。</p>
+</li>
+<li><p>在内存空间上初始化对象（调用构造方法）。</p>
+</li>
+<li><p>把 <code>instance</code> 引用指向这块内存地址。</p>
+</li>
+</ol>
+<p>如果没有 <code>volatile</code>，CPU 可能会把顺序重排成 1 -&gt; 3 -&gt; 2。 假设线程 A 执行了 1 和 3（此时 <code>instance</code> 已经不等于 <code>null</code> 了，但对象还没初始化完）。 此时线程 B 进来了，执行最外层的 <code>if (instance == null)</code>，发现不为空，直接拿走去用，结果因为对象还没初始化，直接报空指针异常崩溃。 加上 <code>volatile</code> 后，强行禁止 1-3-2 的重排，必须按 1-2-3 执行，从而保证安全。</p>
+<h4 id="3-3-3-CAS-Compare-And-Swap-无锁化原子操作"><a href="#3-3-3-CAS-Compare-And-Swap-无锁化原子操作" class="headerlink" title="3.3.3 CAS (Compare And Swap - 无锁化原子操作)"></a>3.3.3 CAS (Compare And Swap - 无锁化原子操作)</h4><h5 id="1-CAS-是什么"><a href="#1-CAS-是什么" class="headerlink" title="1. CAS 是什么"></a>1. CAS 是什么</h5><p>CAS 的全称是 <strong>Compare And Swap（比较并交换）</strong>。它是一种无锁化（Lock-free）的原子操作。</p>
+<p><strong>它的核心运作机制：</strong> CAS 操作需要三个核心参数：</p>
+<ol>
+<li><p><strong>V (内存地址&#x2F;内存变量当前的值)</strong></p>
+</li>
+<li><p><strong>E (期望的旧值)</strong> —— 也就是你上次看到它的值。</p>
+</li>
+<li><p><strong>N (要替换的新值)</strong></p>
+</li>
+</ol>
+<p><strong>动作逻辑：</strong> “我来看看内存地址 V 里的值是不是 E，如果是，说明没人动过，我就把它改成 N；如果不是 E，说明在我准备改的这段时间里，有别人把它改了，那我就什么都不做（或者重新读取最新的值再试一次）。”</p>
+<p><strong>底层支撑：</strong> 你可能会问：<em>“那比较和交换这两步，中间如果有别的线程插队怎么办？”</em> </p>
+<p>答案是：<strong>绝不可能。</strong> 因为 CAS 并不是用 Java 代码写出来的逻辑，它是直接调用了 <strong>CPU 底层硬件的指令</strong>（在 x86 架构下是 <code>cmpxchg</code> 指令）。</p>
+<p>CPU在硬件级别保证了这条指令的执行是<strong>绝对原子的</strong>，不可被打断。</p>
+<h5 id="2-CAS有什么作用"><a href="#2-CAS有什么作用" class="headerlink" title="2. CAS有什么作用"></a>2. CAS有什么作用</h5><p>为什么有了 <code>synchronized</code>，大牛们还要挖空心思搞出 CAS 呢？因为它带来了极高的性能收益：</p>
+<ul>
+<li><p><strong>不阻塞线程（拒绝上下文切换）：</strong></p>
+<ul>
+<li><p><code>synchronized</code>（重量级锁状态下）会让抢不到锁的线程进入“睡眠&#x2F;阻塞”状态。线程从睡眠到被唤醒，需要操作系统在内核态和用户态之间频繁切换，这个开销极其巨大！</p>
+</li>
+<li><p>而 CAS 发现数据被别人改了，<strong>它不会去睡觉，而是立刻去读最新的值，并在原地不断地循环重试</strong>（这叫“自旋”，Spinning）。这省去了操作系统调度线程的巨大开销。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>天生免疫死锁：</strong></p>
+<ul>
+<li>因为它根本不需要加锁，多个线程同时去 CAS 更新同一个变量，只会有一个成功，其他的失败后重试，永远不会出现两个线程互相抱着对方的锁死等的情况。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>大白话比喻：</strong></p>
+<ul>
+<li><code>synchronized</code> 是**“去银行柜台办业务”**，必须拿号排队，别人在办，你就只能在等候区干坐着（阻塞休眠）。</li>
+<li>CAS 是**“一群人抢一个掉在地上的钱包”**，不用排队，大家一起伸手去抓。谁手快谁拿到，手慢的人抓了个空（CAS 失败），也不用去睡觉，立刻站起来看钱包又掉哪了，继续抢（自旋重试）。</li>
+</ul>
+</blockquote>
+<h5 id="3-如何使用"><a href="#3-如何使用" class="headerlink" title="3. 如何使用"></a>3. 如何使用</h5><p>在计算机世界里，CAS 最早是一条 <strong>CPU 的汇编指令</strong>（比如 x86 架构下的 <code>cmpxchg</code>）。它是直接操控硬件内存的，跑得极快，且绝对保证原子性，但它根本不懂什么是 Java 代码。</p>
+<p>java 官方为了能调用这个底层的 CPU 指令，在内部写了一个叫 <code>Unsafe</code> 的类。 这个类提供了一些直接操作内存和 CAS 的方法，比如 <code>compareAndSwapInt()</code>。</p>
+<p>但是，直接使用这个类<strong>非常危险</strong>：你必须手动计算变量在计算机内存中的“物理偏移地址”。如果你算错了一个字节，不仅数据会错，整个 Java 虚拟机（JVM）都会直接崩溃闪退。 </p>
+<p>所以，官方给它起名 <code>Unsafe</code>（不安全）[doge]。</p>
+<p>Java 官方把CAS的相关操作封装为工具类：<strong><code>java.util.concurrent.atomic</code> 包下的原子类。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.atomic.AtomicInteger;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.atomic.AtomicReference;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.atomic.AtomicStampedReference;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CasAtomicTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        testAtomicInteger();</span><br><span class="line">        testAtomicReference();</span><br><span class="line">        testAtomicStampedReference();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 1. 基础类型测试 (AtomicInteger)</span></span><br><span class="line"><span class="comment">     * 核心：无锁安全的数学计算与单值替换</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">testAtomicInteger</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;--- 1. AtomicInteger 测试 ---&quot;</span>);</span><br><span class="line">        <span class="type">AtomicInteger</span> <span class="variable">count</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AtomicInteger</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 相当于 ++count，但线程安全</span></span><br><span class="line">        System.out.println(<span class="string">&quot;自增结果: &quot;</span> + count.incrementAndGet()); </span><br><span class="line">        <span class="comment">// CAS 替换：如果当前是 1，就改成 100</span></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">isSuccess</span> <span class="operator">=</span> count.compareAndSet(<span class="number">1</span>, <span class="number">100</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;CAS(1-&gt;100) 是否成功: &quot;</span> + isSuccess + <span class="string">&quot;，当前值: &quot;</span> + count.get() + <span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 2. 引用类型测试 (AtomicReference)</span></span><br><span class="line"><span class="comment">     * 核心：无锁安全的对象替换</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">testAtomicReference</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;--- 2. AtomicReference 测试 ---&quot;</span>);</span><br><span class="line">        AtomicReference&lt;String&gt; config = <span class="keyword">new</span> <span class="title class_">AtomicReference</span>&lt;&gt;(<span class="string">&quot;旧配置&quot;</span>);</span><br><span class="line">        <span class="comment">// CAS 替换：如果当前还是&quot;旧配置&quot;，就换成&quot;新配置&quot;</span></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">isSuccess</span> <span class="operator">=</span> config.compareAndSet(<span class="string">&quot;旧配置&quot;</span>, <span class="string">&quot;新配置&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;CAS(旧-&gt;新) 是否成功: &quot;</span> + isSuccess + <span class="string">&quot;，最新配置: &quot;</span> + config.get() + <span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 3. 带版本号的引用测试 (AtomicStampedReference)</span></span><br><span class="line"><span class="comment">     * 核心：解决 ABA 问题，修改时必须比对“值”和“版本号”双重条件</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">testAtomicStampedReference</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;--- 3. AtomicStampedReference 测试 (防ABA) ---&quot;</span>);</span><br><span class="line">        <span class="comment">// 初始值 A，初始版本号 1</span></span><br><span class="line">        AtomicStampedReference&lt;String&gt; data = <span class="keyword">new</span> <span class="title class_">AtomicStampedReference</span>&lt;&gt;(<span class="string">&quot;A&quot;</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 1. 先记录旧的版本号 (假设为线程 X 获取的)</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">oldStamp</span> <span class="operator">=</span> data.getStamp(); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 模拟潜藏的 ABA 操作 (别的线程偷偷改了数据又改回来)</span></span><br><span class="line">        <span class="comment">// A -&gt; B (版本号变成 2)</span></span><br><span class="line">        data.compareAndSet(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>, data.getStamp(), data.getStamp() + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// B -&gt; A (版本号变成 3)</span></span><br><span class="line">        data.compareAndSet(<span class="string">&quot;B&quot;</span>, <span class="string">&quot;A&quot;</span>, data.getStamp(), data.getStamp() + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 线程 X 睡醒了，拿着旧版本号 1 试图把 A 改成 C</span></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">isSuccess</span> <span class="operator">=</span> data.compareAndSet(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;C&quot;</span>, oldStamp, oldStamp + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 虽然此时值还是 &quot;A&quot;，但因为版本号已经变成了 3，对不上 oldStamp(1)，所以必然失败！</span></span><br><span class="line">        System.out.println(<span class="string">&quot;经历ABA后修改是否成功: &quot;</span> + isSuccess);</span><br><span class="line">        System.out.println(<span class="string">&quot;当前真实值: &quot;</span> + data.getReference() + <span class="string">&quot;，真实版本号: &quot;</span> + data.getStamp());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-4-小结"><a href="#3-4-小结" class="headerlink" title="3.4 小结"></a>3.4 小结</h3><p>并发编程的本质，其实就是我们在软件层面为底层硬件（CPU 缓存、线程调度、编译器优化）的“速度妥协”打补丁的过程。</p>
+<p>为了应对 JMM 带来的三大危机（可见性、原子性、有序性），Java 为我们提供了不同维度的解决工具。</p>
+<p>概括如下：</p>
+<p><strong>1. synchronized（悲观互斥锁）：</strong></p>
+<ul>
+<li>基于悲观并发策略，通过管程（Monitor）实现临界区的互斥访问。</li>
+<li>它能全面保证原子性、可见性与有序性，但线程阻塞与唤醒引起的上下文切换会导致较高的性能开销。</li>
+</ul>
+<p><strong>2. volatile（轻量同步原语）：</strong></p>
+<ul>
+<li>基于底层内存屏障机制，通过强制缓存刷新与失效保证变量的可见性，并借助 Happens-Before原则禁止指令重排。</li>
+<li>它轻量高效，但不具备互斥语义，无法保证复合操作的原子性。</li>
+</ul>
+<p><strong>3. CAS（乐观无锁机制）：</strong> </p>
+<ul>
+<li>基于乐观并发策略，调用底层 CPU 硬件指令完成比较与替换。</li>
+<li>它通过“自旋”重试实现了无锁化的原子操作，彻底消除了线程调度开销，但复杂状态流转下需引入版本号以规避 ABA 问题。</li>
+</ul>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li><p>ConcurrentHashMap 是 Java 专为高并发场景设计的高效哈希表。它严格禁止 key 和 value 为 null 以避免多线程下的“数据二义性”问题，并在底层摒弃了传统的全盘加锁，转而综合运用 synchronized、volatile 和 CAS 等技术，通过缩小锁粒度和读写分离，巧妙地平衡了数据安全性与极高的并发性能。</p>
+</li>
+<li><p>多线程并发问题的根源在于计算机软硬件为了追求速度而做出的妥协，这在 Java 内存模型（JMM）中集中爆发为三大危机：CPU 缓存未及时同步引发的“可见性盲区”、操作系统线程切换打断执行逻辑导致的“原子性失效”，以及编译器和 CPU 为了优化而随意打乱代码顺序破坏的“有序性危机”。</p>
+</li>
+<li><p>为了给底层硬件的“速度妥协”打补丁，Java 提供了三种不同维度的工具：</p>
+<ol>
+<li><strong>synchronized</strong> 作为悲观互斥锁能大包大揽地全面保证安全，但排队阻塞的性能开销较大；</li>
+<li><strong>volatile</strong> 借助内存屏障，轻量级地保证了变量的全局可见性与代码的有序性；</li>
+<li><strong>CAS</strong> 则直接调用底层硬件指令，以“自旋重试”实现了极速的无锁化原子操作。这三者也是构成各类并发容器的基石。</li>
+</ol>
+</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Like</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://likerhood.github.io/2026/05/12/035%20ConcurrentHashMap%E8%AF%AD%E6%B3%95%E5%92%8C%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80%E4%B8%B2%E8%AE%B2/">https://likerhood.github.io/2026/05/12/035%20ConcurrentHashMap%E8%AF%AD%E6%B3%95%E5%92%8C%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80%E4%B8%B2%E8%AE%B2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://likerhood.github.io" target="_blank">Liker's Blog</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/005javaconcurrentHashMap_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://fastly.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2026/05/11/036%20java%E7%9A%84%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E5%92%8C%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3/"><img class="next-cover" src="/img/004javaproxy_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Java 动态代理深度解析：从&quot;为什么&quot;到&quot;底层原理&quot;</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AD%A6%E4%B9%A0ConcurrentHashMap%E4%BD%BF%E7%94%A8%E5%92%8C%E5%B9%B6%E5%8F%91%EF%BC%88java%EF%BC%89"><span class="toc-text">学习ConcurrentHashMap使用和并发（java）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8ConcurrentHashMap"><span class="toc-text">一、 为什么用ConcurrentHashMap</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AF-ConcurrentHashMap"><span class="toc-text">1.1 什么是 ConcurrentHashMap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8ConcurrentHashMap"><span class="toc-text">1.2 为什么用ConcurrentHashMap</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81-%E8%AF%AD%E6%B3%95%E8%AE%B2%E8%A7%A3"><span class="toc-text">二、 语法讲解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%B8%B8%E7%94%A8-API-%E9%80%9F%E6%9F%A5"><span class="toc-text">2.1 常用 API 速查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%9C%BA%E6%99%AF%E4%B8%80%EF%BC%9A%E6%9C%AC%E5%9C%B0%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98-Local-Cache"><span class="toc-text">2.2 场景一：本地高并发缓存 (Local Cache)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E5%9C%BA%E6%99%AF%E4%BA%8C%EF%BC%9A%E5%AE%9E%E6%97%B6%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1%E6%B1%87%E6%80%BB"><span class="toc-text">2.3 场景二：实时数据统计汇总</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81-%E5%B9%B6%E5%8F%91%E5%92%8C%E9%94%81%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-text">三、 并发和锁的基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-text">3.1 java内存模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%9A%84%E4%B8%89%E5%A4%A7%E6%A0%B8%E5%BF%83%E5%8D%B1%E6%9C%BA"><span class="toc-text">3.2 并发编程的三大核心危机</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-1-%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98%EF%BC%9ACPU-%E7%BC%93%E5%AD%98%E5%BC%95%E5%8F%91%E7%9A%84%E2%80%9C%E7%9B%B2%E5%8C%BA%E2%80%9D"><span class="toc-text">3.2.1 可见性问题：CPU 缓存引发的“盲区”</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-2-%E5%8E%9F%E5%AD%90%E6%80%A7%E9%97%AE%E9%A2%98%EF%BC%9A%E7%BA%BF%E7%A8%8B%E5%88%87%E6%8D%A2%E5%B8%A6%E6%9D%A5%E7%9A%84%E2%80%9C%E5%8D%8A%E9%80%94%E8%80%8C%E5%BA%9F%E2%80%9D"><span class="toc-text">3.2.2 原子性问题：线程切换带来的“半途而废”</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-3-%E6%9C%89%E5%BA%8F%E6%80%A7%E9%97%AE%E9%A2%98%EF%BC%9A%E7%BC%96%E8%AF%91%E4%BC%98%E5%8C%96%E7%9A%84%E2%80%9C%E7%A7%BB%E8%8A%B1%E6%8E%A5%E6%9C%A8%E2%80%9D"><span class="toc-text">3.2.3 有序性问题：编译优化的“移花接木”</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E8%A7%A3%E5%86%B3%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98%E7%9A%84%E5%B7%A5%E5%85%B7"><span class="toc-text">3.3 解决并发问题的工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-1-synchronized%EF%BC%88%E5%AE%8F%E8%A7%82%E9%94%81%EF%BC%89"><span class="toc-text">3.3.1 synchronized（宏观锁）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-synchronized%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-text">1. synchronized是什么</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-synchronized%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-text">2. synchronized的作用</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8synchronized"><span class="toc-text">3. 如何使用synchronized</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-2-volatile-%E4%B8%8E-Happens-Before-%E5%8E%9F%E5%88%99"><span class="toc-text">3.3.2 volatile 与 Happens-Before 原则</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-volatile%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-text">1. volatile是什么</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-volatile%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-text">2. volatile的作用</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8volatile"><span class="toc-text">3. 如何使用volatile</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-3-CAS-Compare-And-Swap-%E6%97%A0%E9%94%81%E5%8C%96%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C"><span class="toc-text">3.3.3 CAS (Compare And Swap - 无锁化原子操作)</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-CAS-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-text">1. CAS 是什么</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-CAS%E6%9C%89%E4%BB%80%E4%B9%88%E4%BD%9C%E7%94%A8"><span class="toc-text">2. CAS有什么作用</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8"><span class="toc-text">3. 如何使用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E5%B0%8F%E7%BB%93"><span class="toc-text">3.4 小结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div></div></main><footer id="footer" style="background: #FFFFFF"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2026 By Like</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">Bcxm</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = async () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+      mermaid.initialize({ startOnLoad: false, theme: theme, securityLevel: 'loose' })
+
+      for (let i = 0; i < $mermaidWrap.length; i++) {
+        const item = $mermaidWrap[i]
+        const mermaidSrc = item.firstElementChild
+        const mermaidID = 'mermaid-' + i
+        const mermaidDefinition = mermaidSrc.textContent.trim()
+        try {
+          const result = await mermaid.render(mermaidID, mermaidDefinition)
+          const svgCode = result && result.svg ? result.svg : result
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        } catch (e) {
+          console.error('Mermaid render error:', mermaidID, e)
+        }
+      }
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://fastly.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/leancloud-storage@4.10.0/dist/av-min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
