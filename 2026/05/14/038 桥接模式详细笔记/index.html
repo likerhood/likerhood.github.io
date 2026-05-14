@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://likerhood.github.io/img/007javaqiaojie_cover.png">
 <meta property="article:published_time" content="2026-05-14T05:18:04.954Z">
-<meta property="article:modified_time" content="2026-05-14T05:20:08.451Z">
+<meta property="article:modified_time" content="2026-05-14T08:39:34.182Z">
 <meta property="article:author" content="Like">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://likerhood.github.io/img/007javaqiaojie_cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/05/14/038%20%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E7%BB%86%E7%AC%94%E8%AE%B0/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
@@ -52,7 +52,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2026-05-14 13:20:08'
+  postUpdate: '2026-05-14 16:39:34'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -150,7 +150,37 @@
 <p>支付渠道（微信&#x2F;支付宝）× 支付模式（密码&#x2F;刷脸&#x2F;指纹）&#x3D; 如果用继承需要 2×3&#x3D;6 个子类，<br>用桥接只需要 2+3&#x3D;5 个类，新增任何一侧都只加 1 个类。</p>
 </blockquote>
 <hr>
-<h2 id="二、标准体系结构图"><a href="#二、标准体系结构图" class="headerlink" title="二、标准体系结构图"></a>二、标准体系结构图</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">classDiagram</span><br><span class="line">    class Abstraction &#123;</span><br><span class="line">        &lt;&lt;abstract&gt;&gt;</span><br><span class="line">        #impl: Implementor</span><br><span class="line">        +Abstraction(impl: Implementor)</span><br><span class="line">        +operation() void</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class RefinedAbstraction &#123;</span><br><span class="line">        +operation() void</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class Implementor &#123;</span><br><span class="line">        &lt;&lt;interface&gt;&gt;</span><br><span class="line">        +operationImpl() void</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class ConcreteImplementorA &#123;</span><br><span class="line">        +operationImpl() void</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class ConcreteImplementorB &#123;</span><br><span class="line">        +operationImpl() void</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Abstraction &lt;|-- RefinedAbstraction : 继承</span><br><span class="line">    Abstraction o--&gt; Implementor : 桥（组合持有）</span><br><span class="line">    Implementor &lt;|.. ConcreteImplementorA : 实现</span><br><span class="line">    Implementor &lt;|.. ConcreteImplementorB : 实现</span><br></pre></td></tr></table></figure>
+<h2 id="二、标准体系结构图"><a href="#二、标准体系结构图" class="headerlink" title="二、标准体系结构图"></a>二、标准体系结构图</h2><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    class Abstraction {
+        &lt;&lt;abstract&gt;&gt;
+        #impl: Implementor
+        +Abstraction(impl: Implementor)
+        +operation() void
+    }
+
+    class RefinedAbstraction {
+        +operation() void
+    }
+
+    class Implementor {
+        &lt;&lt;interface&gt;&gt;
+        +operationImpl() void
+    }
+
+    class ConcreteImplementorA {
+        +operationImpl() void
+    }
+
+    class ConcreteImplementorB {
+        +operationImpl() void
+    }
+
+    Abstraction &lt;|-- RefinedAbstraction : 继承
+    Abstraction o--&gt; Implementor : 桥（组合持有）
+    Implementor &lt;|.. ConcreteImplementorA : 实现
+    Implementor &lt;|.. ConcreteImplementorB : 实现
+  </pre></div>
 
 <table>
 <thead>
@@ -224,10 +254,51 @@
 <h3 id="4-2-架构图"><a href="#4-2-架构图" class="headerlink" title="4.2 架构图"></a>4.2 架构图</h3><h4 id="4-2-1-面条代码架构图"><a href="#4-2-1-面条代码架构图" class="headerlink" title="4.2.1 面条代码架构图"></a>4.2.1 面条代码架构图</h4><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260514130442103.png" alt="image-20260514130442103"></p>
 <h4 id="4-2-2-桥接模式架构图"><a href="#4-2-2-桥接模式架构图" class="headerlink" title="4.2.2 桥接模式架构图"></a>4.2.2 桥接模式架构图</h4><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260514130502203.png" alt="image-20260514130502203"></p>
 <hr>
-<h3 id="4-3-时序图"><a href="#4-3-时序图" class="headerlink" title="4.3 时序图"></a>4.3 时序图</h3><h4 id="4-3-1-面条代码时序图"><a href="#4-3-1-面条代码时序图" class="headerlink" title="4.3.1 面条代码时序图"></a>4.3.1 面条代码时序图</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant Client as 客户端</span><br><span class="line">    participant PC as PayController</span><br><span class="line"></span><br><span class="line">    Client -&gt;&gt; PC: doPay(&quot;weixin_1092033111&quot;, &quot;100000109893&quot;, 100, 1, 2)</span><br><span class="line">    Note over PC: if (channelType == 1) 微信&lt;br/&gt;  if (modeType == 2) 人脸&lt;br/&gt;  → logger.info(&quot;人脸支付，风控校验脸部识别&quot;)&lt;br/&gt;  → logger.info(&quot;模拟微信渠道支付划账开始&quot;)</span><br><span class="line">    PC --&gt;&gt; Client: true</span><br><span class="line"></span><br><span class="line">    Client -&gt;&gt; PC: doPay(&quot;jlu19dlxo111&quot;, &quot;100000109894&quot;, 100, 2, 3)</span><br><span class="line">    Note over PC: else if (channelType == 2) 支付宝&lt;br/&gt;  if (modeType == 3) 指纹&lt;br/&gt;  → logger.info(&quot;指纹支付，风控校验指纹信息&quot;)&lt;br/&gt;  → logger.info(&quot;模拟支付宝渠道支付划账开始&quot;)</span><br><span class="line">    PC --&gt;&gt; Client: true</span><br></pre></td></tr></table></figure>
+<h3 id="4-3-时序图"><a href="#4-3-时序图" class="headerlink" title="4.3 时序图"></a>4.3 时序图</h3><h4 id="4-3-1-面条代码时序图"><a href="#4-3-1-面条代码时序图" class="headerlink" title="4.3.1 面条代码时序图"></a>4.3.1 面条代码时序图</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  sequenceDiagram
+    participant Client as 客户端
+    participant PC as PayController
+
+    Client -&gt;&gt; PC: doPay(&quot;weixin_1092033111&quot;, &quot;100000109893&quot;, 100, 1, 2)
+    Note over PC: if (channelType &#x3D;&#x3D; 1) 微信&lt;br&#x2F;&gt;  if (modeType &#x3D;&#x3D; 2) 人脸&lt;br&#x2F;&gt;  → logger.info(&quot;人脸支付，风控校验脸部识别&quot;)&lt;br&#x2F;&gt;  → logger.info(&quot;模拟微信渠道支付划账开始&quot;)
+    PC --&gt;&gt; Client: true
+
+    Client -&gt;&gt; PC: doPay(&quot;jlu19dlxo111&quot;, &quot;100000109894&quot;, 100, 2, 3)
+    Note over PC: else if (channelType &#x3D;&#x3D; 2) 支付宝&lt;br&#x2F;&gt;  if (modeType &#x3D;&#x3D; 3) 指纹&lt;br&#x2F;&gt;  → logger.info(&quot;指纹支付，风控校验指纹信息&quot;)&lt;br&#x2F;&gt;  → logger.info(&quot;模拟支付宝渠道支付划账开始&quot;)
+    PC --&gt;&gt; Client: true
+  </pre></div>
 
 <hr>
-<h4 id="4-3-2-桥接模式时序图"><a href="#4-3-2-桥接模式时序图" class="headerlink" title="4.3.2 桥接模式时序图"></a>4.3.2 桥接模式时序图</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant Client as 客户端</span><br><span class="line">    participant WxPay as WxPay（微信渠道）</span><br><span class="line">    participant Face as PayFaceMode（刷脸模式）</span><br><span class="line">    participant ZfbPay as ZfbPay（支付宝渠道）</span><br><span class="line">    participant Finger as PayFingerprintMode（指纹模式）</span><br><span class="line"></span><br><span class="line">    Note over Client: 场景一：微信 + 刷脸</span><br><span class="line">    Client -&gt;&gt; WxPay: new WxPay(new PayFaceMode())</span><br><span class="line">    Client -&gt;&gt; WxPay: transfer(&quot;weixin_1092033111&quot;, &quot;100000109893&quot;, 100)</span><br><span class="line">    WxPay -&gt;&gt; WxPay: logger.info(&quot;模拟微信渠道支付划账开始&quot;)</span><br><span class="line">    WxPay -&gt;&gt; Face: security(&quot;weixin_1092033111&quot;)</span><br><span class="line">    Face -&gt;&gt; Face: logger.info(&quot;人脸支付，风控校验脸部识别&quot;)</span><br><span class="line">    Face --&gt;&gt; WxPay: true</span><br><span class="line">    WxPay -&gt;&gt; WxPay: logger.info(&quot;模拟微信渠道支付风控校验 security:true&quot;)</span><br><span class="line">    WxPay -&gt;&gt; WxPay: logger.info(&quot;模拟微信渠道支付划账成功&quot;)</span><br><span class="line">    WxPay --&gt;&gt; Client: &quot;0000&quot;</span><br><span class="line"></span><br><span class="line">    Note over Client: 场景二：支付宝 + 指纹</span><br><span class="line">    Client -&gt;&gt; ZfbPay: new ZfbPay(new PayFingerprintMode())</span><br><span class="line">    Client -&gt;&gt; ZfbPay: transfer(&quot;jlu19dlxo111&quot;, &quot;100000109894&quot;, 100)</span><br><span class="line">    ZfbPay -&gt;&gt; ZfbPay: logger.info(&quot;模拟支付宝渠道支付划账开始&quot;)</span><br><span class="line">    ZfbPay -&gt;&gt; Finger: security(&quot;jlu19dlxo111&quot;)</span><br><span class="line">    Finger -&gt;&gt; Finger: logger.info(&quot;指纹支付，风控校验指纹信息&quot;)</span><br><span class="line">    Finger --&gt;&gt; ZfbPay: true</span><br><span class="line">    ZfbPay -&gt;&gt; ZfbPay: logger.info(&quot;模拟支付宝渠道支付风控校验 security:true&quot;)</span><br><span class="line">    ZfbPay -&gt;&gt; ZfbPay: logger.info(&quot;模拟支付宝渠道支付划账成功&quot;)</span><br><span class="line">    ZfbPay --&gt;&gt; Client: &quot;0000&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="4-3-2-桥接模式时序图"><a href="#4-3-2-桥接模式时序图" class="headerlink" title="4.3.2 桥接模式时序图"></a>4.3.2 桥接模式时序图</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  sequenceDiagram
+    participant Client as 客户端
+    participant WxPay as WxPay（微信渠道）
+    participant Face as PayFaceMode（刷脸模式）
+    participant ZfbPay as ZfbPay（支付宝渠道）
+    participant Finger as PayFingerprintMode（指纹模式）
+
+    Note over Client: 场景一：微信 + 刷脸
+    Client -&gt;&gt; WxPay: new WxPay(new PayFaceMode())
+    Client -&gt;&gt; WxPay: transfer(&quot;weixin_1092033111&quot;, &quot;100000109893&quot;, 100)
+    WxPay -&gt;&gt; WxPay: logger.info(&quot;模拟微信渠道支付划账开始&quot;)
+    WxPay -&gt;&gt; Face: security(&quot;weixin_1092033111&quot;)
+    Face -&gt;&gt; Face: logger.info(&quot;人脸支付，风控校验脸部识别&quot;)
+    Face --&gt;&gt; WxPay: true
+    WxPay -&gt;&gt; WxPay: logger.info(&quot;模拟微信渠道支付风控校验 security:true&quot;)
+    WxPay -&gt;&gt; WxPay: logger.info(&quot;模拟微信渠道支付划账成功&quot;)
+    WxPay --&gt;&gt; Client: &quot;0000&quot;
+
+    Note over Client: 场景二：支付宝 + 指纹
+    Client -&gt;&gt; ZfbPay: new ZfbPay(new PayFingerprintMode())
+    Client -&gt;&gt; ZfbPay: transfer(&quot;jlu19dlxo111&quot;, &quot;100000109894&quot;, 100)
+    ZfbPay -&gt;&gt; ZfbPay: logger.info(&quot;模拟支付宝渠道支付划账开始&quot;)
+    ZfbPay -&gt;&gt; Finger: security(&quot;jlu19dlxo111&quot;)
+    Finger -&gt;&gt; Finger: logger.info(&quot;指纹支付，风控校验指纹信息&quot;)
+    Finger --&gt;&gt; ZfbPay: true
+    ZfbPay -&gt;&gt; ZfbPay: logger.info(&quot;模拟支付宝渠道支付风控校验 security:true&quot;)
+    ZfbPay -&gt;&gt; ZfbPay: logger.info(&quot;模拟支付宝渠道支付划账成功&quot;)
+    ZfbPay --&gt;&gt; Client: &quot;0000&quot;
+  </pre></div>
 
 <hr>
 <h3 id="4-5-代码分析"><a href="#4-5-代码分析" class="headerlink" title="4.5 代码分析"></a>4.5 代码分析</h3><h4 id="4-5-1-面条代码（if-else-硬编码）"><a href="#4-5-1-面条代码（if-else-硬编码）" class="headerlink" title="4.5.1 面条代码（if-else &#x2F; 硬编码）"></a>4.5.1 面条代码（if-else &#x2F; 硬编码）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tutorials-10.0-1 PayController.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">doPay</span><span class="params">(String uId, String tradeId, BigDecimal amount, </span></span><br><span class="line"><span class="params">                     <span class="type">int</span> channelType, <span class="type">int</span> modeType)</span> &#123;</span><br><span class="line">    <span class="comment">// 渠道：微信</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="number">1</span> == channelType) &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;模拟微信渠道支付划账开始。uId：&#123;&#125; tradeId：&#123;&#125; amount：&#123;&#125;&quot;</span>, uId, tradeId, amount);</span><br><span class="line">        <span class="keyword">if</span> (<span class="number">1</span> == modeType) &#123;</span><br><span class="line">            logger.info(<span class="string">&quot;密码支付，风控校验环境安全&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="number">2</span> == modeType) &#123;</span><br><span class="line">            logger.info(<span class="string">&quot;人脸支付，风控校验脸部识别&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="number">3</span> == modeType) &#123;</span><br><span class="line">            logger.info(<span class="string">&quot;指纹支付，风控校验指纹信息&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 渠道：支付宝</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (<span class="number">2</span> == channelType) &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;模拟支付宝渠道支付划账开始。uId：&#123;&#125; tradeId：&#123;&#125; amount：&#123;&#125;&quot;</span>, uId, tradeId, amount);</span><br><span class="line">        <span class="keyword">if</span> (<span class="number">1</span> == modeType) &#123;</span><br><span class="line">            logger.info(<span class="string">&quot;密码支付，风控校验环境安全&quot;</span>);   <span class="comment">// ← 与微信完全重复！</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="number">2</span> == modeType) &#123;</span><br><span class="line">            logger.info(<span class="string">&quot;人脸支付，风控校验脸部识别&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="number">3</span> == modeType) &#123;</span><br><span class="line">            logger.info(<span class="string">&quot;指纹支付，风控校验指纹信息&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
