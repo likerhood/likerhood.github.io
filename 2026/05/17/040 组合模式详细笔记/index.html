@@ -1,0 +1,618 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>设计模式 · 组合模式（Composite Pattern）</title><meta name="author" content="Like"><meta name="copyright" content="Like"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="设计模式 · 组合模式（Composite Pattern）前言随着业务线的发展，系统中的判断逻辑变得越来越错综复杂。 今天产品要求“按性别发不同的优惠券”，明天要求“加上年龄段限制”，后天又追加了“新老用户身份”。 如果用传统的编程思维，这段代码很快就成为一座由无限嵌套 if-else 构成的“屎山”。 面对这种易变的规则嵌套，有没有一种优雅的设计能够打破僵局？ 组合模式（Composite P">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式 · 组合模式（Composite Pattern）">
+<meta property="og:url" content="https://likerhood.github.io/2026/05/17/040%20%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E8%AF%A6%E7%BB%86%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Liker&#39;s Blog">
+<meta property="og:description" content="设计模式 · 组合模式（Composite Pattern）前言随着业务线的发展，系统中的判断逻辑变得越来越错综复杂。 今天产品要求“按性别发不同的优惠券”，明天要求“加上年龄段限制”，后天又追加了“新老用户身份”。 如果用传统的编程思维，这段代码很快就成为一座由无限嵌套 if-else 构成的“屎山”。 面对这种易变的规则嵌套，有没有一种优雅的设计能够打破僵局？ 组合模式（Composite P">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likerhood.github.io/img/009javazuhe_cover.png">
+<meta property="article:published_time" content="2026-05-17T08:37:53.585Z">
+<meta property="article:modified_time" content="2026-05-17T08:51:39.496Z">
+<meta property="article:author" content="Like">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likerhood.github.io/img/009javazuhe_cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/05/17/040%20%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E8%AF%A6%E7%BB%86%E7%AC%94%E8%AE%B0/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Like","link":"链接: ","source":"来源: Liker's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '设计模式 · 组合模式（Composite Pattern）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-05-17 16:51:39'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Liker's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">设计模式 · 组合模式（Composite Pattern）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-05-17T08:37:53.585Z" title="发表于 2026-05-17 16:37:53">2026-05-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></span></div><div class="meta-secondline"></div></div></div><article class="post-content" id="article-container"><h1 id="设计模式-·-组合模式（Composite-Pattern）"><a href="#设计模式-·-组合模式（Composite-Pattern）" class="headerlink" title="设计模式 · 组合模式（Composite Pattern）"></a>设计模式 · 组合模式（Composite Pattern）</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>随着业务线的发展，系统中的判断逻辑变得越来越错综复杂。</p>
+<p>今天产品要求“按性别发不同的优惠券”，明天要求“加上年龄段限制”，后天又追加了“新老用户身份”。</p>
+<p>如果用传统的编程思维，这段代码很快就成为一座由无限嵌套 <code>if-else</code> 构成的“屎山”。</p>
+<p>面对这种易变的规则嵌套，有没有一种优雅的设计能够打破僵局？</p>
+<p><strong>组合模式（Composite Pattern）</strong> 给出了完美的答案。</p>
+<p>它通过将独立的业务逻辑抽象为原子节点，并像搭积木一样组合成一棵“决策树”，最精妙的是，它让外部调用方可以<strong>无差别地处理单个节点和复杂的树形结构</strong>。</p>
+<p>组合模式在实际业务中的经典场景：不同类型的决策节点（身份证校验、银行卡校验、手机号校验）可以<strong>自由组合</strong>成一棵服务树，不同调用方使用不同的树结构，而无需修改任何节点代码。</p>
+<blockquote>
+<p>本文代码链接：<a target="_blank" rel="noopener" href="https://github.com/likerhood/CodeDesignWork/tree/main/codedesign7.0-0">https://github.com/likerhood/CodeDesignWork/tree/main/codedesign7.0-0</a>  和7.0-1</p>
+</blockquote>
+<hr>
+<h2 id="一、核心定义"><a href="#一、核心定义" class="headerlink" title="一、核心定义"></a>一、核心定义</h2><p>组合模式（Composite Pattern）是一种用来组织“树形业务结构”的设计模式。</p>
+<p>它的核心思想是：<strong>把一个个独立的业务节点，按照树的方式组合起来，并且让外部调用方用同一种方式调用单个节点和整棵树。</strong></p>
+<p>放到你的业务场景里，可以这样理解：</p>
+<p>身份证校验、银行卡校验、手机号校验，都是一个个独立的“原子节点”。它们各自只负责一件事：</p>
+<ol>
+<li>身份证校验节点：判断身份证是否有效 </li>
+<li>银行卡校验节点：判断银行卡是否可用 </li>
+<li>手机号校验节点：判断手机号是否符合要求</li>
+</ol>
+<p>但是不同调用方需要的校验流程不一样。</p>
+<p>比如：</p>
+<ol>
+<li>实名认证场景： 身份证校验 -&gt; 银行卡校验 -&gt; 手机号校验 ；</li>
+<li>快捷注册场景： 手机号校验 -&gt; 身份证校验 ；</li>
+<li>绑卡场景： 身份证校验 -&gt; 银行卡校验。</li>
+</ol>
+<p>如果不用组合模式，代码里很容易写成大量 if else：</p>
+<blockquote>
+<p>如果是实名认证，执行 A、B、C 如果是快捷注册，执行 C、A 如果是绑卡，执行 A、B</p>
+</blockquote>
+<p>调用方越多，组合越多，代码就越乱。</p>
+<p>组合模式要解决的就是这个问题：<br><strong>节点本身保持稳定，业务变化通过“组合节点”来完成。</strong></p>
+<p>也就是说，身份证校验节点不用关心自己被谁调用，也不用关心自己前面或后面是谁。它只负责身份证校验。<strong>至于它和银行卡校验、手机号校验怎么组合，由外部的服务树决定。</strong></p>
+<blockquote>
+<p>组合模式最重要的地方不是“把对象放进集合”，而是：<br><strong>叶子节点和组合节点都实现同一个接口，所以调用方不需要区分当前拿到的是一个单独节点，还是一整棵服务树。</strong></p>
+</blockquote>
+<p>调用方只需要：<strong>执行根节点。</strong></p>
+<p>至于根节点下面挂了多少层、有哪些校验、按什么顺序执行，调用方都不用关心。</p>
+<p>所以，组合模式特别适合这种场景：</p>
+<blockquote>
+<p>业务节点相对稳定，但节点之间的组合方式经常变化。</p>
+</blockquote>
+<p>因此常见案例中，身份证校验、银行卡校验、手机号校验这些节点本身是稳定的；真正经常变化的是不同调用方需要不同的校验链路。</p>
+<p><strong>组合模式就是把这些节点搭成不同的树，让业务通过“换树结构”来变化，而不是通过“改节点代码”来变化。</strong></p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260515214643882.png" alt="image-20260515214643882"></p>
+<ul>
+<li>图片引用网址：<a target="_blank" rel="noopener" href="https://refactoringguru.cn/design-patterns/composite">组合设计模式</a></li>
+</ul>
+<hr>
+<h2 id="二、标准体系结构图"><a href="#二、标准体系结构图" class="headerlink" title="二、标准体系结构图"></a>二、标准体系结构图</h2><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    class Component {
+        &lt;&lt;interface&gt;&gt;
+        +operation() void
+    }
+
+    class Leaf {
+        +operation() void
+    }
+
+    class Composite {
+        -children: List~Component~
+        +add(c: Component) void
+        +remove(c: Component) void
+        +operation() void
+    }
+
+    Component &lt;|.. Leaf : 实现（叶节点）
+    Component &lt;|.. Composite : 实现（容器节点）
+    Composite o--&gt; Component : 组合持有子节点
+  </pre></div>
+
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>本案例对应</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Component（组件接口）</strong></td>
+<td><code>LogicFilter</code></td>
+<td>定义统一操作接口，叶节点和容器节点都实现它</td>
+</tr>
+<tr>
+<td><strong>Leaf（叶节点）</strong></td>
+<td><code>UserAgeFilter</code> &#x2F; <code>UserGenderFilter</code></td>
+<td>具体决策逻辑，树的末端可执行节点</td>
+</tr>
+<tr>
+<td><strong>Composite（容器节点）</strong></td>
+<td><code>TreeNode</code>（nodeType&#x3D;1）+ <code>EngineBase</code></td>
+<td>持有子节点引用，递归向下执行</td>
+</tr>
+<tr>
+<td><strong>Client（客户端）</strong></td>
+<td><code>TreeEngineHandle</code> + 测试类</td>
+<td>只操作根节点，不关心树内部结构</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三、场景推演"><a href="#三、场景推演" class="headerlink" title="三、场景推演"></a>三、场景推演</h2><p>根据前面提到的身份校验的案例，简单展示代码。</p>
+<p>身份证校验、银行卡校验、手机号校验，都是一个个独立的“原子节点”。它们各自只负责一件事：</p>
+<ol>
+<li>身份证校验节点：判断身份证是否有效 </li>
+<li>银行卡校验节点：判断银行卡是否可用 </li>
+<li>手机号校验节点：判断手机号是否符合要求</li>
+</ol>
+<p>不同调用方需要的校验流程：</p>
+<ol>
+<li>实名认证场景： 身份证校验 -&gt; 银行卡校验 -&gt; 手机号校验 ；</li>
+<li>快捷注册场景： 手机号校验 -&gt; 身份证校验 ；</li>
+<li>绑卡场景： 身份证校验 -&gt; 银行卡校验。</li>
+</ol>
+<p>接下来是代码案例：</p>
+<ol>
+<li><strong>定义统一的“接口”（树枝和树叶的共同标准）</strong></li>
+</ol>
+<p>不管是单独的“身份证校验”，还是包含一堆校验的“整棵服务树”，对外必须长得一样。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 统一的组件接口（Component）</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ValidationNode</span> &#123;</span><br><span class="line">    <span class="comment">// 所有的节点都必须提供一个统一的校验方法</span></span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">validate</span><span class="params">(String userId)</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>编写原子节点（叶子节点 &#x2F; Leaf）</strong></li>
+</ol>
+<p>这些就是你说的“稳定的业务节点”，它们只管干好自己的事，完全不知道自己会被放在哪里。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 身份证校验节点</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">IdCardValidationNode</span> <span class="keyword">implements</span> <span class="title class_">ValidationNode</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">validate</span><span class="params">(String userId)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;-&gt; 正在执行：身份证有效性校验...&quot;</span>);</span><br><span class="line">        <span class="comment">// 模拟调用公安接口等逻辑</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 银行卡校验节点</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BankCardValidationNode</span> <span class="keyword">implements</span> <span class="title class_">ValidationNode</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">validate</span><span class="params">(String userId)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;-&gt; 正在执行：银行卡状态校验...&quot;</span>);</span><br><span class="line">        <span class="comment">// 模拟调用银联接口等逻辑</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 手机号校验节点</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PhoneValidationNode</span> <span class="keyword">implements</span> <span class="title class_">ValidationNode</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">validate</span><span class="params">(String userId)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;-&gt; 正在执行：手机号风控校验...&quot;</span>);</span><br><span class="line">        <span class="comment">// 模拟调用运营商接口等逻辑</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>3. 编写组合节点（树枝节点 &#x2F; Composite）</strong></p>
+<p><strong>这是组合模式的灵魂！</strong> 这个类既是 <code>ValidationNode</code>（实现了接口），内部又包含了一个 <code>List&lt;ValidationNode&gt;</code>。它负责把叶子节点串起来。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 校验流程树（组合节点）</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ValidationFlow</span> <span class="keyword">implements</span> <span class="title class_">ValidationNode</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 内部持有一组节点，这些节点可以是叶子，也可以是另一棵子树！</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;ValidationNode&gt; nodes = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 提供添加节点的方法（搭积木）</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addNode</span><span class="params">(ValidationNode node)</span> &#123;</span><br><span class="line">        nodes.add(node);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 重写 validate 方法：它的逻辑就是按顺序执行内部所有的节点</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">validate</span><span class="params">(String userId)</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (ValidationNode node : nodes) &#123;</span><br><span class="line">            <span class="comment">// 如果某个节点校验失败，直接返回 false，阻断流程</span></span><br><span class="line">            <span class="keyword">if</span> (!node.validate(userId)) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;X 校验不通过，流程终止！&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><strong>外部调用方</strong></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">userId</span> <span class="operator">=</span> <span class="string">&quot;USER_10086&quot;</span>;</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;====== 场景一：实名认证 (身份证 -&gt; 银行卡 -&gt; 手机号) ======&quot;</span>);</span><br><span class="line">        <span class="type">ValidationFlow</span> <span class="variable">realNameFlow</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ValidationFlow</span>();</span><br><span class="line">        realNameFlow.addNode(<span class="keyword">new</span> <span class="title class_">IdCardValidationNode</span>());</span><br><span class="line">        realNameFlow.addNode(<span class="keyword">new</span> <span class="title class_">BankCardValidationNode</span>());</span><br><span class="line">        realNameFlow.addNode(<span class="keyword">new</span> <span class="title class_">PhoneValidationNode</span>());</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 调用方根本不在乎里面有几个步骤，直接调 validate</span></span><br><span class="line">        realNameFlow.validate(userId);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;\n====== 场景二：快捷注册 (手机号 -&gt; 身份证) ======&quot;</span>);</span><br><span class="line">        <span class="type">ValidationFlow</span> <span class="variable">quickRegFlow</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ValidationFlow</span>();</span><br><span class="line">        quickRegFlow.addNode(<span class="keyword">new</span> <span class="title class_">PhoneValidationNode</span>());</span><br><span class="line">        quickRegFlow.addNode(<span class="keyword">new</span> <span class="title class_">IdCardValidationNode</span>());</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 同样，直接调 validate</span></span><br><span class="line">        quickRegFlow.validate(userId);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;\n====== 场景三：极致套娃 (实名认证树 + 人脸识别) ======&quot;</span>);</span><br><span class="line">        <span class="comment">// 假设出了个新场景，要求在之前的&quot;实名认证&quot;基础上，再加一个人脸识别。</span></span><br><span class="line">        <span class="comment">// 因为 ValidationFlow 本身也是一个 ValidationNode，我们可以把&quot;树&quot;挂在&quot;树&quot;上！</span></span><br><span class="line">        </span><br><span class="line">        <span class="type">ValidationFlow</span> <span class="variable">superSafeFlow</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ValidationFlow</span>();</span><br><span class="line">        <span class="comment">// 把整棵场景一的树塞进去</span></span><br><span class="line">        superSafeFlow.addNode(realNameFlow); </span><br><span class="line">        <span class="comment">// 假设我们有个新节点叫 FaceRecognitionNode</span></span><br><span class="line">        <span class="comment">// superSafeFlow.addNode(new FaceRecognitionNode()); </span></span><br><span class="line">        </span><br><span class="line">        superSafeFlow.validate(userId);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>组合模式是的优势：</p>
+<ol>
+<li><strong>解耦</strong>：<code>IdCardValidationNode</code> 里的代码永远不需要修改，即使业务上多出 100 种排列组合。</li>
+<li><strong>多态</strong>：在 <code>ValidationFlow</code> 的 <code>for (ValidationNode node : nodes)</code> 循环里，引擎根本不知道正在执行的是具体的手机号校验，还是另一个嵌套的子流程，它只知道“这是一个可以 <code>validate()</code> 的东西”。</li>
+<li><strong>彻底消灭 <code>if-else</code></strong>：原本需要写在代码里的流程判断（<code>if 场景==实名...</code>），现在变成了单纯的“组装对象”。在真实的框架中，这种对象的组装通常可以通过读取数据库配置或 XML&#x2F;YAML 文件来动态完成，从而实现真正的“不发版改逻辑”。</li>
+</ol>
+<hr>
+<h2 id="四、实战案例"><a href="#四、实战案例" class="headerlink" title="四、实战案例"></a>四、实战案例</h2><h3 id="4-1-需求分析"><a href="#4-1-需求分析" class="headerlink" title="4.1 需求分析"></a>4.1 需求分析</h3><p>营销系统需要根据用户属性（性别、年龄）进行差异化发券：</p>
+<ul>
+<li><strong>男性 + 年龄 &lt; 25</strong> → 果实A（年轻男性优惠券）</li>
+<li><strong>男性 + 年龄 ≥ 25</strong> → 果实B（成熟男性优惠券）</li>
+<li><strong>女性 + 年龄 &lt; 25</strong> → 果实C（年轻女性优惠券）</li>
+<li><strong>女性 + 年龄 ≥ 25</strong> → 果实D（成熟女性优惠券）</li>
+</ul>
+<p><strong>业务会持续迭代</strong>：今天按性别，明天加年龄段，后天加婚育状况……每次迭代就往同一个方法里追加 if-else，最终演变成无法维护的”千行大法”。</p>
+<p>组合模式将每个判断条件抽象为独立的<strong>决策节点</strong>，通过配置<strong>树结构</strong>来描述业务规则，新增判断维度只需新增节点类并挂载到树上，原有代码无需改动。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260515214754479.png" alt="image-20260515214754479"></p>
+<ul>
+<li>图片引用来自：[重学 Java 设计模式：实战组合模式「营销差异化人群发券，决策树引擎搭建场景」 | 小傅哥 bugstack 虫洞栈](<a target="_blank" rel="noopener" href="https://bugstack.cn/md/develop/design-pattern/2020-06-08-%E9%87%8D%E5%AD%A6">https://bugstack.cn/md/develop/design-pattern/2020-06-08-重学</a> Java 设计模式《实战组合模式》.html)</li>
+</ul>
+<h4 id="4-1-1-数据结构设计"><a href="#4-1-1-数据结构设计" class="headerlink" title="4.1.1 数据结构设计"></a>4.1.1 数据结构设计</h4><p><strong>树的形状与整体架构（视觉直观图）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">TreeRoot</span><br><span class="line">  treeId = 10001</span><br><span class="line">  treeRootNodeId = 1  ← 入口</span><br><span class="line"> </span><br><span class="line">                    ┌─────────────────────────┐</span><br><span class="line">                    │      节点 1             │</span><br><span class="line">                    │  ruleKey = &quot;userGender&quot; │</span><br><span class="line">                    │  nodeType = 1 (叶子)    │</span><br><span class="line">                    └────────────┬────────────┘</span><br><span class="line">                                 │</span><br><span class="line">              ┌──────────────────┴──────────────────┐</span><br><span class="line">         == &quot;man&quot;                                == &quot;woman&quot;</span><br><span class="line">    (Link: 1→11)                              (Link: 1→12)</span><br><span class="line">              │                                      │</span><br><span class="line">  ┌───────────▼───────────┐          ┌───────────────▼───────────┐</span><br><span class="line">  │      节点 11          │          │          节点 12          │</span><br><span class="line">  │  ruleKey = &quot;userAge&quot;  │          │   ruleKey = &quot;userAge&quot;     │</span><br><span class="line">  │  nodeType = 1 (叶子)  │          │   nodeType = 1 (叶子)     │</span><br><span class="line">  └───────────┬───────────┘          └───────────────┬───────────┘</span><br><span class="line">              │                                      │</span><br><span class="line">       ┌──────┴──────┐                       ┌──────┴──────┐</span><br><span class="line">    &lt; 25           &gt;= 25                  &lt; 25           &gt;= 25</span><br><span class="line"> (Link:11→111)  (Link:11→112)         (Link:12→121)  (Link:12→122)</span><br><span class="line">       │               │                   │               │</span><br><span class="line">  ┌────▼────┐     ┌────▼────┐         ┌────▼────┐     ┌────▼────┐</span><br><span class="line">  │ 节点111 │     │ 节点112 │         │ 节点121 │     │ 节点122 │</span><br><span class="line">  │ 果实A   │     │ 果实B   │         │ 果实C   │     │ 果实D   │</span><br><span class="line">  │type=2   │     │type=2   │         │type=2   │     │type=2   │</span><br><span class="line">  └─────────┘     └─────────┘         └─────────┘     └─────────┘</span><br></pre></td></tr></table></figure>
+
+<p>树并不是像链表一样用对象指针连起来的，而是用一个 <strong>Map</strong> 拍平存放，节点之间的父子关系靠 <strong>TreeNodeLink</strong> 的 ID 引用来表达：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">treeNodeMap (HashMap)</span><br><span class="line">├── key=1   → TreeNode &#123; ruleKey=&quot;userGender&quot;, treeNodeLinkList=[Link(1→11), Link(1→12)] &#125;</span><br><span class="line">├── key=11  → TreeNode &#123; ruleKey=&quot;userAge&quot;,    treeNodeLinkList=[Link(11→111), Link(11→112)] &#125;</span><br><span class="line">├── key=12  → TreeNode &#123; ruleKey=&quot;userAge&quot;,    treeNodeLinkList=[Link(12→121), Link(12→122)] &#125;</span><br><span class="line">├── key=111 → TreeNode &#123; nodeType=2, nodeValue=&quot;果实A&quot;,  treeNodeLinkList=null &#125;</span><br><span class="line">├── key=112 → TreeNode &#123; nodeType=2, nodeValue=&quot;果实B&quot;,  treeNodeLinkList=null &#125;</span><br><span class="line">├── key=121 → TreeNode &#123; nodeType=2, nodeValue=&quot;果实C&quot;,  treeNodeLinkList=null &#125;</span><br><span class="line">└── key=122 → TreeNode &#123; nodeType=2, nodeValue=&quot;果实D&quot;,  treeNodeLinkList=null &#125;</span><br></pre></td></tr></table></figure>
+
+<p>引擎遍历时，上述两部分通过 <strong>TreeRich（整棵树）</strong> 对象组合在一起，缺一不可（没有 <code>TreeRoot</code> 就不知道从哪个节点起步；没有 <code>Map</code> 知道下一个ID也找不到对象）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">TreeRich（整棵树）</span><br><span class="line">│</span><br><span class="line">├── TreeRoot（树的身份 + 入口）</span><br><span class="line">│     treeId         = 10001</span><br><span class="line">│     treeRootNodeId = 1       ← 指向下面 Map 中 key=1 的节点</span><br><span class="line">│     treeName       = &quot;规则决策树&quot;</span><br><span class="line">│</span><br><span class="line">└── Map&lt;Long, TreeNode&gt;（所有节点的查找表）</span><br><span class="line">      │</span><br><span class="line">      ├── key=1  →  TreeNode（判断节点）</span><br><span class="line">      │               nodeType  = 1</span><br><span class="line">      │               ruleKey   = &quot;userGender&quot;</span><br><span class="line">      │               treeNodeLinkList:</span><br><span class="line">      │                 ├── TreeNodeLink &#123; 1→11, type=1, value=&quot;man&quot;   &#125;</span><br><span class="line">      │                 └── TreeNodeLink &#123; 1→12, type=1, value=&quot;woman&quot; &#125;</span><br><span class="line">      │</span><br><span class="line">      ├── key=11 →  TreeNode（判断节点）</span><br><span class="line">      │               nodeType  = 1</span><br><span class="line">      │               ruleKey   = &quot;userAge&quot;</span><br><span class="line">      │               treeNodeLinkList:</span><br><span class="line">      │                 ├── TreeNodeLink &#123; 11→111, type=3, value=&quot;25&quot; &#125;  (&lt; 25)</span><br><span class="line">      │                 └── TreeNodeLink &#123; 11→112, type=5, value=&quot;25&quot; &#125;  (&gt;= 25)</span><br><span class="line">      │</span><br><span class="line">      ├── key=12 →  TreeNode（判断节点）</span><br><span class="line">      │               nodeType  = 1</span><br><span class="line">      │               ruleKey   = &quot;userAge&quot;</span><br><span class="line">      │               treeNodeLinkList:</span><br><span class="line">      │                 ├── TreeNodeLink &#123; 12→121, type=3, value=&quot;25&quot; &#125;  (&lt; 25)</span><br><span class="line">      │                 └── TreeNodeLink &#123; 12→122, type=5, value=&quot;25&quot; &#125;  (&gt;= 25)</span><br><span class="line">      │</span><br><span class="line">      ├── key=111 → TreeNode（结果节点）</span><br><span class="line">      │               nodeType  = 2</span><br><span class="line">      │               nodeValue = &quot;果实A&quot;</span><br><span class="line">      │</span><br><span class="line">      ├── key=112 → TreeNode（结果节点）</span><br><span class="line">      │               nodeType  = 2</span><br><span class="line">      │               nodeValue = &quot;果实B&quot;</span><br><span class="line">      │</span><br><span class="line">      ├── key=121 → TreeNode（结果节点）</span><br><span class="line">      │               nodeType  = 2</span><br><span class="line">      │               nodeValue = &quot;果实C&quot;</span><br><span class="line">      │</span><br><span class="line">      └── key=122 → TreeNode（结果节点）</span><br><span class="line">                      nodeType  = 2</span><br><span class="line">                      nodeValue = &quot;果实D&quot;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>TreeRoot — 树的入口</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TreeRoot</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Long treeId;         <span class="comment">// 这棵树的ID</span></span><br><span class="line">    <span class="keyword">private</span> Long treeRootNodeId; <span class="comment">// 入口节点的ID</span></span><br><span class="line">    <span class="keyword">private</span> String treeName;     <span class="comment">// 树的名字</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它解决一个核心问题：<strong>引擎从哪里开始走？</strong></p>
+<p>Map 里面存了所有的节点，如果没有 <code>TreeRoot</code> 指定 <code>treeRootNodeId = 1</code>，引擎就不知道哪个是根节点。同时 <code>treeId</code> 和 <code>treeName</code> 是这棵树的”身份证”，用于日志记录和业务标识。</p>
+<hr>
+<p><strong>TreeNode — 节点内部结构</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">TreeNode 的所有字段：</span><br><span class="line"></span><br><span class="line">┌─────────────────────────────────────────────────────┐</span><br><span class="line">│  treeId          = 10001     ← 属于哪棵树             │</span><br><span class="line">│  treeNodeId      = 11        ← 自己的编号             │</span><br><span class="line">│  nodeType        = 1         ← 类型：1=判断节点       │</span><br><span class="line">│                                      2=结果节点       │</span><br><span class="line">│  ruleKey         = &quot;userAge&quot; ← 判断什么（只有type=1有）│</span><br><span class="line">│  ruleDesc        = &quot;用户年龄&quot; ← 描述（给人看的）      │</span><br><span class="line">│  nodeValue       = null      ← 结果值（只有type=2有） │</span><br><span class="line">│  treeNodeLinkList = [...]    ← 出口列表（只有type=1有）│</span><br><span class="line">└─────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>一个叶子节点（判断节点）内部的结构实例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">TreeNode (节点11)</span><br><span class="line">├── treeNodeId = 11</span><br><span class="line">├── nodeType = 1         ← &quot;我是中间节点，还有子节点&quot;</span><br><span class="line">├── ruleKey = &quot;userAge&quot;  ← &quot;引擎通过这个key找到 UserAgeFilter&quot;</span><br><span class="line">└── treeNodeLinkList</span><br><span class="line">      ├── TreeNodeLink</span><br><span class="line">      │     ├── nodeIdFrom     = 11</span><br><span class="line">      │     ├── nodeIdTo       = 111</span><br><span class="line">      │     ├── ruleLimitType  = 3   ← &quot;&lt;&quot;</span><br><span class="line">      │     └── ruleLimitValue = &quot;25&quot;</span><br><span class="line">      └── TreeNodeLink</span><br><span class="line">            ├── nodeIdFrom     = 11</span><br><span class="line">            ├── nodeIdTo       = 112</span><br><span class="line">            ├── ruleLimitType  = 5   ← &quot;&gt;=&quot;</span><br><span class="line">            └── ruleLimitValue = &quot;25&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键规律：<code>nodeType</code> 决定哪些字段有意义</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">nodeType = 1 (判断节点)          nodeType = 2 (结果节点)</span><br><span class="line">─────────────────────────        ─────────────────────────</span><br><span class="line">ruleKey        ✓ 有值            ruleKey        ✗ 无意义</span><br><span class="line">nodeValue      ✗ null            nodeValue      ✓ &quot;果实A&quot;</span><br><span class="line">treeNodeLinkList ✓ 有子链路      treeNodeLinkList ✗ null / 空</span><br></pre></td></tr></table></figure>
+
+<p>两种节点对比：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">节点11（判断节点）                 节点111（结果节点）</span><br><span class="line">treeNodeId  = 11                   treeNodeId  = 111</span><br><span class="line">nodeType    = 1                    nodeType    = 2</span><br><span class="line">ruleKey     = &quot;userAge&quot;  ← 有      ruleKey     = null      ← 无</span><br><span class="line">nodeValue   = null       ← 无      nodeValue   = &quot;果实A&quot;   ← 有</span><br><span class="line">links       = [两条链路] ← 有      links       = []        ← 无</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>TreeNodeLink — 节点之间的连线</strong></p>
+<p>一条 <code>TreeNodeLink</code> 就是树上的<strong>一根箭头</strong>，它本质上是把一个 if 条件拆成了三个字段来存，回答三个问题：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">TreeNodeLink &#123;</span><br><span class="line">    nodeIdFrom     = 11    ← 从哪出发</span><br><span class="line">    nodeIdTo       = 111   ← 到哪去</span><br><span class="line">    ruleLimitType  = 3     ← 什么条件下走这条路？（用数字表示运算符）</span><br><span class="line">    ruleLimitValue = &quot;25&quot;  ← 条件的比较值</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ruleLimitType</code> 对照表：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1  →  ==   等于        matterValue == &quot;25&quot;</span><br><span class="line">2  →  &gt;    大于        matterValue &gt;  25</span><br><span class="line">3  →  &lt;    小于        matterValue &lt;  25</span><br><span class="line">4  →  &lt;=   小于等于    matterValue &lt;= 25</span><br><span class="line">5  →  &gt;=   大于等于    matterValue &gt;= 25</span><br></pre></td></tr></table></figure>
+
+<p><strong>逻辑映射与举例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if ( age   &lt;    25  )</span><br><span class="line">      ↑     ↑    ↑</span><br><span class="line">  matterValue  ruleLimitType  ruleLimitValue</span><br></pre></td></tr></table></figure>
+
+<p>节点11（判断年龄）的两条出路对应 if-else：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Link A: nodeIdFrom=11, nodeIdTo=111, ruleLimitType=3, ruleLimitValue=&quot;25&quot;</span><br><span class="line">        含义：age &lt; 25  → 走向节点111（果实A）</span><br><span class="line"></span><br><span class="line">Link B: nodeIdFrom=11, nodeIdTo=112, ruleLimitType=5, ruleLimitValue=&quot;25&quot;</span><br><span class="line">        含义：age &gt;= 25 → 走向节点112（果实B）</span><br></pre></td></tr></table></figure>
+
+<p>翻译成 Java 代码逻辑即：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (age &lt; <span class="number">25</span>)  → 节点<span class="number">111</span></span><br><span class="line"><span class="keyword">if</span> (age &gt;= <span class="number">25</span>) → 节点<span class="number">112</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="4-1-2-相关算法设计"><a href="#4-1-2-相关算法设计" class="headerlink" title="4.1.2 相关算法设计"></a>4.1.2 相关算法设计</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    class IEngine {
+        &lt;&lt;interface&gt;&gt;
+        +process(treeId, userId, treeRich, decisionMatter) EngineResult
+    }
+
+    class LogicFilter {
+        &lt;&lt;interface&gt;&gt;
+        +filter(matterValue, treeNodeLinkList) Long
+        +matterValue(treeId, userId, decisionMatter) String
+    }
+
+    class EngineConfig {
+        +Map~String,LogicFilter~ logicFilterMap$
+    }
+
+    class EngineBase {
+        &lt;&lt;abstract&gt;&gt;
+        +process(treeId, userId, treeRich, decisionMatter) EngineResult*
+        #engineDecisionMaker(treeRich, treeId, userId, decisionMatter) TreeNode
+    }
+
+    class BaseLogic {
+        &lt;&lt;abstract&gt;&gt;
+        +filter(matterValue, treeNodeLinkList) Long
+        -decisionLogic(matterValue, nodeLink) boolean
+        +matterValue(treeId, userId, decisionMatter) String*
+    }
+
+    class TreeEngineHandler {
+        +process(treeId, userId, treeRich, decisionMatter) EngineResult
+    }
+
+    class UserGenderFilter {
+        +matterValue(treeId, userId, decisionMatter) String
+    }
+
+    class UserAgeFilter {
+        +matterValue(treeId, userId, decisionMatter) String
+    }
+
+    IEngine &lt;|.. EngineBase
+    EngineConfig &lt;|-- EngineBase
+    EngineBase &lt;|-- TreeEngineHandler
+    LogicFilter &lt;|.. BaseLogic
+    BaseLogic &lt;|-- UserGenderFilter
+    BaseLogic &lt;|-- UserAgeFilter
+    EngineConfig o-- LogicFilter : logicFilterMap
+  </pre></div>
+
+<p><strong>核心思路：把 <code>if-else</code> 翻译成数据</strong></p>
+<p>原始代码里的每一个 <code>if-else</code> 分支，在这里都被拆成了三个对象</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">原来的 if-else：</span><br><span class="line"></span><br><span class="line">if (gender == &quot;man&quot;) &#123;</span><br><span class="line">    if (age &lt; 25) &#123;</span><br><span class="line">        return &quot;果实A&quot;;         这3层判断</span><br><span class="line">    &#125; else &#123;                    被翻译成</span><br><span class="line">        return &quot;果实B&quot;;               ↓</span><br><span class="line">    &#125;                          3种数据对象</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">翻译之后：</span><br><span class="line"></span><br><span class="line">TreeNode（节点）      → 代表&quot;在这里做一个判断&quot;</span><br><span class="line">TreeNodeLink（连线）  → 代表&quot;满足什么条件，走哪条路&quot;</span><br><span class="line">TreeRoot（树根）      → 代表&quot;从哪里开始判断&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么要翻译成数据？</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if-else 的问题：                 数据化之后：</span><br><span class="line">─────────────────────────────  ──────────────────────────────</span><br><span class="line">逻辑写死在代码里                 逻辑存在数据里（可以存数据库）</span><br><span class="line">改规则 = 改代码 + 重新部署        改规则 = 改一条数据库记录</span><br><span class="line">加新判断层 = 改代码              加新判断层 = 插入新节点数据</span><br><span class="line">不同业务不同规则 = 复制代码      不同业务 = 传不同的 TreeRich</span><br></pre></td></tr></table></figure>
+
+<p><strong>数据结构的精妙之处：用 Map 拍平存储</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">不用对象引用连接（链表思维）：</span><br><span class="line">  节点1 → &#123; 子节点引用: [节点11对象, 节点12对象] &#125;</span><br><span class="line">            ↑ 对象直接持有对象，无法持久化到数据库</span><br><span class="line"></span><br><span class="line">用 Map + ID 引用（数据库思维）：</span><br><span class="line">  Map &#123;</span><br><span class="line">    1   → 节点1对象  &#123; links: [1→11, 1→12] &#125;   ← 存 ID，不存对象</span><br><span class="line">    11  → 节点11对象 &#123; links: [11→111, 11→112] &#125;</span><br><span class="line">    111 → 节点111对象 &#123; nodeValue: &quot;果实A&quot; &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ↑ 完美对应数据库表结构，加载进来直接能用</span><br></pre></td></tr></table></figure>
+
+<p><strong>四个类的职责一句话总结：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">TreeNode     → 节点本身（我是谁，我判断什么，我有哪些出口）</span><br><span class="line">TreeNodeLink → 一条带条件的出口（满足什么条件，去哪个节点）</span><br><span class="line">TreeRoot     → 树的身份证（整棵树叫什么，从哪个节点进入）</span><br><span class="line">TreeRich     → 打包盒（把 TreeRoot 和所有节点装在一起传递）</span><br></pre></td></tr></table></figure>
+
+<p><strong>组合模式引擎设计与核心思路：把”变化的部分”和”不变的部分”分离</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">不变的部分（所有引擎都一样）：     变化的部分（每种规则不同）：</span><br><span class="line">────────────────────────────────   ────────────────────────────────</span><br><span class="line">遍历树的 while 循环算法             取哪个字段（gender? age? level?）</span><br><span class="line">按 ruleKey 查找 Filter             </span><br><span class="line">按 nodeType 判断是否到终点         </span><br></pre></td></tr></table></figure>
+
+<p><strong>继承体系如何实现这个分离：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">      IEngine（接口）</span><br><span class="line">          │</span><br><span class="line">          │ &quot;我保证对外提供 process() 能力&quot;</span><br><span class="line">          │</span><br><span class="line">  EngineBase（抽象类）</span><br><span class="line">  ├── extends EngineConfig  → 获得 logicFilterMap 注册表</span><br><span class="line">  ├── process() abstract    → 强制子类实现结果包装</span><br><span class="line">  └── engineDecisionMaker() → 遍历算法，所有子类共用</span><br><span class="line">          │</span><br><span class="line">          │ extends</span><br><span class="line">          │</span><br><span class="line">TreeEngineHandler（具体类）</span><br><span class="line">└── process()  → 调用遍历算法 + 包装 EngineResult</span><br></pre></td></tr></table></figure>
+
+<p><strong>LogicFilter 体系如何实现”取值”的扩展：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">          LogicFilter（接口）</span><br><span class="line">          ├── filter()      → &quot;我能比较&quot;</span><br><span class="line">          └── matterValue() → &quot;我能取值&quot;</span><br><span class="line">                  │</span><br><span class="line">          BaseLogic（抽象类）</span><br><span class="line">          ├── filter() ✅ 实现  → 比较逻辑对所有节点通用，写一次</span><br><span class="line">          └── matterValue() ❌  → 每种节点取不同字段，留给子类</span><br><span class="line">                  │</span><br><span class="line">          ┌───────┴────────┐</span><br><span class="line">UserGenderFilter    UserAgeFilter</span><br><span class="line">matterValue()✅      matterValue()✅</span><br><span class="line">取 &quot;gender&quot;          取 &quot;age&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>组合模式的价值体现在扩展时：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">现在（2个判断维度）：        将来（加第3个维度，比如城市）：</span><br><span class="line">────────────────────────     ────────────────────────────────</span><br><span class="line">UserGenderFilter             UserGenderFilter   ← 不动</span><br><span class="line">UserAgeFilter                UserAgeFilter      ← 不动</span><br><span class="line">                             UserCityFilter     ← 新增1个文件</span><br><span class="line">                             EngineConfig 加1行  ← 只改1行</span><br><span class="line"></span><br><span class="line">所有已有代码：零修改</span><br></pre></td></tr></table></figure>
+
+<p><strong>树的遍历检索算法本质：带条件跳转的 while 循环</strong></p>
+<p>这里没有用递归，而是用 <code>while</code> 循环，原因是规则树是<strong>单向的</strong>（只会从根走向叶子，不会回头），用循环比递归更直观、更安全（不会有栈溢出风险）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">算法流程：</span><br><span class="line"></span><br><span class="line">START</span><br><span class="line">  │</span><br><span class="line">  ▼</span><br><span class="line">从 treeRootNodeId 取得入口节点</span><br><span class="line">  │</span><br><span class="line">  ▼</span><br><span class="line">┌─────────────────────────────┐</span><br><span class="line">│  nodeType == 1 ? (判断节点) │──── NO ──→ 返回当前节点（果实）→ END</span><br><span class="line">└──────────┬──────────────────┘</span><br><span class="line">           │ YES</span><br><span class="line">           ▼</span><br><span class="line">   ruleKey → logicFilterMap → 找到 Filter</span><br><span class="line">           │</span><br><span class="line">           ▼</span><br><span class="line">   Filter.matterValue() → 取出用户属性值（如 &quot;man&quot;）</span><br><span class="line">           │</span><br><span class="line">           ▼</span><br><span class="line">   Filter.filter() → 遍历所有 Link，找满足条件的那条</span><br><span class="line">           │</span><br><span class="line">           ▼</span><br><span class="line">   treeNodeMap.get(nextNodeId) → 跳到下一节点</span><br><span class="line">           │</span><br><span class="line">           └──────────────────────→ 回到循环顶部</span><br></pre></td></tr></table></figure>
+
+<p><strong>算法中最关键的一行：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">LogicFilter</span> <span class="variable">logicFilter</span> <span class="operator">=</span> logicFilterMap.get(ruleKey);</span><br></pre></td></tr></table></figure>
+
+<p>这一行完成了<strong>从”数据”到”行为”的桥接</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">树节点上存的是字符串 &quot;userAge&quot;</span><br><span class="line">                    ↓</span><br><span class="line">          logicFilterMap.get(&quot;userAge&quot;)</span><br><span class="line">                    ↓</span><br><span class="line">          拿到 UserAgeFilter 对象</span><br><span class="line">                    ↓</span><br><span class="line">          调用它的 matterValue() 和 filter()</span><br></pre></td></tr></table></figure>
+
+<p>没有任何 <code>if-else</code> 判断是哪种节点，Map 查找直接解决了分支问题。</p>
+<p><strong><code>filter()</code> 内部的匹配算法：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">遍历当前节点的所有出口链路：</span><br><span class="line"></span><br><span class="line">Link1: (&lt; 25)   ──→ decisionLogic(&quot;29&quot;, Link1) → 29 &lt; 25 → false → 跳过</span><br><span class="line">Link2: (&gt;= 25)  ──→ decisionLogic(&quot;29&quot;, Link2) → 29 &gt;= 25 → true → 立刻返回 Link2.nodeIdTo</span><br><span class="line"></span><br><span class="line">找到第一条满足条件的就返回，后面的不再检查</span><br><span class="line">（因为所有条件是互斥的，找到一条就够了）</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>EngineConfig</code> 配置设计核心思路：集中注册，统一查找</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> Map&lt;String, LogicFilter&gt; logicFilterMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    logicFilterMap = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line">    logicFilterMap.put(<span class="string">&quot;userAge&quot;</span>,    <span class="keyword">new</span> <span class="title class_">UserAgeFilter</span>());</span><br><span class="line">    logicFilterMap.put(<span class="string">&quot;userGender&quot;</span>, <span class="keyword">new</span> <span class="title class_">UserGenderFilter</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>三个技术细节：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">static 字段：</span><br><span class="line">  属于类本身，不属于任何一个对象实例</span><br><span class="line">  所有继承 EngineConfig 的子类共享同一份 Map</span><br><span class="line">  整个程序只有这一份注册表 ✓</span><br><span class="line"></span><br><span class="line">static 代码块：</span><br><span class="line">  JVM 加载这个类时执行一次，且只执行一次</span><br><span class="line">  Filter 对象只被 new 一次，不会重复创建 ✓</span><br><span class="line"></span><br><span class="line">ConcurrentHashMap：</span><br><span class="line">  线程安全，多个请求同时进来不会出问题</span><br><span class="line">  生产环境必须考虑并发，普通 HashMap 会出 bug ✓</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置类的位置为什么在 <code>EngineBase</code> 和具体 Filter 之间：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Filter 层（知道怎么取值、比较）</span><br><span class="line">      ↑ 被注册进去</span><br><span class="line">EngineConfig（注册中心，Map 存放所有 Filter）</span><br><span class="line">      ↑ 被继承</span><br><span class="line">EngineBase（遍历算法，直接用 logicFilterMap）</span><br><span class="line">      ↑ 被继承</span><br><span class="line">TreeEngineHandler（具体引擎，包装结果）</span><br></pre></td></tr></table></figure>
+
+<p>这个顺序保证了：<strong>引擎能直接用注册表，注册表知道所有 Filter，但引擎不需要直接依赖每一个具体 Filter 类</strong>。</p>
+<p><strong>三个设计的整体关系</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">数据结构设计          引擎设计                算法设计</span><br><span class="line">──────────────        ──────────────          ──────────────</span><br><span class="line">TreeRich 装载         IEngine 对外暴露        while 循环遍历</span><br><span class="line">  规则树数据    →     process() 接口    →     按 ruleKey 查 Filter</span><br><span class="line">                                             按 Link 条件跳转</span><br><span class="line">TreeNode 描述         EngineBase 实现          </span><br><span class="line">  节点和出口    →     遍历算法           →    matterValue 取值</span><br><span class="line">                                             filter 比较跳转</span><br><span class="line">TreeNodeLink 描述     LogicFilter 体系</span><br><span class="line">  条件和目标    →     取值 + 比较        →    找到果实节点返回</span><br><span class="line"></span><br><span class="line">三者缺一不可：</span><br><span class="line">没有数据结构 → 无法描述规则</span><br><span class="line">没有引擎设计 → 无法扩展新规则</span><br><span class="line">没有遍历算法 → 无法执行判断</span><br></pre></td></tr></table></figure>
+
+<p><strong>核心组件理解确认</strong></p>
+<p><strong><code>IEngine</code></strong> — 所有规则树引擎都要实现这个接口，不管是用户信息树、学历树还是其他什么树，对外都暴露同一个 <code>process()</code> 方法，调用方不需要关心内部是什么树。</p>
+<p><strong><code>EngineConfig</code></strong> — 基本正确，但不是严格的单例模式。它用 <code>static</code> 保证 <code>logicFilterMap</code> 只有一份，让所有继承它的子类共用同一个注册表。严格单例是控制对象实例只有一个，这里控制的是 Map 数据只有一份，思路相同但写法略有区别。</p>
+<p><strong><code>EngineBase</code></strong> — 完全正确。抽象类可以继承普通类，也可以实现接口，同时把接口方法继续声明为 abstract 强制子类实现。自己写的 <code>engineDecisionMaker</code> 是所有子类共用的遍历算法，子类直接调用，不重复写。</p>
+<p><strong>新加一棵规则树的扩展方式</strong></p>
+<p>假设现在要加一棵<strong>学历规则树</strong>，判断逻辑是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">节点1：判断学历 (ruleKey = &quot;userEducation&quot;)</span><br><span class="line">  ├── == &quot;bachelor&quot; → 节点11</span><br><span class="line">  └── == &quot;master&quot;   → 节点12</span><br><span class="line"></span><br><span class="line">节点11：判断工作年限 (ruleKey = &quot;userWorkYear&quot;)</span><br><span class="line">  ├── &lt; 3  → 果实X（初级岗）</span><br><span class="line">  └── &gt;= 3 → 果实Y（中级岗）</span><br><span class="line"></span><br><span class="line">节点12：直接是果实Z（高级岗）</span><br></pre></td></tr></table></figure>
+
+<p><strong>只需要做两件事：</strong></p>
+<p><strong>新增 Filter 类</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 新增：UserEducationFilter.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserEducationFilter</span> <span class="keyword">extends</span> <span class="title class_">BaseLogic</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">matterValue</span><span class="params">(Long treeId, String userId, Map&lt;String, String&gt; decisionMatter)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> decisionMatter.get(<span class="string">&quot;education&quot;</span>); <span class="comment">// 只加这一个文件</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 新增：UserWorkYearFilter.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserWorkYearFilter</span> <span class="keyword">extends</span> <span class="title class_">BaseLogic</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">matterValue</span><span class="params">(Long treeId, String userId, Map&lt;String, String&gt; decisionMatter)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> decisionMatter.get(<span class="string">&quot;workYear&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>在 <code>EngineConfig</code> 注册</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    logicFilterMap = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line">    logicFilterMap.put(<span class="string">&quot;userAge&quot;</span>,       <span class="keyword">new</span> <span class="title class_">UserAgeFilter</span>());</span><br><span class="line">    logicFilterMap.put(<span class="string">&quot;userGender&quot;</span>,    <span class="keyword">new</span> <span class="title class_">UserGenderFilter</span>());</span><br><span class="line">    logicFilterMap.put(<span class="string">&quot;userEducation&quot;</span>, <span class="keyword">new</span> <span class="title class_">UserEducationFilter</span>()); <span class="comment">// ← 加这一行</span></span><br><span class="line">    logicFilterMap.put(<span class="string">&quot;userWorkYear&quot;</span>,  <span class="keyword">new</span> <span class="title class_">UserWorkYearFilter</span>());  <span class="comment">// ← 加这一行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>其他所有代码零修改</strong>。引擎遍历时遇到 <code>ruleKey=&quot;userEducation&quot;</code> 自动就能找到对应的 Filter。</p>
+<p><strong>在原有规则树上新增判断维度的扩展方式</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">                    原始 if-else 设计</span><br><span class="line">────────────────────────────────────────────────────</span><br><span class="line">加新判断维度：   进 EngineController 改代码 ✗</span><br><span class="line">加新规则树：     复制粘贴一个新的 Controller ✗</span><br><span class="line">多人协作：       改同一个文件，代码冲突 ✗</span><br><span class="line">单元测试：       整个方法耦合在一起，难以测试 ✗</span><br><span class="line"></span><br><span class="line">                    现在的设计</span><br><span class="line">────────────────────────────────────────────────────</span><br><span class="line">加新判断维度：   新增一个 Filter 文件 + 注册一行 ✓</span><br><span class="line">加新规则树：     新增一个 EngineHandler 文件 ✓</span><br><span class="line">多人协作：       每人负责自己的 Filter 文件，互不干扰 ✓</span><br><span class="line">单元测试：       每个 Filter 独立测试，引擎独立测试 ✓</span><br></pre></td></tr></table></figure>
+
+<p><strong>核心原则是”开闭原则”</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">对扩展开放  → 可以随时加新的 Filter、新的 Engine</span><br><span class="line">对修改关闭  → 加新东西不需要改已有代码</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="4-2-架构图"><a href="#4-2-架构图" class="headerlink" title="4.2 架构图"></a>4.2 架构图</h3><h4 id="4-2-1-面条代码架构图"><a href="#4-2-1-面条代码架构图" class="headerlink" title="4.2.1 面条代码架构图"></a>4.2.1 面条代码架构图</h4><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260515215904033.png" alt="image-20260515215904033"></p>
+<h4 id="4-2-2-组合模式架构图"><a href="#4-2-2-组合模式架构图" class="headerlink" title="4.2.2 组合模式架构图"></a>4.2.2 组合模式架构图</h4><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260515222317467.png" alt="image-20260515222317467"></p>
+<hr>
+<h3 id="4-3-时序图"><a href="#4-3-时序图" class="headerlink" title="4.3 时序图"></a>4.3 时序图</h3><h4 id="4-3-1-面条代码时序图"><a href="#4-3-1-面条代码时序图" class="headerlink" title="4.3.1 面条代码时序图"></a>4.3.1 面条代码时序图</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  sequenceDiagram
+    participant Client as 客户端
+    participant EC as EngineController
+
+    Client -&gt;&gt; EC: process(&quot;Oli09pLkdjh&quot;, &quot;man&quot;, 29)
+    Note over EC: if (&quot;man&quot;.equals(userSex))&lt;br&#x2F;&gt;  if (userAge &gt;&#x3D; 25)  → return &quot;果实B&quot;
+    EC --&gt;&gt; Client: &quot;果实B&quot;
+
+    Note over Client,EC: 规则逻辑全部内联，调用方需传入具体字段值&lt;br&#x2F;&gt;修改规则 &#x3D; 修改 process 方法本身
+  </pre></div>
+
+<hr>
+<h4 id="4-3-2-组合模式时序图"><a href="#4-3-2-组合模式时序图" class="headerlink" title="4.3.2 组合模式时序图"></a>4.3.2 组合模式时序图</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  sequenceDiagram
+    participant Client as 客户端
+    participant Engine as TreeEngineHandle
+    participant Base as EngineBase
+    participant GenderF as UserGenderFilter
+    participant AgeF as UserAgeFilter
+    participant Tree as TreeRich&#x2F;TreeNode
+
+    Client -&gt;&gt; Engine: process(10001L, &quot;Oli09pLkdjh&quot;, treeRich, {gender:man, age:29})
+    Engine -&gt;&gt; Base: engineDecisionMaker(treeRich, treeId, userId, decisionMatter)
+
+    Note over Base: 从根节点1开始，nodeType&#x3D;1（子叶），进入循环
+
+    Base -&gt;&gt; Tree: 取节点1，ruleKey&#x3D;&quot;userGender&quot;
+    Base -&gt;&gt; GenderF: matterValue(10001, &quot;Oli09pLkdjh&quot;, {gender:man, age:29})
+    GenderF --&gt;&gt; Base: &quot;man&quot;
+    Base -&gt;&gt; GenderF: filter(&quot;man&quot;, links[→11(man), →12(woman)])
+    Note over GenderF: &quot;man&quot;.equals(&quot;man&quot;) → true，返回 nodeIdTo&#x3D;11
+    GenderF --&gt;&gt; Base: 11L
+
+    Base -&gt;&gt; Tree: 取节点11，ruleKey&#x3D;&quot;userAge&quot;
+    Note over Base: nodeType&#x3D;1，继续循环
+
+    Base -&gt;&gt; AgeF: matterValue(10001, &quot;Oli09pLkdjh&quot;, {gender:man, age:29})
+    AgeF --&gt;&gt; Base: &quot;29&quot;
+    Base -&gt;&gt; AgeF: filter(&quot;29&quot;, links[→111(&lt;25), →112(&gt;&#x3D;25)])
+    Note over AgeF: 29 &gt;&#x3D; 25 → case5 成立，返回 nodeIdTo&#x3D;112
+    AgeF --&gt;&gt; Base: 112L
+
+    Base -&gt;&gt; Tree: 取节点112，nodeType&#x3D;2（果实），退出循环
+    Base --&gt;&gt; Engine: TreeNode(nodeId&#x3D;112, nodeValue&#x3D;&quot;果实B&quot;)
+
+    Engine --&gt;&gt; Client: EngineResult(userId, treeId&#x3D;10001, nodeId&#x3D;112, nodeValue&#x3D;&quot;果实B&quot;)
+  </pre></div>
+
+<hr>
+<h3 id="4-4-代码分析"><a href="#4-4-代码分析" class="headerlink" title="4.4 代码分析"></a>4.4 代码分析</h3><h4 id="4-4-1-面条代码（if-else-硬编码）"><a href="#4-4-1-面条代码（if-else-硬编码）" class="headerlink" title="4.4.1 面条代码（if-else &#x2F; 硬编码）"></a>4.4.1 面条代码（if-else &#x2F; 硬编码）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tutorials-11.0-1 EngineController.java</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">process</span><span class="params">(<span class="keyword">final</span> String userId, <span class="keyword">final</span> String userSex, <span class="keyword">final</span> <span class="type">int</span> userAge)</span> &#123;</span><br><span class="line"></span><br><span class="line">    logger.info(<span class="string">&quot;ifelse实现方式判断用户结果。userId：&#123;&#125; userSex：&#123;&#125; userAge：&#123;&#125;&quot;</span>, userId, userSex, userAge);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&quot;man&quot;</span>.equals(userSex)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (userAge &lt; <span class="number">25</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;果实A&quot;</span>;   <span class="comment">// 硬编码：性别man AND 年龄&lt;25</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (userAge &gt;= <span class="number">25</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;果实B&quot;</span>;   <span class="comment">// 硬编码：性别man AND 年龄&gt;=25</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&quot;woman&quot;</span>.equals(userSex)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (userAge &lt; <span class="number">25</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;果实C&quot;</span>;   <span class="comment">// 硬编码：性别woman AND 年龄&lt;25</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (userAge &gt;= <span class="number">25</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;果实D&quot;</span>;   <span class="comment">// 硬编码：性别woman AND 年龄&gt;=25</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>问题清单（真实业务演进过程）：</strong></p>
+<table>
+<thead>
+<tr>
+<th>迭代</th>
+<th>产品需求</th>
+<th>代码影响</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>第1次</td>
+<td>按性别发不同优惠券</td>
+<td>加2个 if 分支</td>
+</tr>
+<tr>
+<td>第2次</td>
+<td>再按年龄细分</td>
+<td>嵌套 if，分支数×2</td>
+</tr>
+<tr>
+<td>第3次</td>
+<td>加婚育状况</td>
+<td>继续嵌套，分支数再×3</td>
+</tr>
+<tr>
+<td>第4次</td>
+<td>调整年龄阈值</td>
+<td>全文搜索魔法数字，极易改错</td>
+</tr>
+<tr>
+<td>第5次</td>
+<td>值粘错位置</td>
+<td>线上 bug，客诉</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="4-4-2-组合模式代码"><a href="#4-4-2-组合模式代码" class="headerlink" title="4.4.2 组合模式代码"></a>4.4.2 组合模式代码</h4><p><strong>（1）数据模型层：树的数据结构</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TreeNode.java - 节点有两种类型</span></span><br><span class="line"><span class="comment">// nodeType=1: 子叶节点（带判断逻辑，有子链路）</span></span><br><span class="line"><span class="comment">// nodeType=2: 果实节点（无子链路，有果实值）</span></span><br><span class="line">TreeNode &#123;</span><br><span class="line">    Long treeNodeId;</span><br><span class="line">    Integer nodeType;           <span class="comment">// 1=子叶, 2=果实</span></span><br><span class="line">    String nodeValue;           <span class="comment">// 仅果实节点有值</span></span><br><span class="line">    String ruleKey;             <span class="comment">// 对应 EngineConfig 中的 key（如 &quot;userGender&quot;）</span></span><br><span class="line">    List&lt;TreeNodeLink&gt; treeNodeLinkList;  <span class="comment">// 出边列表</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// TreeNodeLink.java - 连接两个节点的有向边</span></span><br><span class="line">TreeNodeLink &#123;</span><br><span class="line">    Long nodeIdFrom;            <span class="comment">// 起始节点</span></span><br><span class="line">    Long nodeIdTo;              <span class="comment">// 目标节点</span></span><br><span class="line">    Integer ruleLimitType;      <span class="comment">// 比较类型：1=等于, 2=&gt;，3=&lt;, 4=&lt;=, 5=&gt;=</span></span><br><span class="line">    String ruleLimitValue;      <span class="comment">// 比较阈值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>（2）决策节点接口 <code>LogicFilter</code>（组合模式的 Component）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">LogicFilter</span> &#123;</span><br><span class="line">    <span class="comment">// 过滤器：传入&quot;当前节点的决策值&quot; + &quot;所有出边&quot;，返回&quot;命中的下一节点ID&quot;</span></span><br><span class="line">    Long <span class="title function_">filter</span><span class="params">(String matterValue, List&lt;TreeNodeLink&gt; treeNodeLineInfoList)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 取值器：从决策物料中提取当前节点需要的值（如 age、gender）</span></span><br><span class="line">    String <span class="title function_">matterValue</span><span class="params">(Long treeId, String userId, Map&lt;String, String&gt; decisionMatter)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>（3）抽象类 <code>BaseLogic</code>：实现通用比较逻辑（模板方法）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">BaseLogic</span> <span class="keyword">implements</span> <span class="title class_">LogicFilter</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Long <span class="title function_">filter</span><span class="params">(String matterValue, List&lt;TreeNodeLink&gt; treeNodeLinkList)</span> &#123;</span><br><span class="line">        <span class="comment">// 遍历所有出边，找到第一个满足条件的，返回其目标节点ID</span></span><br><span class="line">        <span class="keyword">for</span> (TreeNodeLink nodeLine : treeNodeLinkList) &#123;</span><br><span class="line">            <span class="keyword">if</span> (decisionLogic(matterValue, nodeLine)) <span class="keyword">return</span> nodeLine.getNodeIdTo();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0L</span>;  <span class="comment">// 未命中</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 子类只需实现&quot;如何取值&quot;，无需关心比较逻辑</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title function_">matterValue</span><span class="params">(Long treeId, String userId, Map&lt;String, String&gt; decisionMatter)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通用比较逻辑（equals / &gt; / &lt; / &lt;= / &gt;=）</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">decisionLogic</span><span class="params">(String matterValue, TreeNodeLink nodeLink)</span> &#123;</span><br><span class="line">        <span class="keyword">switch</span> (nodeLink.getRuleLimitType()) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span>: <span class="keyword">return</span> matterValue.equals(nodeLink.getRuleLimitValue());        <span class="comment">// 等于</span></span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span>: <span class="keyword">return</span> Double.parseDouble(matterValue) &gt; Double.parseDouble(nodeLink.getRuleLimitValue());  <span class="comment">// &gt;</span></span><br><span class="line">            <span class="keyword">case</span> <span class="number">3</span>: <span class="keyword">return</span> Double.parseDouble(matterValue) &lt; Double.parseDouble(nodeLink.getRuleLimitValue());  <span class="comment">// &lt;</span></span><br><span class="line">            <span class="keyword">case</span> <span class="number">4</span>: <span class="keyword">return</span> Double.parseDouble(matterValue) &lt;= Double.parseDouble(nodeLink.getRuleLimitValue()); <span class="comment">// &lt;=</span></span><br><span class="line">            <span class="keyword">case</span> <span class="number">5</span>: <span class="keyword">return</span> Double.parseDouble(matterValue) &gt;= Double.parseDouble(nodeLink.getRuleLimitValue()); <span class="comment">// &gt;=</span></span><br><span class="line">            <span class="keyword">default</span>: <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>（4）具体节点实现（Leaf，只覆盖取值逻辑）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 年龄节点：从物料Map中取 &quot;age&quot;</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserAgeFilter</span> <span class="keyword">extends</span> <span class="title class_">BaseLogic</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">matterValue</span><span class="params">(Long treeId, String userId, Map&lt;String, String&gt; decisionMatter)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> decisionMatter.get(<span class="string">&quot;age&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 性别节点：从物料Map中取 &quot;gender&quot;</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserGenderFilter</span> <span class="keyword">extends</span> <span class="title class_">BaseLogic</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">matterValue</span><span class="params">(Long treeId, String userId, Map&lt;String, String&gt; decisionMatter)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> decisionMatter.get(<span class="string">&quot;gender&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>新增一种判断维度（如”婚育状态”）只需新建一个 <code>UserMaritalFilter extends BaseLogic</code>，在 EngineConfig 中注册，然后在树结构数据中挂载新节点。<strong>原有任何代码无需修改。</strong></p>
+</blockquote>
+<p><strong>（5）节点注册配置 <code>EngineConfig</code></strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EngineConfig</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> Map&lt;String, LogicFilter&gt; logicFilterMap;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        logicFilterMap = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;();</span><br><span class="line">        logicFilterMap.put(<span class="string">&quot;userAge&quot;</span>, <span class="keyword">new</span> <span class="title class_">UserAgeFilter</span>());       <span class="comment">// ruleKey → 节点实例</span></span><br><span class="line">        logicFilterMap.put(<span class="string">&quot;userGender&quot;</span>, <span class="keyword">new</span> <span class="title class_">UserGenderFilter</span>()); <span class="comment">// 可从数据库/配置中心加载</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>（6）引擎核心：树遍历算法 <code>EngineBase.engineDecisionMaker()</code></strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> TreeNode <span class="title function_">engineDecisionMaker</span><span class="params">(TreeRich treeRich, Long treeId, String userId,</span></span><br><span class="line"><span class="params">                                       Map&lt;String, String&gt; decisionMatter)</span> &#123;</span><br><span class="line">    <span class="type">TreeRoot</span> <span class="variable">treeRoot</span> <span class="operator">=</span> treeRich.getTreeRoot();</span><br><span class="line">    Map&lt;Long, TreeNode&gt; treeNodeMap = treeRich.getTreeNodeMap();</span><br><span class="line"></span><br><span class="line">    <span class="type">Long</span> <span class="variable">rootNodeId</span> <span class="operator">=</span> treeRoot.getTreeRootNodeId();</span><br><span class="line">    <span class="type">TreeNode</span> <span class="variable">treeNodeInfo</span> <span class="operator">=</span> treeNodeMap.get(rootNodeId);  <span class="comment">// 从根节点开始</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 只要当前节点是&quot;子叶节点&quot;（有判断逻辑），就继续向下走</span></span><br><span class="line">    <span class="keyword">while</span> (treeNodeInfo.getNodeType().equals(<span class="number">1</span>)) &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">ruleKey</span> <span class="operator">=</span> treeNodeInfo.getRuleKey();           <span class="comment">// 取节点的过滤器key</span></span><br><span class="line">        <span class="type">LogicFilter</span> <span class="variable">logicFilter</span> <span class="operator">=</span> logicFilterMap.get(ruleKey); <span class="comment">// 找到对应过滤器</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">matterValue</span> <span class="operator">=</span> logicFilter.matterValue(treeId, userId, decisionMatter); <span class="comment">// 取值</span></span><br><span class="line">        <span class="type">Long</span> <span class="variable">nextNode</span> <span class="operator">=</span> logicFilter.filter(matterValue, treeNodeInfo.getTreeNodeLinkList()); <span class="comment">// 过滤，找下一节点</span></span><br><span class="line">        treeNodeInfo = treeNodeMap.get(nextNode);             <span class="comment">// 移动到下一节点</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> treeNodeInfo;  <span class="comment">// 返回果实节点（nodeType=2）</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>（7）引擎实现与调用</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TreeEngineHandle：最终实现，只是薄薄的一层</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TreeEngineHandle</span> <span class="keyword">extends</span> <span class="title class_">EngineBase</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> EngineResult <span class="title function_">process</span><span class="params">(Long treeId, String userId, TreeRich treeRich, Map&lt;String, String&gt; decisionMatter)</span> &#123;</span><br><span class="line">        <span class="type">TreeNode</span> <span class="variable">treeNode</span> <span class="operator">=</span> engineDecisionMaker(treeRich, treeId, userId, decisionMatter);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">EngineResult</span>(userId, treeId, treeNode.getTreeNodeId(), treeNode.getNodeValue());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用方</span></span><br><span class="line"><span class="type">IEngine</span> <span class="variable">treeEngineHandle</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TreeEngineHandle</span>();</span><br><span class="line">Map&lt;String, String&gt; decisionMatter = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">decisionMatter.put(<span class="string">&quot;gender&quot;</span>, <span class="string">&quot;man&quot;</span>);</span><br><span class="line">decisionMatter.put(<span class="string">&quot;age&quot;</span>, <span class="string">&quot;29&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="type">EngineResult</span> <span class="variable">result</span> <span class="operator">=</span> treeEngineHandle.process(<span class="number">10001L</span>, <span class="string">&quot;Oli09pLkdjh&quot;</span>, treeRich, decisionMatter);</span><br><span class="line"><span class="comment">// result.getNodeValue() = &quot;果实B&quot;</span></span><br><span class="line"><span class="comment">// result.getNodeId()    = 112</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>回顾整个重构路径：原始代码用 <code>if-else</code> 把所有判断逻辑硬编码在一个方法里，每次业务迭代都必须进入同一个方法修改，随着条件组合数指数级增长，代码迅速腐化。重构后的方案将每一个判断条件抽象为独立的 <code>LogicFilter</code>节点，将判断规则的结构数据化为 <code>TreeNode + TreeNodeLink</code>，通过 <code>EngineBase</code> 的 <code>while</code> 循环统一遍历，彻底消灭了业务逻辑里的 <code>if-else</code>。</p>
+<p>组合模式在这里真正发挥价值的地方，不是经典教材里那句”把对象放进集合”，而是：</p>
+<ul>
+<li><strong>同一个 <code>TreeNode</code> 类既是判断节点（Composite）又是结果节点（Leaf）</strong>，引擎统一处理，无需区分类型，树结构可以任意层数扩展而引擎代码不动；</li>
+<li><strong>节点（Filter）只负责自己的取值逻辑</strong>，和其他节点完全解耦，新增维度只加文件不改存量；</li>
+<li><strong>业务规则的变化通过”换树结构”来承接</strong>，而不是”改节点代码”，真正实现了对扩展开放、对修改关闭。</li>
+</ul>
+<p>组合模式最适合的场景可以用一句话来判断：<strong>业务节点相对稳定，但节点之间的组合方式经常变化。</strong> 只要你的业务满足这个特征，组合模式就值得引入。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Like</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://likerhood.github.io/2026/05/17/040%20%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E8%AF%A6%E7%BB%86%E7%AC%94%E8%AE%B0/">https://likerhood.github.io/2026/05/17/040%20%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E8%AF%A6%E7%BB%86%E7%AC%94%E8%AE%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://likerhood.github.io" target="_blank">Liker's Blog</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/009javazuhe_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://fastly.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/05/17/041%20%E8%A3%85%E9%A5%B0%E5%99%A8%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"><img class="prev-cover" src="/img/008javazhaungshiqi_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">设计模式-装饰器模式(java)</div></div></a></div><div class="next-post pull-right"><a href="/2026/05/17/039%20java%E7%9A%84%E8%AE%BF%E9%97%AE%E4%BF%AE%E9%A5%B0%E7%AC%A6/"><img class="next-cover" src="/img/010javapublic_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Java 访问修饰符：public、protected、private讲解</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%C2%B7-%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%EF%BC%88Composite-Pattern%EF%BC%89"><span class="toc-text">设计模式 · 组合模式（Composite Pattern）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A0%B8%E5%BF%83%E5%AE%9A%E4%B9%89"><span class="toc-text">一、核心定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A0%87%E5%87%86%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%9B%BE"><span class="toc-text">二、标准体系结构图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%9C%BA%E6%99%AF%E6%8E%A8%E6%BC%94"><span class="toc-text">三、场景推演</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B"><span class="toc-text">四、实战案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="toc-text">4.1 需求分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-1-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="toc-text">4.1.1 数据结构设计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-2-%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E8%AE%BE%E8%AE%A1"><span class="toc-text">4.1.2 相关算法设计</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-text">4.2 架构图</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-1-%E9%9D%A2%E6%9D%A1%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-text">4.2.1 面条代码架构图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-2-%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-text">4.2.2 组合模式架构图</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="toc-text">4.3 时序图</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-1-%E9%9D%A2%E6%9D%A1%E4%BB%A3%E7%A0%81%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="toc-text">4.3.1 面条代码时序图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-2-%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="toc-text">4.3.2 组合模式时序图</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-text">4.4 代码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-1-%E9%9D%A2%E6%9D%A1%E4%BB%A3%E7%A0%81%EF%BC%88if-else-%E7%A1%AC%E7%BC%96%E7%A0%81%EF%BC%89"><span class="toc-text">4.4.1 面条代码（if-else &#x2F; 硬编码）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-2-%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E4%BB%A3%E7%A0%81"><span class="toc-text">4.4.2 组合模式代码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div></div></main><footer id="footer" style="background: #FFFFFF"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2026 By Like</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">Bcxm</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = async () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+      mermaid.initialize({ startOnLoad: false, theme: theme, securityLevel: 'loose' })
+
+      for (let i = 0; i < $mermaidWrap.length; i++) {
+        const item = $mermaidWrap[i]
+        const mermaidSrc = item.firstElementChild
+        const mermaidID = 'mermaid-' + i
+        const mermaidDefinition = mermaidSrc.textContent.trim()
+        try {
+          const result = await mermaid.render(mermaidID, mermaidDefinition)
+          const svgCode = result && result.svg ? result.svg : result
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        } catch (e) {
+          console.error('Mermaid render error:', mermaidID, e)
+        }
+      }
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://fastly.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/leancloud-storage@4.10.0/dist/av-min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

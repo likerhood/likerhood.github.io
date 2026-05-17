@@ -1,0 +1,306 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Java 访问修饰符：public、protected、private讲解</title><meta name="author" content="Like"><meta name="copyright" content="Like"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Java 访问修饰符：public、protected、private讲解前言Java 提供的四种访问修饰符（private、默认(包私有)、protected、public）。  一、四种访问级别总览1.1 一张表总结Java 共有四种访问级别，其中三种有关键字，一种是默认（不写任何修饰符）：    访问级别 关键字 可访问范围    私有 private 仅本类内部   默认（包私有） （不写">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 访问修饰符：public、protected、private讲解">
+<meta property="og:url" content="https://likerhood.github.io/2026/05/17/039%20java%E7%9A%84%E8%AE%BF%E9%97%AE%E4%BF%AE%E9%A5%B0%E7%AC%A6/index.html">
+<meta property="og:site_name" content="Liker&#39;s Blog">
+<meta property="og:description" content="Java 访问修饰符：public、protected、private讲解前言Java 提供的四种访问修饰符（private、默认(包私有)、protected、public）。  一、四种访问级别总览1.1 一张表总结Java 共有四种访问级别，其中三种有关键字，一种是默认（不写任何修饰符）：    访问级别 关键字 可访问范围    私有 private 仅本类内部   默认（包私有） （不写">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likerhood.github.io/img/010javapublic_cover.png">
+<meta property="article:published_time" content="2026-05-17T08:36:40.003Z">
+<meta property="article:modified_time" content="2026-05-17T08:45:13.721Z">
+<meta property="article:author" content="Like">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likerhood.github.io/img/010javapublic_cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/05/17/039%20java%E7%9A%84%E8%AE%BF%E9%97%AE%E4%BF%AE%E9%A5%B0%E7%AC%A6/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Like","link":"链接: ","source":"来源: Liker's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Java 访问修饰符：public、protected、private讲解',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-05-17 16:45:13'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Liker's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Java 访问修饰符：public、protected、private讲解</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-05-17T08:36:40.003Z" title="发表于 2026-05-17 16:36:40">2026-05-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/java%E5%AD%A6%E4%B9%A0/">java学习</a></span></div><div class="meta-secondline"></div></div></div><article class="post-content" id="article-container"><h1 id="Java-访问修饰符：public、protected、private讲解"><a href="#Java-访问修饰符：public、protected、private讲解" class="headerlink" title="Java 访问修饰符：public、protected、private讲解"></a>Java 访问修饰符：public、protected、private讲解</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Java 提供的四种访问修饰符（<code>private</code>、<code>默认(包私有)</code>、<code>protected</code>、<code>public</code>）。</p>
+<hr>
+<h2 id="一、四种访问级别总览"><a href="#一、四种访问级别总览" class="headerlink" title="一、四种访问级别总览"></a>一、四种访问级别总览</h2><h3 id="1-1-一张表总结"><a href="#1-1-一张表总结" class="headerlink" title="1.1 一张表总结"></a>1.1 一张表总结</h3><p>Java 共有四种访问级别，其中三种有关键字，一种是默认（不写任何修饰符）：</p>
+<table>
+<thead>
+<tr>
+<th>访问级别</th>
+<th>关键字</th>
+<th>可访问范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>私有</td>
+<td><code>private</code></td>
+<td>仅本类内部</td>
+</tr>
+<tr>
+<td>默认（包私有）</td>
+<td>（不写）</td>
+<td>本类 + 同包的类</td>
+</tr>
+<tr>
+<td>受保护</td>
+<td><code>protected</code></td>
+<td>本类 + 同包的类 + 子类（跨包也可）</td>
+</tr>
+<tr>
+<td>公开</td>
+<td><code>public</code></td>
+<td>任何地方</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-可见性矩阵"><a href="#1-2-可见性矩阵" class="headerlink" title="1.2 可见性矩阵"></a>1.2 可见性矩阵</h3><table>
+<thead>
+<tr>
+<th>访问位置</th>
+<th><code>private</code></th>
+<th>默认</th>
+<th><code>protected</code></th>
+<th><code>public</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>本类</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>同包其他类</td>
+<td>✗</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>不同包子类</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>不同包无关类</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二、private-：封装的基石"><a href="#二、private-：封装的基石" class="headerlink" title="二、private ：封装的基石"></a>二、<code>private</code> ：封装的基石</h2><h3 id="2-1-核心作用"><a href="#2-1-核心作用" class="headerlink" title="2.1 核心作用"></a>2.1 核心作用</h3><p><code>private</code> 是封装的直接体现：<strong>把实现细节藏起来，只暴露必要的接口</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BankAccount</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">double</span> balance;  <span class="comment">// 余额不能被外部直接修改</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通过方法控制修改逻辑，可以加校验</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">deposit</span><span class="params">(<span class="type">double</span> amount)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (amount &lt;= <span class="number">0</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;存款金额必须大于0&quot;</span>);</span><br><span class="line">        <span class="built_in">this</span>.balance += amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">withdraw</span><span class="params">(<span class="type">double</span> amount)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (amount &gt; balance) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;余额不足&quot;</span>);</span><br><span class="line">        <span class="built_in">this</span>.balance -= amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">getBalance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> balance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果 <code>balance</code> 是 <code>public</code>，任何地方都能 <code>account.balance = -9999</code>，安全性差。</p>
+<h3 id="2-2-private-方法的用途"><a href="#2-2-private-方法的用途" class="headerlink" title="2.2 private 方法的用途"></a>2.2 <code>private</code> 方法的用途</h3><p><code>private</code> 方法通常是内部的<strong>工具方法</strong>，不对外暴露：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PasswordUtils</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">encrypt</span><span class="params">(String rawPassword)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">salted</span> <span class="operator">=</span> addSalt(rawPassword);   <span class="comment">// 调用私有方法</span></span><br><span class="line">        <span class="keyword">return</span> hash(salted);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String <span class="title function_">addSalt</span><span class="params">(String password)</span> &#123;   <span class="comment">// 加盐逻辑，外部不需要知道</span></span><br><span class="line">        <span class="keyword">return</span> password + <span class="string">&quot;SALT_2025&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String <span class="title function_">hash</span><span class="params">(String input)</span> &#123;         <span class="comment">// 哈希逻辑，外部不需要知道</span></span><br><span class="line">        <span class="keyword">return</span> Integer.toHexString(input.hashCode());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-private-用于构造方法"><a href="#2-3-private-用于构造方法" class="headerlink" title="2.3 private 用于构造方法"></a>2.3 <code>private</code> 用于构造方法</h3><p><code>private</code> 构造方法用于阻止外部直接实例化，常见于：</p>
+<ul>
+<li><strong>单例模式</strong>：控制只有一个实例</li>
+<li><strong>工具类</strong>：不需要实例化，只有静态方法</li>
+<li><strong>工厂方法模式</strong>：强制通过工厂方法创建对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 工具类：禁止实例化</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MathUtils</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">MathUtils</span><span class="params">()</span> &#123;&#125;  <span class="comment">// 私有构造，防止 new MathUtils()</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span> &#123; <span class="keyword">return</span> a + b; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 单例模式</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ConfigManager</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">ConfigManager</span> <span class="variable">INSTANCE</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConfigManager</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">ConfigManager</span><span class="params">()</span> &#123;&#125;  <span class="comment">// 私有构造</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> ConfigManager <span class="title function_">getInstance</span><span class="params">()</span> &#123; <span class="keyword">return</span> INSTANCE; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-测试代码"><a href="#2-4-测试代码" class="headerlink" title="2.4 测试代码"></a>2.4 测试代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PrivateTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">BankAccount</span> <span class="variable">account</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BankAccount</span>();</span><br><span class="line">        account.deposit(<span class="number">1000</span>);</span><br><span class="line">        account.withdraw(<span class="number">200</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;余额：&quot;</span> + account.getBalance()); <span class="comment">// 800.0</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// account.balance = -9999; // 编译错误：balance has private access</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            account.withdraw(<span class="number">9999</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalArgumentException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;异常捕获：&quot;</span> + e.getMessage()); <span class="comment">// 余额不足</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 工具类无法实例化（编译期报错）</span></span><br><span class="line">        <span class="comment">// MathUtils utils = new MathUtils(); // 编译错误</span></span><br><span class="line">        System.out.println(MathUtils.add(<span class="number">3</span>, <span class="number">4</span>)); <span class="comment">// 7</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 单例</span></span><br><span class="line">        <span class="type">ConfigManager</span> <span class="variable">c1</span> <span class="operator">=</span> ConfigManager.getInstance();</span><br><span class="line">        <span class="type">ConfigManager</span> <span class="variable">c2</span> <span class="operator">=</span> ConfigManager.getInstance();</span><br><span class="line">        System.out.println(c1 == c2); <span class="comment">// true，同一个实例</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、public-：对外暴露的接口"><a href="#三、public-：对外暴露的接口" class="headerlink" title="三、public ：对外暴露的接口"></a>三、<code>public</code> ：对外暴露的接口</h2><h3 id="3-1-核心作用"><a href="#3-1-核心作用" class="headerlink" title="3.1 核心作用"></a>3.1 核心作用</h3><p><code>public</code> 意味着<strong>承诺</strong>：这个方法或类对所有调用方开放，一旦对外公开，就要保证向后兼容，轻易不能改变签名。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这是一个公开的 API，改动签名会影响所有调用方</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">PaymentService</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> PayResult <span class="title function_">pay</span><span class="params">(String orderId, <span class="type">double</span> amount)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-public-类与非-public-类"><a href="#3-2-public-类与非-public-类" class="headerlink" title="3.2 public 类与非 public 类"></a>3.2 <code>public</code> 类与非 <code>public</code> 类</h3><p>一个 <code>.java</code> 文件中只能有<strong>一个</strong> <code>public</code> 类，且类名必须与文件名一致。同文件中的其他类只能是默认（包私有）访问级别：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 文件名必须是 Order.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Order</span> &#123;          <span class="comment">// public 类，对外暴露</span></span><br><span class="line">    <span class="keyword">private</span> OrderItem item;   <span class="comment">// 使用同文件的非 public 类</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">OrderItem</span> &#123;             <span class="comment">// 默认访问级别，包私有，外部模块不可见</span></span><br><span class="line">    String productName;</span><br><span class="line">    <span class="type">int</span> quantity;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>OrderItem</code> 只是 <code>Order</code> 的实现细节，不需要对外暴露，用默认访问级别把它藏在包内部。</p>
+<h3 id="3-3-测试代码"><a href="#3-3-测试代码" class="headerlink" title="3.3 测试代码"></a>3.3 测试代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 文件：PublicTest.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PublicTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Order</span> <span class="variable">order</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Order</span>();</span><br><span class="line">        <span class="comment">// OrderItem item = new OrderItem(); // 同包内可以，跨包则编译错误</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、protected-：继承体系专用"><a href="#四、protected-：继承体系专用" class="headerlink" title="四、protected ：继承体系专用"></a>四、<code>protected</code> ：继承体系专用</h2><h3 id="4-1-核心作用"><a href="#4-1-核心作用" class="headerlink" title="4.1 核心作用"></a>4.1 核心作用</h3><p><code>protected</code> 是三个修饰符中最容易被误解的一个。它的设计目的是：<strong>允许子类访问父类的实现细节，同时对外部无关类保持关闭</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 父类（假设在 com.animal 包）</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;          <span class="comment">// 子类也不能直接访问</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="type">int</span> energy;         <span class="comment">// 子类可以直接访问，外部无关类不能访问</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Animal</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">        <span class="built_in">this</span>.energy = <span class="number">100</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">breathe</span><span class="params">()</span> &#123;    <span class="comment">// 子类可以调用或重写，外部无法直接调用</span></span><br><span class="line">        energy -= <span class="number">1</span>;</span><br><span class="line">        System.out.println(name + <span class="string">&quot; 呼吸，消耗能量&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">move</span><span class="params">()</span>;  <span class="comment">// 公开抽象方法，子类必须实现</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 子类（在 com.animal.impl 包，跨包继承）</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Dog</span> <span class="keyword">extends</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Dog</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">move</span><span class="params">()</span> &#123;</span><br><span class="line">        breathe();          <span class="comment">// ✓ 可以调用父类 protected 方法</span></span><br><span class="line">        energy -= <span class="number">5</span>;        <span class="comment">// ✓ 可以直接访问父类 protected 字段</span></span><br><span class="line">        System.out.println(<span class="string">&quot;狗在跑，剩余能量：&quot;</span> + energy);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-protected-的一个重要细节"><a href="#4-2-protected-的一个重要细节" class="headerlink" title="4.2 protected 的一个重要细节"></a>4.2 <code>protected</code> 的一个重要细节</h3><p>跨包的子类只能通过<strong>自身引用</strong>访问父类的 <code>protected</code> 成员，不能通过<strong>父类引用</strong>访问：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 假设 Dog 和 Animal 不在同一个包</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Dog</span> <span class="keyword">extends</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">(Animal otherAnimal)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.energy = <span class="number">50</span>;           <span class="comment">// ✓ 通过自身引用访问，合法</span></span><br><span class="line">        <span class="comment">// otherAnimal.energy = 50; // ✗ 编译错误！不能通过父类引用访问</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个细节很多人不知道，面试中也经常考察。原因是：<code>protected</code> 的语义是”子类对自己继承来的部分有访问权”，而不是”子类对所有 Animal 对象都有访问权”。</p>
+<h3 id="4-3-测试代码"><a href="#4-3-测试代码" class="headerlink" title="4.3 测试代码"></a>4.3 测试代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// com.animal.Animal.java</span></span><br><span class="line"><span class="keyword">package</span> com.animal;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="type">int</span> <span class="variable">energy</span> <span class="operator">=</span> <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">breathe</span><span class="params">()</span> &#123; energy--; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">move</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// com.animal.impl.Dog.java</span></span><br><span class="line"><span class="keyword">package</span> com.animal.impl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.animal.Animal;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Dog</span> <span class="keyword">extends</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">move</span><span class="params">()</span> &#123;</span><br><span class="line">        breathe();        <span class="comment">// ✓ 跨包子类调用父类 protected 方法</span></span><br><span class="line">        energy -= <span class="number">5</span>;      <span class="comment">// ✓ 跨包子类访问父类 protected 字段</span></span><br><span class="line">        System.out.println(<span class="string">&quot;剩余能量：&quot;</span> + energy);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">(Animal other)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.energy = <span class="number">80</span>; <span class="comment">// ✓ 通过 this</span></span><br><span class="line">        <span class="comment">// other.energy = 80; // ✗ 编译错误</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试入口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ProtectedTest</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Dog</span> <span class="variable">dog</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Dog</span>();</span><br><span class="line">        dog.move();  <span class="comment">// 剩余能量：94</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// dog.energy = 999;  // ✗ 不同包的无关类，编译错误</span></span><br><span class="line">        <span class="comment">// dog.breathe();     // ✗ 不同包的无关类，编译错误</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、默认访问级别（包私有）"><a href="#五、默认访问级别（包私有）" class="headerlink" title="五、默认访问级别（包私有）"></a>五、默认访问级别（包私有）</h2><h3 id="5-1-核心作用"><a href="#5-1-核心作用" class="headerlink" title="5.1 核心作用"></a>5.1 核心作用</h3><p>不写任何修饰符，就是<strong>包私有（package-private）</strong>。</p>
+<p>它的语义是：<strong>这个类&#x2F;方法只属于当前包的内部实现，不对包外暴露</strong>。</p>
+<p>这是模块内聚的重要工具，把一个功能模块的内部实现类全部设为包私有，对外只暴露 <code>public</code> 的接口类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// com.payment 包内部</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 对外暴露的接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">PaymentProcessor</span> &#123;</span><br><span class="line">    PayResult <span class="title function_">process</span><span class="params">(Order order)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 包内部的实现类，外部模块不可见</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AlipayClient</span> &#123;          <span class="comment">// 包私有，支付宝底层客户端</span></span><br><span class="line">    String <span class="title function_">call</span><span class="params">(String url)</span> &#123; <span class="keyword">return</span> <span class="string">&quot;ok&quot;</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SignatureUtils</span> &#123;        <span class="comment">// 包私有，签名工具</span></span><br><span class="line">    <span class="keyword">static</span> String <span class="title function_">sign</span><span class="params">(String data)</span> &#123; <span class="keyword">return</span> data + <span class="string">&quot;_signed&quot;</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对外暴露的实现</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AlipayProcessor</span> <span class="keyword">implements</span> <span class="title class_">PaymentProcessor</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">AlipayClient</span> <span class="variable">client</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AlipayClient</span>();  <span class="comment">// 内部使用</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> PayResult <span class="title function_">process</span><span class="params">(Order order)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">signed</span> <span class="operator">=</span> SignatureUtils.sign(order.toString());</span><br><span class="line">        client.call(signed);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">PayResult</span>(<span class="literal">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>外部模块只能看到 <code>PaymentProcessor</code> 和 <code>AlipayProcessor</code>，<code>AlipayClient</code> 和 <code>SignatureUtils</code> 完全不可见，随时可以重构而不影响外部。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>访问修饰符是 Java 封装性的基础工具，用一句话总结每种级别的设计意图：</p>
+<table>
+<thead>
+<tr>
+<th>修饰符</th>
+<th>设计意图</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>private</code></td>
+<td>这是我的实现细节，跟你无关</td>
+</tr>
+<tr>
+<td>默认</td>
+<td>这是我们包内部的事，外人别插手</td>
+</tr>
+<tr>
+<td><code>protected</code></td>
+<td>这是给子类预留的扩展点，无关类别碰</td>
+</tr>
+<tr>
+<td><code>public</code></td>
+<td>这是我对外的承诺，随时可以调用</td>
+</tr>
+</tbody></table>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Like</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://likerhood.github.io/2026/05/17/039%20java%E7%9A%84%E8%AE%BF%E9%97%AE%E4%BF%AE%E9%A5%B0%E7%AC%A6/">https://likerhood.github.io/2026/05/17/039%20java%E7%9A%84%E8%AE%BF%E9%97%AE%E4%BF%AE%E9%A5%B0%E7%AC%A6/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://likerhood.github.io" target="_blank">Liker's Blog</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/010javapublic_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://fastly.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/05/17/040%20%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E8%AF%A6%E7%BB%86%E7%AC%94%E8%AE%B0/"><img class="prev-cover" src="/img/009javazuhe_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">设计模式 · 组合模式（Composite Pattern）</div></div></a></div><div class="next-post pull-right"><a href="/2026/05/14/038%20%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E7%BB%86%E7%AC%94%E8%AE%B0/"><img class="next-cover" src="/img/007javaqiaojie_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">设计模式 · 桥接模式（Bridge Pattern）java</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java-%E8%AE%BF%E9%97%AE%E4%BF%AE%E9%A5%B0%E7%AC%A6%EF%BC%9Apublic%E3%80%81protected%E3%80%81private%E8%AE%B2%E8%A7%A3"><span class="toc-text">Java 访问修饰符：public、protected、private讲解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%9B%9B%E7%A7%8D%E8%AE%BF%E9%97%AE%E7%BA%A7%E5%88%AB%E6%80%BB%E8%A7%88"><span class="toc-text">一、四种访问级别总览</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%B8%80%E5%BC%A0%E8%A1%A8%E6%80%BB%E7%BB%93"><span class="toc-text">1.1 一张表总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%8F%AF%E8%A7%81%E6%80%A7%E7%9F%A9%E9%98%B5"><span class="toc-text">1.2 可见性矩阵</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81private-%EF%BC%9A%E5%B0%81%E8%A3%85%E7%9A%84%E5%9F%BA%E7%9F%B3"><span class="toc-text">二、private ：封装的基石</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%A0%B8%E5%BF%83%E4%BD%9C%E7%94%A8"><span class="toc-text">2.1 核心作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-private-%E6%96%B9%E6%B3%95%E7%9A%84%E7%94%A8%E9%80%94"><span class="toc-text">2.2 private 方法的用途</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-private-%E7%94%A8%E4%BA%8E%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="toc-text">2.3 private 用于构造方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="toc-text">2.4 测试代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81public-%EF%BC%9A%E5%AF%B9%E5%A4%96%E6%9A%B4%E9%9C%B2%E7%9A%84%E6%8E%A5%E5%8F%A3"><span class="toc-text">三、public ：对外暴露的接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E6%A0%B8%E5%BF%83%E4%BD%9C%E7%94%A8"><span class="toc-text">3.1 核心作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-public-%E7%B1%BB%E4%B8%8E%E9%9D%9E-public-%E7%B1%BB"><span class="toc-text">3.2 public 类与非 public 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="toc-text">3.3 测试代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81protected-%EF%BC%9A%E7%BB%A7%E6%89%BF%E4%BD%93%E7%B3%BB%E4%B8%93%E7%94%A8"><span class="toc-text">四、protected ：继承体系专用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E6%A0%B8%E5%BF%83%E4%BD%9C%E7%94%A8"><span class="toc-text">4.1 核心作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-protected-%E7%9A%84%E4%B8%80%E4%B8%AA%E9%87%8D%E8%A6%81%E7%BB%86%E8%8A%82"><span class="toc-text">4.2 protected 的一个重要细节</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="toc-text">4.3 测试代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E9%BB%98%E8%AE%A4%E8%AE%BF%E9%97%AE%E7%BA%A7%E5%88%AB%EF%BC%88%E5%8C%85%E7%A7%81%E6%9C%89%EF%BC%89"><span class="toc-text">五、默认访问级别（包私有）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E6%A0%B8%E5%BF%83%E4%BD%9C%E7%94%A8"><span class="toc-text">5.1 核心作用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div></div></main><footer id="footer" style="background: #FFFFFF"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2026 By Like</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">Bcxm</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = async () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+      mermaid.initialize({ startOnLoad: false, theme: theme, securityLevel: 'loose' })
+
+      for (let i = 0; i < $mermaidWrap.length; i++) {
+        const item = $mermaidWrap[i]
+        const mermaidSrc = item.firstElementChild
+        const mermaidID = 'mermaid-' + i
+        const mermaidDefinition = mermaidSrc.textContent.trim()
+        try {
+          const result = await mermaid.render(mermaidID, mermaidDefinition)
+          const svgCode = result && result.svg ? result.svg : result
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        } catch (e) {
+          console.error('Mermaid render error:', mermaidID, e)
+        }
+      }
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://fastly.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/leancloud-storage@4.10.0/dist/av-min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
