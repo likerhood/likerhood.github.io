@@ -48,7 +48,7 @@
   isHome: true,
   isHighlightShrink: false,
   isToc: false,
-  postUpdate: '2026-05-17 16:57:29'
+  postUpdate: '2026-05-17 21:55:53'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -133,14 +133,13 @@
 装饰器模式的典型认知误区：遇到”需要给某个已有类增加功能”时，第一反应总是继承——继承后重写方法，把新逻辑写进去。这在功能单一、不再迭代的场景下没有问题，但一旦需要横向扩展多种功能，就会催生出大量子类，最终维护成本失控。
 装饰器模式提供了另一条路：不改变原有类，不继承原有类，而是用一个”包装类”在运行时动态叠加新功能。
 
+本文代码案例：https://github.com/likerhood/CodeDesignWork/tree/main/codedesign8.0-0 和 8.0-1 、8.0-2
+
+
 一、核心定义装饰器模式，也叫 Decorator、Wrapper，是一种通过“组合”替代“继承”来扩展对象行为的模式。
 它的核心定义可以拆成三句话理解：
 
-装饰器和被装饰对象实现同一个接口  
-
-这样客户端使用时不需要关心拿到的是原始对象，还是被包装后的增强对象。
-
-装饰器内部持有一个同接口对象的引用这个引用可以指向原始对象，也可以指向另一个装饰器，所以装饰器可以一层套一 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2026/05/17/040%20%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E8%AF%A6%E7%BB%86%E7%AC%94%E8%AE%B0/" title="设计模式 · 组合模式（Composite Pattern）"><img class="post_bg" src="/img/009javazuhe_cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="设计模式 · 组合模式（Composite Pattern）"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/05/17/040%20%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E8%AF%A6%E7%BB%86%E7%AC%94%E8%AE%B0/" title="设计模式 · 组合模式（Composite Pattern）">设计模式 · 组合模式（Composite Pattern）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-05-17T08:37:53.585Z" title="发表于 2026-05-17 16:37:53">2026-05-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></span></div><div class="content">设计模式 · 组合模式（Composite Pattern）前言随着业务线的发展，系统中的判断逻辑变得越来越错综复杂。
+装饰器和被装饰对象实现同一个接 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2026/05/17/040%20%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E8%AF%A6%E7%BB%86%E7%AC%94%E8%AE%B0/" title="设计模式 · 组合模式（Composite Pattern）"><img class="post_bg" src="/img/009javazuhe_cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="设计模式 · 组合模式（Composite Pattern）"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/05/17/040%20%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E8%AF%A6%E7%BB%86%E7%AC%94%E8%AE%B0/" title="设计模式 · 组合模式（Composite Pattern）">设计模式 · 组合模式（Composite Pattern）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-05-17T08:37:53.585Z" title="发表于 2026-05-17 16:37:53">2026-05-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></span></div><div class="content">设计模式 · 组合模式（Composite Pattern）前言随着业务线的发展，系统中的判断逻辑变得越来越错综复杂。
 今天产品要求“按性别发不同的优惠券”，明天要求“加上年龄段限制”，后天又追加了“新老用户身份”。
 如果用传统的编程思维，这段代码很快就成为一座由无限嵌套 if-else 构成的“屎山”。
 面对这种易变的规则嵌套，有没有一种优雅的设计能够打破僵局？
