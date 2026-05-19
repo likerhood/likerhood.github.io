@@ -1,0 +1,438 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>设计模式 · 外观模式（Facade Pattern）java</title><meta name="author" content="Like"><meta name="copyright" content="Like"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="设计模式 · 外观模式（Facade Pattern）前言在日常开发中，我们经常会遇到这样一类代码：业务目标本身很简单，但为了完成它，客户端不得不依次调用很多底层类。 以本项目为例，客户端只是想把一个视频文件转换成指定格式。但如果直接使用底层媒体处理库，就需要自己完成加载视频、识别源编码器、选择目标编码器、读取码率、执行转换、修复音频等一整套流程。 这类问题的核心不是“代码能不能跑”，而是“调用者">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式 · 外观模式（Facade Pattern）java">
+<meta property="og:url" content="https://likerhood.github.io/2026/05/19/012%20%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Liker&#39;s Blog">
+<meta property="og:description" content="设计模式 · 外观模式（Facade Pattern）前言在日常开发中，我们经常会遇到这样一类代码：业务目标本身很简单，但为了完成它，客户端不得不依次调用很多底层类。 以本项目为例，客户端只是想把一个视频文件转换成指定格式。但如果直接使用底层媒体处理库，就需要自己完成加载视频、识别源编码器、选择目标编码器、读取码率、执行转换、修复音频等一整套流程。 这类问题的核心不是“代码能不能跑”，而是“调用者">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likerhood.github.io/img/013javawaiguan_cover.png">
+<meta property="article:published_time" content="2026-05-19T13:00:47.618Z">
+<meta property="article:modified_time" content="2026-05-19T13:40:18.449Z">
+<meta property="article:author" content="Like">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likerhood.github.io/img/013javawaiguan_cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/05/19/012%20%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Like","link":"链接: ","source":"来源: Liker's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '设计模式 · 外观模式（Facade Pattern）java',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-05-19 21:40:18'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Liker's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">设计模式 · 外观模式（Facade Pattern）java</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-05-19T13:00:47.618Z" title="发表于 2026-05-19 21:00:47">2026-05-19</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></span></div><div class="meta-secondline"></div></div></div><article class="post-content" id="article-container"><h1 id="设计模式-·-外观模式（Facade-Pattern）"><a href="#设计模式-·-外观模式（Facade-Pattern）" class="headerlink" title="设计模式 · 外观模式（Facade Pattern）"></a>设计模式 · 外观模式（Facade Pattern）</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在日常开发中，我们经常会遇到这样一类代码：业务目标本身很简单，<strong>但为了完成它，客户端不得不依次调用很多底层类。</strong></p>
+<p>以本项目为例，客户端只是想把一个视频文件转换成指定格式。但如果直接使用底层媒体处理库，就需要自己完成加载视频、识别源编码器、选择目标编码器、读取码率、执行转换、修复音频等一整套流程。</p>
+<p>这类问题的核心不是“代码能不能跑”，而是“调用者是否被迫理解太多细节”。</p>
+<p>外观模式正是为了解决这种复杂调用暴露给客户端的问题。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260519203623122.png" alt="image-20260519203623122"></p>
+<ul>
+<li>图片来自：<a target="_blank" rel="noopener" href="https://refactoringguru.cn/design-patterns/facade">外观设计模式（门面模式）</a></li>
+</ul>
+<hr>
+<h2 id="一、核心定义"><a href="#一、核心定义" class="headerlink" title="一、核心定义"></a>一、核心定义</h2><p>外观模式（Facade Pattern）是一种结构型设计模式。</p>
+<p>它为复杂子系统提供一个统一、简洁的高层接口，让客户端通过这个接口完成操作，而不需要直接依赖子系统中的多个类。</p>
+<p>可以把它理解成：</p>
+<blockquote>
+<p><strong>外观类负责把复杂流程组织好，客户端只调用一个简单方法。</strong></p>
+</blockquote>
+<p>**举例来说：**当你通过电话给商店下达订单时， 接线员就是该商店的所有服务和部门的外观。 接线员为你提供了一个同购物系统、 支付网关和各种送货服务进行互动的简单语音接口。</p>
+<p>外观模式的目标不是替代子系统，也不是隐藏所有能力，而是为常见使用场景提供一个更友好的入口。</p>
+<hr>
+<h2 id="二、标准体系结构图"><a href="#二、标准体系结构图" class="headerlink" title="二、标准体系结构图"></a>二、标准体系结构图</h2><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    class Client {
+        +main()
+    }
+
+    class Facade {
+        +operation()
+    }
+
+    class SubsystemA {
+        +stepA()
+    }
+
+    class SubsystemB {
+        +stepB()
+    }
+
+    class SubsystemC {
+        +stepC()
+    }
+
+    Client --&gt; Facade : 调用统一接口
+    Facade --&gt; SubsystemA : 协调调用
+    Facade --&gt; SubsystemB : 协调调用
+    Facade --&gt; SubsystemC : 协调调用
+  </pre></div>
+
+<p>角色说明：</p>
+<ul>
+<li><code>Client</code>：客户端，只关心业务目标，不想理解子系统内部细节。</li>
+<li><code>Facade</code>：外观类，对外提供简洁接口，对内编排复杂调用。</li>
+<li><code>Subsystem</code>：子系统类，负责具体能力，通常数量较多、调用顺序也有要求。</li>
+</ul>
+<p>外观模式并不禁止客户端直接访问子系统。它只是额外提供了一条更简单、更稳定的调用路径。</p>
+<hr>
+<h2 id="三、场景推演"><a href="#三、场景推演" class="headerlink" title="三、场景推演"></a>三、场景推演</h2><h2 id="三、场景推演-1"><a href="#三、场景推演-1" class="headerlink" title="三、场景推演"></a>三、场景推演</h2><p>生活中有很多“外观模式”的例子。</p>
+<p>比如我们去餐厅吃饭。顾客真正想做的事情很简单：点一份套餐。但餐厅内部实际要做很多事：前台接单、后厨备菜、厨师炒菜、饮品区做饮料、服务员上菜、收银系统结账。</p>
+<p>如果没有“前台”这个统一入口，顾客可能要自己去找厨师、找饮品区、找收银员，整个过程就会非常混乱。</p>
+<p>前台就像外观类：</p>
+<ul>
+<li>顾客只需要对前台说：“我要一份套餐。”</li>
+<li>前台负责把请求分发给后厨、饮品区、收银系统。</li>
+<li>顾客不需要知道餐厅内部怎么协作。</li>
+</ul>
+<p>用代码简单模拟：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Kitchen</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">cook</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;后厨：开始做主菜&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DrinkBar</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">makeDrink</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;饮品区：制作饮料&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Cashier</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">pay</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;收银台：完成结账&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RestaurantFacade</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">Kitchen</span> <span class="variable">kitchen</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Kitchen</span>();</span><br><span class="line">    <span class="keyword">private</span> <span class="type">DrinkBar</span> <span class="variable">drinkBar</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DrinkBar</span>();</span><br><span class="line">    <span class="keyword">private</span> <span class="type">Cashier</span> <span class="variable">cashier</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Cashier</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">orderSetMeal</span><span class="params">()</span> &#123;</span><br><span class="line">        cashier.pay();</span><br><span class="line">        kitchen.cook();</span><br><span class="line">        drinkBar.makeDrink();</span><br><span class="line">        System.out.println(<span class="string">&quot;前台：套餐准备完成&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">RestaurantFacade</span> <span class="variable">restaurant</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RestaurantFacade</span>();</span><br><span class="line">        restaurant.orderSetMeal();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端代码非常简单：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">restaurant.orderSetMeal();</span><br></pre></td></tr></table></figure>
+
+<p>它不需要知道主菜怎么做、饮料谁负责、账单怎么处理。</p>
+<p>回到软件开发中也是一样。很多业务功能表面上只是一个动作，但内部需要多个类协作完成。如果这些细节全部暴露给调用者，客户端代码就会越来越重。外观模式的作用，就是给复杂系统套上一层“服务窗口”，让调用者通过一个简单入口完成复杂操作。</p>
+<hr>
+<h2 id="四、实战案例"><a href="#四、实战案例" class="headerlink" title="四、实战案例"></a>四、实战案例</h2><h3 id="4-1-需求分析"><a href="#4-1-需求分析" class="headerlink" title="4.1 需求分析"></a>4.1 需求分析</h3><h2 id="三、场景推演-2"><a href="#三、场景推演-2" class="headerlink" title="三、场景推演"></a>三、场景推演</h2><p>生活中有很多“外观模式”的例子。</p>
+<p>比如我们去餐厅吃饭。顾客真正想做的事情很简单：点一份套餐。但餐厅内部实际要做很多事：前台接单、后厨备菜、厨师炒菜、饮品区做饮料、服务员上菜、收银系统结账。</p>
+<p>如果没有“前台”这个统一入口，顾客可能要自己去找厨师、找饮品区、找收银员，整个过程就会非常混乱。</p>
+<p>前台就像外观类：</p>
+<ul>
+<li>顾客只需要对前台说：“我要一份套餐。”</li>
+<li>前台负责把请求分发给后厨、饮品区、收银系统。</li>
+<li>顾客不需要知道餐厅内部怎么协作。</li>
+</ul>
+<p>用代码简单模拟：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Kitchen</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">cook</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;后厨：开始做主菜&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DrinkBar</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">makeDrink</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;饮品区：制作饮料&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Cashier</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">pay</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;收银台：完成结账&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RestaurantFacade</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">Kitchen</span> <span class="variable">kitchen</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Kitchen</span>();</span><br><span class="line">    <span class="keyword">private</span> <span class="type">DrinkBar</span> <span class="variable">drinkBar</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DrinkBar</span>();</span><br><span class="line">    <span class="keyword">private</span> <span class="type">Cashier</span> <span class="variable">cashier</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Cashier</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">orderSetMeal</span><span class="params">()</span> &#123;</span><br><span class="line">        cashier.pay();</span><br><span class="line">        kitchen.cook();</span><br><span class="line">        drinkBar.makeDrink();</span><br><span class="line">        System.out.println(<span class="string">&quot;前台：套餐准备完成&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">RestaurantFacade</span> <span class="variable">restaurant</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RestaurantFacade</span>();</span><br><span class="line">        restaurant.orderSetMeal();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端代码非常简单：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">restaurant.orderSetMeal();</span><br></pre></td></tr></table></figure>
+
+<p>它不需要知道主菜怎么做、饮料谁负责、账单怎么处理。</p>
+<p>回到软件开发中也是一样。很多业务功能表面上只是一个动作，但内部需要多个类协作完成。如果这些细节全部暴露给调用者，客户端代码就会越来越重。外观模式的作用，就是给复杂系统套上一层“服务窗口”，让调用者通过一个简单入口完成复杂操作。</p>
+<hr>
+<h3 id="4-1-需求分析-1"><a href="#4-1-需求分析-1" class="headerlink" title="4.1 需求分析"></a>4.1 需求分析</h3><p>本项目案例是模拟的是一个视频格式转换功能。</p>
+<p>客户端的目标很明确：把一个视频文件转换成指定格式，例如把 <code>youtubevideo.ogg</code> 转换成 <code>mp4</code>。</p>
+<p>但从代码可以看出，<strong>真正完成这个功能并不只是调用一个类，而是需要多个底层类协作</strong>：</p>
+<ul>
+<li><code>VideoFile</code>：根据文件名创建视频文件对象，并解析文件格式。</li>
+<li><code>CodecFactory</code>：根据源视频文件提取对应的源编码器。</li>
+<li><code>MPEG4CompressionCodec</code>：表示 MP4 目标编码器。</li>
+<li><code>OggCompressionCodec</code>：表示 OGG 目标编码器。</li>
+<li><code>BitrateReader</code>：负责读取视频内容并执行格式转换。</li>
+<li><code>AudioMixer</code>：负责修复转换后的视频音频。</li>
+<li><code>Codec</code>：编码器统一接口。</li>
+</ul>
+<p>如果客户端直接调用这些类，就必须自己维护完整流程：</p>
+<ol>
+<li>创建视频文件对象。</li>
+<li>提取源文件编码器。</li>
+<li>根据目标格式判断使用哪种编码器。</li>
+<li>读取视频内容。</li>
+<li>执行格式转换。</li>
+<li>修复音频。</li>
+<li>获取最终文件。</li>
+</ol>
+<p>这会带来几个问题：</p>
+<ul>
+<li>客户端依赖太多底层类。</li>
+<li>调用顺序必须由客户端自己保证。</li>
+<li>格式判断逻辑暴露在客户端。</li>
+<li>多个地方需要视频转换时，流程代码会重复出现。</li>
+<li>底层流程一旦变化，多个客户端都可能跟着修改。</li>
+</ul>
+<p>因此，<strong>本案例需要一个统一的视频转换入口，把这些复杂步骤封装起来</strong>。</p>
+<p><code>VideoConversionFacade</code> 就承担了这个角色。它对外只提供：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> File <span class="title function_">convertVideo</span><span class="params">(String fileName, String format)</span></span><br></pre></td></tr></table></figure>
+
+<p>客户端只需要传入文件名和目标格式，剩下的编码器选择、读取、转换、音频修复，都交给外观类内部完成。</p>
+<p>所以本案例的核心需求可以总结为：</p>
+<blockquote>
+<p>为复杂的视频转换子系统提供一个简单入口，让客户端只关心“转换视频”这个业务动作，而不关心底层转换流程。</p>
+</blockquote>
+<h3 id="4-2-架构图"><a href="#4-2-架构图" class="headerlink" title="4.2 架构图"></a>4.2 架构图</h3><h4 id="4-2-1-普通方式架构图"><a href="#4-2-1-普通方式架构图" class="headerlink" title="4.2.1 普通方式架构图"></a>4.2.1 普通方式架构图</h4><p>普通方式下，客户端直接依赖多个底层类。</p>
+<div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    class ApiTest {
+        +test_no_design()
+    }
+
+    class VideoFile
+    class Codec
+    class CodecFactory
+    class MPEG4CompressionCodec
+    class OggCompressionCodec
+    class BitrateReader
+    class AudioMixer
+
+    ApiTest --&gt; VideoFile : 创建文件对象
+    ApiTest --&gt; CodecFactory : 提取源编码器
+    ApiTest --&gt; MPEG4CompressionCodec : 选择 mp4 编码器
+    ApiTest --&gt; OggCompressionCodec : 选择 ogg 编码器
+    ApiTest --&gt; BitrateReader : 读取与转换
+    ApiTest --&gt; AudioMixer : 修复音频
+    CodecFactory --&gt; Codec
+    MPEG4CompressionCodec ..|&gt; Codec
+    OggCompressionCodec ..|&gt; Codec
+  </pre></div>
+
+<p>这种写法的问题在于：客户端既要知道“做什么”，也要知道“怎么做”。调用者承担了流程编排责任。</p>
+<h4 id="4-2-2-外观模式架构图"><a href="#4-2-2-外观模式架构图" class="headerlink" title="4.2.2 外观模式架构图"></a>4.2.2 外观模式架构图</h4><p>引入外观模式后，客户端只依赖 <code>VideoConversionFacade</code>。</p>
+<div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    class ApiTest {
+        +test_facade()
+    }
+
+    class VideoConversionFacade {
+        +convertVideo(fileName, format) File
+    }
+
+    class VideoFile
+    class CodecFactory
+    class MPEG4CompressionCodec
+    class OggCompressionCodec
+    class BitrateReader
+    class AudioMixer
+    class Codec
+
+    ApiTest --&gt; VideoConversionFacade : 调用视频转换
+    VideoConversionFacade --&gt; VideoFile
+    VideoConversionFacade --&gt; CodecFactory
+    VideoConversionFacade --&gt; MPEG4CompressionCodec
+    VideoConversionFacade --&gt; OggCompressionCodec
+    VideoConversionFacade --&gt; BitrateReader
+    VideoConversionFacade --&gt; AudioMixer
+    CodecFactory --&gt; Codec
+    MPEG4CompressionCodec ..|&gt; Codec
+    OggCompressionCodec ..|&gt; Codec
+  </pre></div>
+
+<p>此时，客户端的依赖关系明显变简单了。底层复杂度没有消失，但被集中到了外观类内部。</p>
+<h3 id="4-3-时序图"><a href="#4-3-时序图" class="headerlink" title="4.3 时序图"></a>4.3 时序图</h3><h4 id="4-3-1-普通代码时序图"><a href="#4-3-1-普通代码时序图" class="headerlink" title="4.3.1 普通代码时序图"></a>4.3.1 普通代码时序图</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  sequenceDiagram
+    participant Client as ApiTest.test_no_design
+    participant VideoFile
+    participant CodecFactory
+    participant BitrateReader
+    participant AudioMixer
+
+    Client-&gt;&gt;VideoFile: new VideoFile(fileName)
+    Client-&gt;&gt;CodecFactory: extract(file)
+    CodecFactory--&gt;&gt;Client: sourceCodec
+    Client-&gt;&gt;Client: 根据 format 选择目标编码器
+    Client-&gt;&gt;BitrateReader: read(file, sourceCodec)
+    BitrateReader--&gt;&gt;Client: buffer
+    Client-&gt;&gt;BitrateReader: convert(buffer, destinationCodec)
+    BitrateReader--&gt;&gt;Client: intermediateResult
+    Client-&gt;&gt;AudioMixer: fix(intermediateResult)
+    AudioMixer--&gt;&gt;Client: result
+  </pre></div>
+
+<p>普通写法中，所有步骤都由客户端主动发起。流程越长，客户端越容易变得臃肿。</p>
+<h4 id="4-3-2-外观模式时序图"><a href="#4-3-2-外观模式时序图" class="headerlink" title="4.3.2 外观模式时序图"></a>4.3.2 外观模式时序图</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  sequenceDiagram
+    participant Client as ApiTest.test_facade
+    participant Facade as VideoConversionFacade
+    participant VideoFile
+    participant CodecFactory
+    participant BitrateReader
+    participant AudioMixer
+
+    Client-&gt;&gt;Facade: convertVideo(fileName, format)
+    Facade-&gt;&gt;VideoFile: new VideoFile(fileName)
+    Facade-&gt;&gt;CodecFactory: extract(file)
+    CodecFactory--&gt;&gt;Facade: sourceCodec
+    Facade-&gt;&gt;Facade: 根据 format 选择目标编码器
+    Facade-&gt;&gt;BitrateReader: read(file, sourceCodec)
+    BitrateReader--&gt;&gt;Facade: buffer
+    Facade-&gt;&gt;BitrateReader: convert(buffer, destinationCodec)
+    BitrateReader--&gt;&gt;Facade: intermediateResult
+    Facade-&gt;&gt;AudioMixer: fix(intermediateResult)
+    AudioMixer--&gt;&gt;Facade: result
+    Facade--&gt;&gt;Client: result
+  </pre></div>
+
+<p>外观写法中，客户端只发起一次调用。具体执行步骤由外观类内部完成。</p>
+<h3 id="4-4-代码分析"><a href="#4-4-代码分析" class="headerlink" title="4.4 代码分析"></a>4.4 代码分析</h3><h4 id="4-4-1-普通代码（if-else-硬编码）"><a href="#4-4-1-普通代码（if-else-硬编码）" class="headerlink" title="4.4.1 普通代码（if-else&#x2F;硬编码）"></a>4.4.1 普通代码（if-else&#x2F;硬编码）</h4><p><code>ApiTest.test_no_design()</code> 展示了不使用设计模式时的写法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test_no_design</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">fileName</span> <span class="operator">=</span> <span class="string">&quot;youtubevideo.ogg&quot;</span>;</span><br><span class="line">    <span class="type">String</span> <span class="variable">format</span> <span class="operator">=</span> <span class="string">&quot;mp4&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">VideoFile</span> <span class="variable">file</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">VideoFile</span>(fileName);</span><br><span class="line"></span><br><span class="line">    <span class="type">Codec</span> <span class="variable">sourceCodec</span> <span class="operator">=</span> CodecFactory.extract(file);</span><br><span class="line"></span><br><span class="line">    Codec destinationCodec;</span><br><span class="line">    <span class="keyword">if</span> (format.equals(<span class="string">&quot;mp4&quot;</span>)) &#123;</span><br><span class="line">        destinationCodec = <span class="keyword">new</span> <span class="title class_">MPEG4CompressionCodec</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        destinationCodec = <span class="keyword">new</span> <span class="title class_">OggCompressionCodec</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">VideoFile</span> <span class="variable">buffer</span> <span class="operator">=</span> BitrateReader.read(file, sourceCodec);</span><br><span class="line">    <span class="type">VideoFile</span> <span class="variable">intermediateResult</span> <span class="operator">=</span> BitrateReader.convert(buffer, destinationCodec);</span><br><span class="line"></span><br><span class="line">    <span class="type">File</span> <span class="variable">result</span> <span class="operator">=</span> (<span class="keyword">new</span> <span class="title class_">AudioMixer</span>()).fix(intermediateResult);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码能够完成视频转换，但存在几个明显问题：</p>
+<ul>
+<li>客户端知道了太多底层类。</li>
+<li>客户端必须维护正确的调用顺序。</li>
+<li><code>if (format.equals(&quot;mp4&quot;))</code> 这样的格式选择逻辑直接暴露在调用端。</li>
+<li>如果转换流程变化，调用端也要跟着变化。</li>
+<li>如果多个地方都需要视频转换，这段流程很容易被复制多份。</li>
+</ul>
+<p>这类代码的坏味道不一定是“复杂到无法阅读”，而是“复杂度放错了位置”。客户端只是想转换视频，却被迫参与了转换流程的细节编排。</p>
+<h4 id="4-4-2-外观模式代码"><a href="#4-4-2-外观模式代码" class="headerlink" title="4.4.2 外观模式代码"></a>4.4.2 外观模式代码</h4><p><code>VideoConversionFacade</code> 是本案例的外观类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">VideoConversionFacade</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> File <span class="title function_">convertVideo</span><span class="params">(String fileName, String format)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;VideoConversionFacade: conversion started.&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">VideoFile</span> <span class="variable">file</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">VideoFile</span>(fileName);</span><br><span class="line"></span><br><span class="line">        <span class="type">Codec</span> <span class="variable">sourceCodec</span> <span class="operator">=</span> CodecFactory.extract(file);</span><br><span class="line">        Codec destinationCodec;</span><br><span class="line">        <span class="keyword">if</span> (format.equals(<span class="string">&quot;mp4&quot;</span>)) &#123;</span><br><span class="line">            destinationCodec = <span class="keyword">new</span> <span class="title class_">MPEG4CompressionCodec</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            destinationCodec = <span class="keyword">new</span> <span class="title class_">OggCompressionCodec</span>();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">VideoFile</span> <span class="variable">buffer</span> <span class="operator">=</span> BitrateReader.read(file, sourceCodec);</span><br><span class="line">        <span class="type">VideoFile</span> <span class="variable">intermediateResult</span> <span class="operator">=</span> BitrateReader.convert(buffer, destinationCodec);</span><br><span class="line">        <span class="type">File</span> <span class="variable">result</span> <span class="operator">=</span> (<span class="keyword">new</span> <span class="title class_">AudioMixer</span>()).fix(intermediateResult);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;VideoConversionFacade: conversion completed.&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端调用代码变成：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test_facade</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">VideoConversionFacade</span> <span class="variable">converter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">VideoConversionFacade</span>();</span><br><span class="line">    <span class="type">File</span> <span class="variable">mp4Video</span> <span class="operator">=</span> converter.convertVideo(<span class="string">&quot;youtubevideo.ogg&quot;</span>, <span class="string">&quot;mp4&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>外观类承担了三件事：</p>
+<ul>
+<li>封装流程：把多个子系统调用组合成一个完整的视频转换流程。</li>
+<li>屏蔽细节：客户端不再关心编码器选择、码率读取、音频修复等步骤。</li>
+<li>降低依赖：客户端只依赖 <code>VideoConversionFacade</code>，而不是直接依赖一组媒体库类。</li>
+</ul>
+<p>需要注意的是，外观模式并没有让底层代码消失。它只是把复杂度从客户端移动到了更合适的位置。</p>
+<p>这样的设计让子系统类继续保持自己的职责，同时让客户端获得更简单的调用体验。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>外观模式的核心价值，就是<strong>给复杂子系统提供一个简单入口</strong>。</p>
+<p>它并不是把复杂逻辑消灭了，而是把复杂逻辑收拢到更合适的位置。</p>
+<p>客户端不再直接面对一堆底层类，也不需要关心调用顺序、对象创建、流程编排这些细节，只需要调用外观类提供的高层方法。</p>
+<p>外观模式带来的变化：<strong>把复杂留给内部，把简单交给外部。</strong></p>
+<p>外观模式适合用在这些场景：</p>
+<ul>
+<li>子系统类很多，调用链比较长。</li>
+<li>客户端只需要使用某个高层功能。</li>
+<li><strong>多个地方重复编写同一套流程代码。</strong></li>
+<li>希望降低客户端和底层系统之间的耦合。</li>
+<li><strong>希望给复杂模块提供一个统一访问入口。</strong></li>
+</ul>
+<p>但使用时也要注意：外观类不要变成“万能类”。它应该封装的是一组明确的业务流程，而不是把所有功能都堆进去。</p>
+<p>否则，外观类本身也会变成新的复杂点。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Like</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://likerhood.github.io/2026/05/19/012%20%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F/">https://likerhood.github.io/2026/05/19/012%20%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://likerhood.github.io" target="_blank">Liker's Blog</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/013javawaiguan_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://fastly.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2026/05/18/043%20%E4%BD%BF%E7%94%A8%E8%8B%B9%E6%9E%9C%E7%A4%BC%E5%93%81%E5%8D%A1%E5%85%85chatgpt%E4%BC%9A%E5%91%98/"><img class="next-cover" src="/img/011chatgptplus_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">使用苹果设备与礼品卡充值ChatGPT Plus（土耳其区）详细教程</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%C2%B7-%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F%EF%BC%88Facade-Pattern%EF%BC%89"><span class="toc-text">设计模式 · 外观模式（Facade Pattern）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A0%B8%E5%BF%83%E5%AE%9A%E4%B9%89"><span class="toc-text">一、核心定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A0%87%E5%87%86%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%9B%BE"><span class="toc-text">二、标准体系结构图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%9C%BA%E6%99%AF%E6%8E%A8%E6%BC%94"><span class="toc-text">三、场景推演</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%9C%BA%E6%99%AF%E6%8E%A8%E6%BC%94-1"><span class="toc-text">三、场景推演</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B"><span class="toc-text">四、实战案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="toc-text">4.1 需求分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%9C%BA%E6%99%AF%E6%8E%A8%E6%BC%94-2"><span class="toc-text">三、场景推演</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90-1"><span class="toc-text">4.1 需求分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-text">4.2 架构图</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-1-%E6%99%AE%E9%80%9A%E6%96%B9%E5%BC%8F%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-text">4.2.1 普通方式架构图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-2-%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-text">4.2.2 外观模式架构图</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="toc-text">4.3 时序图</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-1-%E6%99%AE%E9%80%9A%E4%BB%A3%E7%A0%81%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="toc-text">4.3.1 普通代码时序图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-2-%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="toc-text">4.3.2 外观模式时序图</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-text">4.4 代码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-1-%E6%99%AE%E9%80%9A%E4%BB%A3%E7%A0%81%EF%BC%88if-else-%E7%A1%AC%E7%BC%96%E7%A0%81%EF%BC%89"><span class="toc-text">4.4.1 普通代码（if-else&#x2F;硬编码）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-2-%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F%E4%BB%A3%E7%A0%81"><span class="toc-text">4.4.2 外观模式代码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div></div></main><footer id="footer" style="background: #FFFFFF"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2026 By Like</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">Bcxm</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = async () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+      mermaid.initialize({ startOnLoad: false, theme: theme, securityLevel: 'loose' })
+
+      for (let i = 0; i < $mermaidWrap.length; i++) {
+        const item = $mermaidWrap[i]
+        const mermaidSrc = item.firstElementChild
+        const mermaidID = 'mermaid-' + i
+        const mermaidDefinition = mermaidSrc.textContent.trim()
+        try {
+          const result = await mermaid.render(mermaidID, mermaidDefinition)
+          const svgCode = result && result.svg ? result.svg : result
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        } catch (e) {
+          console.error('Mermaid render error:', mermaidID, e)
+        }
+      }
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://fastly.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/leancloud-storage@4.10.0/dist/av-min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
