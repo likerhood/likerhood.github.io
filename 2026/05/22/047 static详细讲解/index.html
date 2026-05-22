@@ -1,0 +1,283 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Java static 关键字从浅入深</title><meta name="author" content="Like"><meta name="copyright" content="Like"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Java static 关键字从浅入深前言static 是 Java 里非常常见的关键字。它的核心意思是：这个成员属于类，而不是属于某一个对象。 如果把类比作一张“设计图”，对象就是按设计图造出来的一台台机器。普通字段是每台机器自己的零件，static 字段则像挂在工厂墙上的公共看板，所有机器看到的是同一份。  一、static 的基本概念1.1 static 修饰什么static 可以修饰变量、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java static 关键字从浅入深">
+<meta property="og:url" content="https://likerhood.github.io/2026/05/22/047%20static%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Liker&#39;s Blog">
+<meta property="og:description" content="Java static 关键字从浅入深前言static 是 Java 里非常常见的关键字。它的核心意思是：这个成员属于类，而不是属于某一个对象。 如果把类比作一张“设计图”，对象就是按设计图造出来的一台台机器。普通字段是每台机器自己的零件，static 字段则像挂在工厂墙上的公共看板，所有机器看到的是同一份。  一、static 的基本概念1.1 static 修饰什么static 可以修饰变量、">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likerhood.github.io/img/016javastatic_cover.png">
+<meta property="article:published_time" content="2026-05-22T12:55:07.699Z">
+<meta property="article:modified_time" content="2026-05-22T12:56:20.934Z">
+<meta property="article:author" content="Like">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likerhood.github.io/img/016javastatic_cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/05/22/047%20static%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Like","link":"链接: ","source":"来源: Liker's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Java static 关键字从浅入深',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-05-22 20:56:20'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Liker's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Java static 关键字从浅入深</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-05-22T12:55:07.699Z" title="发表于 2026-05-22 20:55:07">2026-05-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/java%E5%AD%A6%E4%B9%A0/">java学习</a></span></div><div class="meta-secondline"></div></div></div><article class="post-content" id="article-container"><h1 id="Java-static-关键字从浅入深"><a href="#Java-static-关键字从浅入深" class="headerlink" title="Java static 关键字从浅入深"></a>Java static 关键字从浅入深</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><code>static</code> 是 Java 里非常常见的关键字。它的核心意思是：这个成员属于类，而不是属于某一个对象。</p>
+<p>如果把类比作一张“设计图”，对象就是按设计图造出来的一台台机器。普通字段是每台机器自己的零件，<code>static</code> 字段则像挂在工厂墙上的公共看板，所有机器看到的是同一份。</p>
+<hr>
+<h2 id="一、static-的基本概念"><a href="#一、static-的基本概念" class="headerlink" title="一、static 的基本概念"></a>一、static 的基本概念</h2><h3 id="1-1-static-修饰什么"><a href="#1-1-static-修饰什么" class="headerlink" title="1.1 static 修饰什么"></a>1.1 static 修饰什么</h3><p><code>static</code> 可以修饰变量、方法、代码块、内部类。</p>
+<p>常见形式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Demo</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="type">int</span> count;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">hello</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;hello&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;class init&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Helper</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>不能直接修饰普通外部类，也不能修饰局部变量。</strong></p>
+<h3 id="1-2-static-的一句话理解"><a href="#1-2-static-的一句话理解" class="headerlink" title="1.2 static 的一句话理解"></a>1.2 static 的一句话理解</h3><p>普通成员依赖对象，<code>static</code> 成员依赖类。</p>
+<p><strong>所以普通成员通常用 <code>对象.成员</code> 访问，静态成员通常用 <code>类名.成员</code> 访问。</strong></p>
+<hr>
+<h2 id="二、static-变量"><a href="#二、static-变量" class="headerlink" title="二、static 变量"></a>二、static 变量</h2><h3 id="2-1-类变量与实例变量"><a href="#2-1-类变量与实例变量" class="headerlink" title="2.1 类变量与实例变量"></a>2.1 类变量与实例变量</h3><p>被 <code>static</code> 修饰的变量叫类变量。它在类加载后只有一份，被这个类的所有对象共享。</p>
+<p>实例变量属于对象，每 new 一次就有一份。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="type">int</span> total;</span><br><span class="line">    String name;</span><br><span class="line"></span><br><span class="line">    User(String name) &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">        total++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里 <code>name</code> 是每个用户自己的名字，<code>total</code> 是所有用户共同维护的总人数。</p>
+<h3 id="2-2-使用场景"><a href="#2-2-使用场景" class="headerlink" title="2.2 使用场景"></a>2.2 使用场景</h3><p><code>static</code> 变量适合存放“全班共享”的数据。</p>
+<p>常见场景：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppConfig</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">APP_NAME</span> <span class="operator">=</span> <span class="string">&quot;demo&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Counter</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> total;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Counter</span><span class="params">()</span> &#123;</span><br><span class="line">        total++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>适合放常量、计数器、共享配置、缓存引用。</p>
+<p>不适合放用户登录状态、请求参数、订单数据等会因对象或线程变化而变化的数据。</p>
+<hr>
+<h2 id="三、static-方法"><a href="#三、static-方法" class="headerlink" title="三、static 方法"></a>三、static 方法</h2><h3 id="3-1-静态方法的特点"><a href="#3-1-静态方法的特点" class="headerlink" title="3.1 静态方法的特点"></a>3.1 静态方法的特点</h3><p>静态方法属于类，可以不创建对象直接调用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Math.max(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">Integer.parseInt(<span class="string">&quot;123&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>静态方法中不能直接访问非静态字段，因为它执行时不一定有对象。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Demo</span> &#123;</span><br><span class="line">    String name;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// System.out.println(name); // 编译错误</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>原因很简单：你站在工厂办公室里，能看公共看板，但不能知道某一台机器里私有零件的状态，除非你拿到那台机器的引用。</p>
+<h3 id="3-2-使用场景"><a href="#3-2-使用场景" class="headerlink" title="3.2 使用场景"></a>3.2 使用场景</h3><p>静态方法适合无状态工具方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StringUtils</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">isBlank</span><span class="params">(String value)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> value == <span class="literal">null</span> || value.trim().isEmpty();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果方法强依赖对象状态，就不要写成 <code>static</code>。</p>
+<hr>
+<h2 id="四、static-代码块"><a href="#四、static-代码块" class="headerlink" title="四、static 代码块"></a>四、static 代码块</h2><h3 id="4-1-static-代码块什么时候执行"><a href="#4-1-static-代码块什么时候执行" class="headerlink" title="4.1 static 代码块什么时候执行"></a>4.1 static 代码块什么时候执行</h3><p>静态代码块在类初始化时执行，并且一个类只执行一次。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Demo</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;load Demo&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>常见触发时机包括：创建对象、访问静态字段、调用静态方法、反射加载类。</strong></p>
+<h3 id="4-2-初始化顺序"><a href="#4-2-初始化顺序" class="headerlink" title="4.2 初始化顺序"></a>4.2 初始化顺序</h3><p>大致顺序是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">类加载 -&gt; 静态字段赋值和静态代码块 -&gt; 实例字段和实例代码块 -&gt; 构造方法</span><br></pre></td></tr></table></figure>
+
+<p>静态内容先于对象存在。它像工厂开门前先装好的公共设备，对象只是后面生产出来的产品。</p>
+<hr>
+<h2 id="五、static-内部类"><a href="#五、static-内部类" class="headerlink" title="五、static 内部类"></a>五、static 内部类</h2><h3 id="5-1-静态内部类"><a href="#5-1-静态内部类" class="headerlink" title="5.1 静态内部类"></a>5.1 静态内部类</h3><p><strong>静态内部类不依赖外部类对象。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Outer</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Helper</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Outer.<span class="type">Helper</span> <span class="variable">helper</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Outer</span>.Helper();</span><br></pre></td></tr></table></figure>
+
+<p><strong>普通内部类依赖外部类对象。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Outer</span> &#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">Inner</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">Outer</span> <span class="variable">outer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Outer</span>();</span><br><span class="line">Outer.<span class="type">Inner</span> <span class="variable">inner</span> <span class="operator">=</span> outer.<span class="keyword">new</span> <span class="title class_">Inner</span>();</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-使用场景"><a href="#5-2-使用场景" class="headerlink" title="5.2 使用场景"></a>5.2 使用场景</h3><p><strong>静态内部类常用于把辅助类收在外部类内部，表达“它只服务于这个外部类”的关系。</strong></p>
+<p>经典用法是 Holder 单例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Holder</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Singleton</span> <span class="variable">INSTANCE</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Holder.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它利用类初始化的线程安全特性，实现<strong>懒加载和安全发布</strong>。</p>
+<p> <strong>外部类加载</strong></p>
+<ul>
+<li>当 JVM 加载 <code>Singleton</code> 类时：<ul>
+<li>会加载外部类的类信息（类结构、方法、字段信息）。</li>
+<li><strong>不会立刻加载静态内部类 Holder</strong>。</li>
+</ul>
+</li>
+<li>也就是说，即使外部类被加载，内部类仍然“睡着”，不会初始化其中的 static 字段。</li>
+</ul>
+<blockquote>
+<p> 类比：外部类是房子，内部类是保险箱。房子建好了，保险箱没开，里面的东西不会动。</p>
+</blockquote>
+<p>静态内部类的加载<strong>延迟到第一次使用</strong>。</p>
+<p>这里的第一次使用是指：</p>
+<ul>
+<li><strong>调用 Holder 的 static 字段或方法</strong>。</li>
+</ul>
+<hr>
+<h2 id="六、static-与内存模型"><a href="#六、static-与内存模型" class="headerlink" title="六、static 与内存模型"></a>六、static 与内存模型</h2><h3 id="6-1-static-存在哪里"><a href="#6-1-static-存在哪里" class="headerlink" title="6.1 static 存在哪里"></a>6.1 static 存在哪里</h3><p>很多旧资料会说 <code>static</code> 变量在方法区。更准确地说，类的元数据在方法区的实现中，HotSpot 从 JDK 8 开始使用元空间保存类元数据；而静态字段的实际存储与类对象相关，底层实现细节和 JVM 版本有关。</p>
+<p>学习时可以先记住：<code>static</code> 成员和类生命周期绑定，不和某个实例对象绑定。</p>
+<h3 id="6-2-类加载与初始化"><a href="#6-2-类加载与初始化" class="headerlink" title="6.2 类加载与初始化"></a>6.2 类加载与初始化</h3><p>Java 类从被 JVM 认识到可使用，会经历加载、验证、准备、解析、初始化等阶段。</p>
+<p>对 <code>static</code> 来说，重点是：</p>
+<p>准备阶段会给静态变量分配默认值。</p>
+<p>初始化阶段会执行显式赋值和 <code>static</code> 代码块。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="number">10</span>;</span><br></pre></td></tr></table></figure>
+
+<p>准备阶段：<code>count = 0</code>。</p>
+<p>初始化阶段：<code>count = 10</code>。</p>
+<h3 id="6-3-线程安全思考"><a href="#6-3-线程安全思考" class="headerlink" title="6.3 线程安全思考"></a>6.3 线程安全思考</h3><p><code>static</code> 变量是共享的，共享就可能有并发问题。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> count;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">add</span><span class="params">()</span> &#123;</span><br><span class="line">    count++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>count++</code> 不是原子操作，多线程下可能丢失更新。项目中可用 <code>AtomicInteger</code>、锁、不可变对象，或者避免共享可变静态状态。</p>
+<hr>
+<h2 id="七、项目中如何使用-static"><a href="#七、项目中如何使用-static" class="headerlink" title="七、项目中如何使用 static"></a>七、项目中如何使用 static</h2><h3 id="7-1-推荐使用"><a href="#7-1-推荐使用" class="headerlink" title="7.1 推荐使用"></a>7.1 推荐使用</h3><p>推荐用于常量：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">MAX_RETRY</span> <span class="operator">=</span> <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+
+<p>推荐用于无状态工具方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">normalize</span><span class="params">(String value)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> value == <span class="literal">null</span> ? <span class="string">&quot;&quot;</span> : value.trim().toLowerCase();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>推荐用于 Holder 单例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Holder</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Service</span> <span class="variable">INSTANCE</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Service</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-谨慎使用"><a href="#7-2-谨慎使用" class="headerlink" title="7.2 谨慎使用"></a>7.2 谨慎使用</h3><p>谨慎使用可变静态变量。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;String&gt; users = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br></pre></td></tr></table></figure>
+
+<p>它容易带来全局状态污染、测试互相影响、线程安全问题和难以追踪的数据变化。</p>
+<p>项目经验里，<code>static</code> 最大的问题不是不会用，而是用得太方便。</p>
+<hr>
+<h2 id="八、面试如何考察-static"><a href="#八、面试如何考察-static" class="headerlink" title="八、面试如何考察 static"></a>八、面试如何考察 static</h2><h3 id="8-1-高频问题"><a href="#8-1-高频问题" class="headerlink" title="8.1 高频问题"></a>8.1 高频问题</h3><p>常见问题：</p>
+<p><code>static</code> 变量和实例变量区别是什么？</p>
+<p><code>static</code> 方法能不能访问普通成员？</p>
+<p><code>static</code> 代码块什么时候执行？</p>
+<p>类加载初始化顺序是什么？</p>
+<p><code>static final</code> 和普通 <code>static</code> 有什么区别？</p>
+<p>静态内部类为什么能实现单例？</p>
+<p>静态变量线程安全吗？</p>
+<h3 id="8-2-回答思路"><a href="#8-2-回答思路" class="headerlink" title="8.2 回答思路"></a>8.2 回答思路</h3><p>先讲归属：<code>static</code> 属于类，普通成员属于对象。</p>
+<p>再讲生命周期：<code>static</code> 随类加载初始化，普通成员随对象创建初始化。</p>
+<p><strong>再讲访问限制：静态上下文没有 <code>this</code>，不能直接访问实例成员。</strong></p>
+<p>最后讲项目风险：共享可变状态要注意并发和测试污染。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>static</code> 的本质是“属于类，而不是属于对象”。</p>
+<p>用得好，它可以表达常量、工具方法、类级共享资源和单例结构；用得不好，它会变成全局变量，制造并发问题和测试污染。</p>
+<p>记住一句话：能不共享就不共享，必须共享就尽量不可变；如果共享可变状态，就要认真考虑线程安全和生命周期。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Like</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://likerhood.github.io/2026/05/22/047%20static%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3/">https://likerhood.github.io/2026/05/22/047%20static%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://likerhood.github.io" target="_blank">Liker's Blog</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/016javastatic_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://fastly.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2026/05/22/046%20final%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3/"><img class="next-cover" src="/img/015javafinal_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Java final 关键字：从“不能改”到“安全发布”的深入理解</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java-static-%E5%85%B3%E9%94%AE%E5%AD%97%E4%BB%8E%E6%B5%85%E5%85%A5%E6%B7%B1"><span class="toc-text">Java static 关键字从浅入深</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81static-%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-text">一、static 的基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-static-%E4%BF%AE%E9%A5%B0%E4%BB%80%E4%B9%88"><span class="toc-text">1.1 static 修饰什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-static-%E7%9A%84%E4%B8%80%E5%8F%A5%E8%AF%9D%E7%90%86%E8%A7%A3"><span class="toc-text">1.2 static 的一句话理解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81static-%E5%8F%98%E9%87%8F"><span class="toc-text">二、static 变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E7%B1%BB%E5%8F%98%E9%87%8F%E4%B8%8E%E5%AE%9E%E4%BE%8B%E5%8F%98%E9%87%8F"><span class="toc-text">2.1 类变量与实例变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">2.2 使用场景</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81static-%E6%96%B9%E6%B3%95"><span class="toc-text">三、static 方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-text">3.1 静态方法的特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">3.2 使用场景</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81static-%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="toc-text">四、static 代码块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-static-%E4%BB%A3%E7%A0%81%E5%9D%97%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E6%89%A7%E8%A1%8C"><span class="toc-text">4.1 static 代码块什么时候执行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%BA%E5%BA%8F"><span class="toc-text">4.2 初始化顺序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81static-%E5%86%85%E9%83%A8%E7%B1%BB"><span class="toc-text">五、static 内部类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E9%9D%99%E6%80%81%E5%86%85%E9%83%A8%E7%B1%BB"><span class="toc-text">5.1 静态内部类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">5.2 使用场景</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81static-%E4%B8%8E%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-text">六、static 与内存模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-static-%E5%AD%98%E5%9C%A8%E5%93%AA%E9%87%8C"><span class="toc-text">6.1 static 存在哪里</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E4%B8%8E%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">6.2 类加载与初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%9D%E8%80%83"><span class="toc-text">6.3 线程安全思考</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E9%A1%B9%E7%9B%AE%E4%B8%AD%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-static"><span class="toc-text">七、项目中如何使用 static</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-%E6%8E%A8%E8%8D%90%E4%BD%BF%E7%94%A8"><span class="toc-text">7.1 推荐使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-%E8%B0%A8%E6%85%8E%E4%BD%BF%E7%94%A8"><span class="toc-text">7.2 谨慎使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E9%9D%A2%E8%AF%95%E5%A6%82%E4%BD%95%E8%80%83%E5%AF%9F-static"><span class="toc-text">八、面试如何考察 static</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E9%AB%98%E9%A2%91%E9%97%AE%E9%A2%98"><span class="toc-text">8.1 高频问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-%E5%9B%9E%E7%AD%94%E6%80%9D%E8%B7%AF"><span class="toc-text">8.2 回答思路</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div></div></main><footer id="footer" style="background: #FFFFFF"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2026 By Like</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">Bcxm</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = async () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+      mermaid.initialize({ startOnLoad: false, theme: theme, securityLevel: 'loose' })
+
+      for (let i = 0; i < $mermaidWrap.length; i++) {
+        const item = $mermaidWrap[i]
+        const mermaidSrc = item.firstElementChild
+        const mermaidID = 'mermaid-' + i
+        const mermaidDefinition = mermaidSrc.textContent.trim()
+        try {
+          const result = await mermaid.render(mermaidID, mermaidDefinition)
+          const svgCode = result && result.svg ? result.svg : result
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        } catch (e) {
+          console.error('Mermaid render error:', mermaidID, e)
+        }
+      }
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://fastly.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/leancloud-storage@4.10.0/dist/av-min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
