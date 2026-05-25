@@ -1,0 +1,550 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>设计模式 · 责任链模式（Chain of Responsibility Pattern）</title><meta name="author" content="Like"><meta name="copyright" content="Like"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="设计模式 · 责任链模式（Chain of Responsibility Pattern）前言在业务系统中，经常会遇到“多级审批”“多层校验”“多步骤过滤”这类流程。 比如项目上线审批：  平时只需要三级负责人审批； 618 大促期间，需要额外经过二级负责人审批； 618 核心时间段，还需要一级负责人审批； 每一级审批通过后，才可以继续向下流转。  如果直接用 if-else 写，代码很快就会变成">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式 · 责任链模式（Chain of Responsibility Pattern）">
+<meta property="og:url" content="https://likerhood.github.io/2026/05/25/051%20%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Liker&#39;s Blog">
+<meta property="og:description" content="设计模式 · 责任链模式（Chain of Responsibility Pattern）前言在业务系统中，经常会遇到“多级审批”“多层校验”“多步骤过滤”这类流程。 比如项目上线审批：  平时只需要三级负责人审批； 618 大促期间，需要额外经过二级负责人审批； 618 核心时间段，还需要一级负责人审批； 每一级审批通过后，才可以继续向下流转。  如果直接用 if-else 写，代码很快就会变成">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likerhood.github.io/img/020javazerenlian_cover.png">
+<meta property="article:published_time" content="2026-05-25T11:10:07.720Z">
+<meta property="article:modified_time" content="2026-05-25T11:14:05.259Z">
+<meta property="article:author" content="Like">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likerhood.github.io/img/020javazerenlian_cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/05/25/051%20%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Like","link":"链接: ","source":"来源: Liker's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '设计模式 · 责任链模式（Chain of Responsibility Pattern）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-05-25 19:14:05'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Liker's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">设计模式 · 责任链模式（Chain of Responsibility Pattern）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-05-25T11:10:07.720Z" title="发表于 2026-05-25 19:10:07">2026-05-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></span></div><div class="meta-secondline"></div></div></div><article class="post-content" id="article-container"><h1 id="设计模式-·-责任链模式（Chain-of-Responsibility-Pattern）"><a href="#设计模式-·-责任链模式（Chain-of-Responsibility-Pattern）" class="headerlink" title="设计模式 · 责任链模式（Chain of Responsibility Pattern）"></a>设计模式 · 责任链模式（Chain of Responsibility Pattern）</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在业务系统中，经常会遇到“多级审批”“多层校验”“多步骤过滤”这类流程。</p>
+<p>比如项目上线审批：</p>
+<ul>
+<li>平时只需要三级负责人审批；</li>
+<li>618 大促期间，需要额外经过二级负责人审批；</li>
+<li>618 核心时间段，还需要一级负责人审批；</li>
+<li>每一级审批通过后，才可以继续向下流转。</li>
+</ul>
+<p>如果直接用 if-else 写，代码很快就会变成一大坨判断逻辑。新增审批级别、调整审批顺序、修改审批规则，都需要改原来的核心方法。</p>
+<p>责任链模式的作用，就是把这些审批环节拆成一个个独立节点，再用 next 把它们串成一条链。</p>
+<blockquote>
+<p>本文代码链接：<a target="_blank" rel="noopener" href="https://github.com/likerhood/CodeDesignWork/tree/main/codedesign12.0-0">https://github.com/likerhood/CodeDesignWork/tree/main/codedesign12.0-0</a></p>
+</blockquote>
+<hr>
+<h2 id="一、核心定义"><a href="#一、核心定义" class="headerlink" title="一、核心定义"></a>一、核心定义</h2><p><strong>责任链模式（Chain of Responsibility Pattern）</strong> 是一种行为型设计模式，将请求的发送者和接收者解耦，让多个对象都有机会处理请求，将这些对象串成一条链，请求沿链传递，直到有对象处理它为止。</p>
+<p>它的核心思想是：</p>
+<blockquote>
+<p>将多个处理对象串成一条链，请求从链头开始传递，每个节点决定自己是否处理，以及是否继续传给下一个节点。</p>
+</blockquote>
+<ul>
+<li><strong>解决问题</strong>：多级审批、多层过滤、多步骤验证等”流程链”场景中，if-else 造成的强耦合与难扩展</li>
+<li><strong>关键特征</strong>：<ul>
+<li>每个节点实现同一抽象类&#x2F;接口，决定自己处理还是传给下一个</li>
+<li>链的组装在运行时进行，可动态调整</li>
+<li>调用方只持有链头引用，不感知链的内部结构</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="二、标准体系结构图"><a href="#二、标准体系结构图" class="headerlink" title="二、标准体系结构图"></a>二、标准体系结构图</h2><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    class Handler {
+        &lt;&lt;abstract&gt;&gt;
+        -next: Handler
+        +setNext(handler: Handler) Handler
+        +handle(request: Request) Response
+    }
+
+    class ConcreteHandler1 {
+        +handle(request: Request) Response
+    }
+
+    class ConcreteHandler2 {
+        +handle(request: Request) Response
+    }
+
+    class ConcreteHandler3 {
+        +handle(request: Request) Response
+    }
+
+    class Client {
+    }
+
+    Handler &lt;|-- ConcreteHandler1 : 继承
+    Handler &lt;|-- ConcreteHandler2 : 继承
+    Handler &lt;|-- ConcreteHandler3 : 继承
+    Handler o--&gt; Handler : next（链接下一个）
+    Client --&gt; Handler : 只持有链头引用
+  </pre></div>
+
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>作用</th>
+<th>报销审批中的对应对象</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>抽象处理者 <code>Handler</code></td>
+<td>定义处理方法，并持有下一个节点</td>
+<td>抽象审批人</td>
+</tr>
+<tr>
+<td>具体处理者 <code>ConcreteHandler</code></td>
+<td>判断自己是否能处理请求</td>
+<td>组长、经理、总监、CFO</td>
+</tr>
+<tr>
+<td>客户端 <code>Client</code></td>
+<td>组装链条，并发起请求</td>
+<td>报销服务或系统启动配置</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三、场景推演"><a href="#三、场景推演" class="headerlink" title="三、场景推演"></a>三、场景推演</h2><p>假设公司规定如下：</p>
+<table>
+<thead>
+<tr>
+<th>请假天数</th>
+<th>审批人</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1 天以内</td>
+<td>组长</td>
+</tr>
+<tr>
+<td>3 天以内</td>
+<td>经理</td>
+</tr>
+<tr>
+<td>超过 3 天</td>
+<td>总监</td>
+</tr>
+</tbody></table>
+<p>员工提交请假申请后，不需要自己判断应该找组长、经理还是总监。</p>
+<p>员工只需要提交申请：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">员工提交请假申请 → 组长 → 经理 → 总监</span><br></pre></td></tr></table></figure>
+
+<p>每个审批人收到申请后，只判断一件事：</p>
+<blockquote>
+<p>当前请假天数是否在我的审批范围内？</p>
+</blockquote>
+<ul>
+<li>如果在自己的审批范围内，就审批通过；</li>
+<li>如果超出自己的权限，就交给下一个审批人。</li>
+</ul>
+<p>代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LeaveApprovalChainDemo</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 请求对象：员工提交的请假申请。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">LeaveRequest</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> String employeeName;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> days;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> String reason;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">LeaveRequest</span><span class="params">(String employeeName, <span class="type">int</span> days, String reason)</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (days &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;请假天数必须大于 0&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">this</span>.employeeName = employeeName;</span><br><span class="line">            <span class="built_in">this</span>.days = days;</span><br><span class="line">            <span class="built_in">this</span>.reason = reason;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> String <span class="title function_">getEmployeeName</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> employeeName;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getDays</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> days;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> String <span class="title function_">getReason</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> reason;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 抽象处理者：审批人。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * 每个审批人都保存下一个审批人。</span></span><br><span class="line"><span class="comment">     * 当前审批人能够处理，就直接审批；</span></span><br><span class="line"><span class="comment">     * 当前审批人不能处理，就将申请交给下一个审批人。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Approver</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> Approver next;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 设置下一个审批人。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> Approver <span class="title function_">setNext</span><span class="params">(Approver next)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.next = next;</span><br><span class="line">            <span class="keyword">return</span> next;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 处理请假申请。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title function_">handle</span><span class="params">(LeaveRequest request)</span> &#123;</span><br><span class="line">            System.out.printf(</span><br><span class="line">                    <span class="string">&quot;%s查看申请：%s请假%d天，原因：%s%n&quot;</span>,</span><br><span class="line">                    getRole(),</span><br><span class="line">                    request.getEmployeeName(),</span><br><span class="line">                    request.getDays(),</span><br><span class="line">                    request.getReason()</span><br><span class="line">            );</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (canApprove(request)) &#123;</span><br><span class="line">                System.out.printf(</span><br><span class="line">                        <span class="string">&quot;%s审批通过：%s请假%d天%n&quot;</span>,</span><br><span class="line">                        getRole(),</span><br><span class="line">                        request.getEmployeeName(),</span><br><span class="line">                        request.getDays()</span><br><span class="line">                );</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (next != <span class="literal">null</span>) &#123;</span><br><span class="line">                System.out.printf(</span><br><span class="line">                        <span class="string">&quot;%s权限不足，转交给%s%n&quot;</span>,</span><br><span class="line">                        getRole(),</span><br><span class="line">                        next.getRole()</span><br><span class="line">                );</span><br><span class="line">                next.handle(request);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;当前申请没有审批人可以处理&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 判断当前审批人能否处理这张请假申请。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="type">boolean</span> <span class="title function_">canApprove</span><span class="params">(LeaveRequest request)</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 获取当前审批人的角色名称。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title function_">getRole</span><span class="params">()</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 具体处理者一：组长。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * 组长最多审批 1 天请假。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">TeamLeader</span> <span class="keyword">extends</span> <span class="title class_">Approver</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">protected</span> <span class="type">boolean</span> <span class="title function_">canApprove</span><span class="params">(LeaveRequest request)</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> request.getDays() &lt;= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">protected</span> String <span class="title function_">getRole</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;组长&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 具体处理者二：经理。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * 经理最多审批 3 天请假。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Manager</span> <span class="keyword">extends</span> <span class="title class_">Approver</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">protected</span> <span class="type">boolean</span> <span class="title function_">canApprove</span><span class="params">(LeaveRequest request)</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> request.getDays() &lt;= <span class="number">3</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">protected</span> String <span class="title function_">getRole</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;经理&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 具体处理者三：总监。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * 总监作为链条最后一个节点，处理超过 3 天的请假。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Director</span> <span class="keyword">extends</span> <span class="title class_">Approver</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">protected</span> <span class="type">boolean</span> <span class="title function_">canApprove</span><span class="params">(LeaveRequest request)</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">protected</span> String <span class="title function_">getRole</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;总监&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * 组装责任链：</span></span><br><span class="line"><span class="comment">         * 组长 -&gt; 经理 -&gt; 总监</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="type">Approver</span> <span class="variable">chain</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TeamLeader</span>();</span><br><span class="line"></span><br><span class="line">        chain.setNext(<span class="keyword">new</span> <span class="title class_">Manager</span>())</span><br><span class="line">             .setNext(<span class="keyword">new</span> <span class="title class_">Director</span>());</span><br><span class="line"></span><br><span class="line">        <span class="type">LeaveRequest</span> <span class="variable">request1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">LeaveRequest</span>(</span><br><span class="line">                <span class="string">&quot;小王&quot;</span>,</span><br><span class="line">                <span class="number">1</span>,</span><br><span class="line">                <span class="string">&quot;家中有事&quot;</span></span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="type">LeaveRequest</span> <span class="variable">request2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">LeaveRequest</span>(</span><br><span class="line">                <span class="string">&quot;小李&quot;</span>,</span><br><span class="line">                <span class="number">2</span>,</span><br><span class="line">                <span class="string">&quot;外出办事&quot;</span></span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="type">LeaveRequest</span> <span class="variable">request3</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">LeaveRequest</span>(</span><br><span class="line">                <span class="string">&quot;小张&quot;</span>,</span><br><span class="line">                <span class="number">5</span>,</span><br><span class="line">                <span class="string">&quot;回家探亲&quot;</span></span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;===== 第一张请假申请 =====&quot;</span>);</span><br><span class="line">        chain.handle(request1);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;\n===== 第二张请假申请 =====&quot;</span>);</span><br><span class="line">        chain.handle(request2);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;\n===== 第三张请假申请 =====&quot;</span>);</span><br><span class="line">        chain.handle(request3);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<hr>
+<h2 id="四、实战案例"><a href="#四、实战案例" class="headerlink" title="四、实战案例"></a>四、实战案例</h2><h3 id="4-1-需求分析"><a href="#4-1-需求分析" class="headerlink" title="4.1 需求分析"></a>4.1 需求分析</h3><p><strong>618 大促审批流程升级规则：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">任何时期：</span><br><span class="line">  └── 三级审批（王工 1000013）必须通过</span><br><span class="line">  </span><br><span class="line">2020-06-01 ~ 2020-06-25 期间，额外加：</span><br><span class="line">  └── 二级审批（张经理 1000012）必须通过</span><br><span class="line">  </span><br><span class="line">2020-06-11 ~ 2020-06-20 期间，再额外加：</span><br><span class="line">  └── 一级审批（段总 1000011）必须通过</span><br></pre></td></tr></table></figure>
+
+<p><strong>面条代码的问题：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// if 嵌套地狱，增加一级审批 = 新增一坨 if</span></span><br><span class="line"><span class="type">Date</span> <span class="variable">date</span> <span class="operator">=</span> AuthService.queryAuthInfo(<span class="string">&quot;1000013&quot;</span>, orderId);</span><br><span class="line"><span class="keyword">if</span> (<span class="literal">null</span> == date) <span class="keyword">return</span> ... 王工;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (日期 in <span class="number">6.1</span>~<span class="number">6.25</span>) &#123;</span><br><span class="line">    date = AuthService.queryAuthInfo(<span class="string">&quot;1000012&quot;</span>, orderId);</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">null</span> == date) <span class="keyword">return</span> ... 张经理;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (日期 in <span class="number">6.11</span>~<span class="number">6.20</span>) &#123;</span><br><span class="line">    date = AuthService.queryAuthInfo(<span class="string">&quot;1000011&quot;</span>, orderId);</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">null</span> == date) <span class="keyword">return</span> ... 段总;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> 审批完成;</span><br></pre></td></tr></table></figure>
+
+<p>问题：</p>
+<ul>
+<li>所有审批逻辑堆在一个方法，职责混乱</li>
+<li>新增审批级别 → 修改原有 if 逻辑，违反开闭原则</li>
+<li>不同时期的审批规则变化 → 难以维护，改动容易引入 bug</li>
+</ul>
+<p><strong>责任链模式的解法：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">链组装（只做一次）：</span><br><span class="line">Level3AuthLink（王工）→ Level2AuthLink（张经理）→ Level1AuthLink（段总）</span><br><span class="line"></span><br><span class="line">调用方：</span><br><span class="line">authLink.doAuth(uId, orderId, authDate)</span><br><span class="line">    └── Level3AuthLink.doAuth()  检查三级是否通过？</span><br><span class="line">              ├── 未通过 → 返回&quot;待三级审批&quot;</span><br><span class="line">              └── 通过 → 检查时间是否在 6.1~6.25？</span><br><span class="line">                          ├── 否 → 返回完成（不需要二级审批）</span><br><span class="line">                          └── 是 → next.doAuth()（传给 Level2）</span><br><span class="line">                                    └── Level2AuthLink.doAuth() ...</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-2-架构图"><a href="#4-2-架构图" class="headerlink" title="4.2 架构图"></a>4.2 架构图</h3><h4 id="4-2-1-面条代码架构图"><a href="#4-2-1-面条代码架构图" class="headerlink" title="4.2.1 面条代码架构图"></a>4.2.1 面条代码架构图</h4><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260525161123138.png" alt="image-20260525161123138"></p>
+<h4 id="4-2-2-责任链模式架构图"><a href="#4-2-2-责任链模式架构图" class="headerlink" title="4.2.2 责任链模式架构图"></a>4.2.2 责任链模式架构图</h4><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260525160359703.png" alt="image-20260525160359703"></p>
+<hr>
+<h3 id="4-3-类图对比"><a href="#4-3-类图对比" class="headerlink" title="4.3 类图对比"></a>4.3 类图对比</h3><h4 id="4-3-1-面条代码类图"><a href="#4-3-1-面条代码类图" class="headerlink" title="4.3.1 面条代码类图"></a>4.3.1 面条代码类图</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    class AuthController {
+        -f: SimpleDateFormat
+        +doAuth(uId: String, orderId: String, authDate: Date) AuthInfo
+    }
+    class AuthService {
+        &lt;&lt;static 审批记录&gt;&gt;
+        +queryAuthInfo(uId: String, orderId: String) Date$
+        +auth(uId: String, orderId: String) void$
+    }
+    class AuthInfo {
+        -code: String
+        -info: String
+    }
+    AuthController ..&gt; AuthService : 多次硬编码调用
+    AuthController ..&gt; AuthInfo : 创建并返回
+
+    note for AuthController &quot;三级审批逻辑全部堆在\ndoAuth() 一个方法中\n含日期判断 if-else&quot;
+  </pre></div>
+
+<h4 id="4-3-2-责任链模式类图"><a href="#4-3-2-责任链模式类图" class="headerlink" title="4.3.2 责任链模式类图"></a>4.3.2 责任链模式类图</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  classDiagram
+    class AuthLink {
+        &lt;&lt;abstract 抽象链节点&gt;&gt;
+        #levelUserId: String
+        #levelUserName: String
+        #next: AuthLink
+        +getNext() AuthLink
+        +appendNext(next: AuthLink) AuthLink
+        +doAuth(uId: String, orderId: String, authDate: Date) AuthInfo*
+    }
+
+    class Level3AuthLink {
+        &lt;&lt;三级负责人（王工）&gt;&gt;
+        +doAuth(...) AuthInfo
+    }
+
+    class Level2AuthLink {
+        &lt;&lt;二级负责人（张经理）&gt;&gt;
+        -beginDate: Date
+        -endDate: Date
+        +doAuth(...) AuthInfo
+    }
+
+    class Level1AuthLink {
+        &lt;&lt;一级负责人（段总）&gt;&gt;
+        -beginDate: Date
+        -endDate: Date
+        +doAuth(...) AuthInfo
+    }
+
+    class AuthService {
+        -authMap: Map~String, Date~$
+        +queryAuthInfo(uId: String, orderId: String) Date$
+        +auth(uId: String, orderId: String) void$
+    }
+
+    class AuthInfo {
+        -code: String
+        -info: String
+    }
+
+    AuthLink &lt;|-- Level3AuthLink
+    AuthLink &lt;|-- Level2AuthLink
+    AuthLink &lt;|-- Level1AuthLink
+    AuthLink o--&gt; AuthLink : next（链接下一节点）
+    Level3AuthLink ..&gt; AuthService
+    Level2AuthLink ..&gt; AuthService
+    Level1AuthLink ..&gt; AuthService
+    Level3AuthLink ..&gt; AuthInfo
+    Level2AuthLink ..&gt; AuthInfo
+    Level1AuthLink ..&gt; AuthInfo
+
+    note for AuthLink &quot;核心：持有 next 引用\nappendNext() 构建链\ndoAuth() 抽象方法由子类实现&quot;
+  </pre></div>
+
+<hr>
+<h3 id="4-4-时序图"><a href="#4-4-时序图" class="headerlink" title="4.4 时序图"></a>4.4 时序图</h3><h4 id="4-4-1-面条代码时序图"><a href="#4-4-1-面条代码时序图" class="headerlink" title="4.4.1 面条代码时序图"></a>4.4.1 面条代码时序图</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  sequenceDiagram
+    participant Client as ApiTest
+    participant AC as AuthController
+    participant AS as AuthService
+
+    Client -&gt;&gt; AC: doAuth(&quot;小傅哥&quot;, &quot;1000998...&quot;, date)
+    AC -&gt;&gt; AS: queryAuthInfo(&quot;1000013&quot;, orderId)
+    AS --&gt;&gt; AC: null
+    AC --&gt;&gt; Client: 待三级审批（王工）
+
+    Client -&gt;&gt; AS: auth(&quot;1000013&quot;, orderId)  [王工审批]
+    Client -&gt;&gt; AC: doAuth(...)
+    AC -&gt;&gt; AS: queryAuthInfo(&quot;1000013&quot;, orderId) → 有时间
+    AC -&gt;&gt; AS: queryAuthInfo(&quot;1000012&quot;, orderId)
+    AS --&gt;&gt; AC: null
+    AC --&gt;&gt; Client: 待二级审批（张经理）
+
+    Client -&gt;&gt; AS: auth(&quot;1000012&quot;, orderId)  [张经理审批]
+    Client -&gt;&gt; AC: doAuth(...)
+    AC -&gt;&gt; AS: queryAuthInfo(&quot;1000013&quot;) → 有
+    AC -&gt;&gt; AS: queryAuthInfo(&quot;1000012&quot;) → 有
+    AC -&gt;&gt; AS: queryAuthInfo(&quot;1000011&quot;, orderId)
+    AS --&gt;&gt; AC: null
+    AC --&gt;&gt; Client: 待一级审批（段总）
+
+    Client -&gt;&gt; AS: auth(&quot;1000011&quot;, orderId)  [段总审批]
+    Client -&gt;&gt; AC: doAuth(...)
+    AC -&gt;&gt; AS: 三次查询全部有时间记录
+    AC --&gt;&gt; Client: 审批完成
+  </pre></div>
+
+<h4 id="4-4-2-责任链模式时序图"><a href="#4-4-2-责任链模式时序图" class="headerlink" title="4.4.2 责任链模式时序图"></a>4.4.2 责任链模式时序图</h4><div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  sequenceDiagram
+    participant Client as ApiTest
+    participant L3 as Level3AuthLink（王工）
+    participant L2 as Level2AuthLink（张经理）
+    participant L1 as Level1AuthLink（段总）
+    participant AS as AuthService
+
+    Note over Client: 组装链头：L3→L2→L1
+
+    Client -&gt;&gt; L3: authLink.doAuth(&quot;小傅哥&quot;, orderId, date)
+    L3 -&gt;&gt; AS: queryAuthInfo(&quot;1000013&quot;, orderId) → null
+    L3 --&gt;&gt; Client: 0001：待三级审批（王工）
+
+    Client -&gt;&gt; AS: auth(&quot;1000013&quot;, orderId)
+    Client -&gt;&gt; L3: authLink.doAuth(...)
+    L3 -&gt;&gt; AS: queryAuthInfo(&quot;1000013&quot;) → 有记录
+    Note over L3: next !&#x3D; null，传递
+    L3 -&gt;&gt; L2: next.doAuth(...)
+    L2 -&gt;&gt; AS: queryAuthInfo(&quot;1000012&quot;, orderId) → null
+    L2 --&gt;&gt; Client: 0001：待二级审批（张经理）
+
+    Client -&gt;&gt; AS: auth(&quot;1000012&quot;, orderId)
+    Client -&gt;&gt; L3: authLink.doAuth(...)
+    L3 -&gt;&gt; AS: queryAuthInfo(&quot;1000013&quot;) → 有
+    L3 -&gt;&gt; L2: next.doAuth(...)
+    L2 -&gt;&gt; AS: queryAuthInfo(&quot;1000012&quot;) → 有
+    Note over L2: 时间在 6.1~6.25，传递给 L1
+    L2 -&gt;&gt; L1: next.doAuth(...)
+    L1 -&gt;&gt; AS: queryAuthInfo(&quot;1000011&quot;, orderId) → null
+    L1 --&gt;&gt; Client: 0001：待一级审批（段总）
+
+    Client -&gt;&gt; AS: auth(&quot;1000011&quot;, orderId)
+    Client -&gt;&gt; L3: authLink.doAuth(...)
+    L3 -&gt;&gt; L2: 传递
+    L2 -&gt;&gt; L1: 传递
+    L1 -&gt;&gt; AS: queryAuthInfo(&quot;1000011&quot;) → 有记录
+    Note over L1: next &#x3D;&#x3D; null
+    L1 --&gt;&gt; Client: 0000：审批完成（段总，时间：...）
+  </pre></div>
+
+<hr>
+<h3 id="4-5-代码分析"><a href="#4-5-代码分析" class="headerlink" title="4.5 代码分析"></a>4.5 代码分析</h3><h4 id="4-5-1-抽象链节点-AuthLink（责任链核心骨架）"><a href="#4-5-1-抽象链节点-AuthLink（责任链核心骨架）" class="headerlink" title="4.5.1 抽象链节点 AuthLink（责任链核心骨架）"></a>4.5.1 抽象链节点 <code>AuthLink</code>（责任链核心骨架）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AuthLink.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">AuthLink</span> &#123;</span><br><span class="line">    <span class="keyword">protected</span> String levelUserId;       <span class="comment">// 当前节点的审批人ID</span></span><br><span class="line">    <span class="keyword">protected</span> String levelUserName;     <span class="comment">// 当前节点的审批人姓名</span></span><br><span class="line">    <span class="keyword">protected</span> AuthLink next;            <span class="comment">// 下一个节点（链接）</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">AuthLink</span><span class="params">(String levelUserId, String levelUserName)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.levelUserId = levelUserId;</span><br><span class="line">        <span class="built_in">this</span>.levelUserName = levelUserName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> AuthLink <span class="title function_">getNext</span><span class="params">()</span> &#123; <span class="keyword">return</span> next; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ✅ 核心：appendNext() 支持链式调用组装责任链</span></span><br><span class="line">    <span class="comment">// new Level3().appendNext(new Level2().appendNext(new Level1()))</span></span><br><span class="line">    <span class="keyword">public</span> AuthLink <span class="title function_">appendNext</span><span class="params">(AuthLink next)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.next = next;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>;  <span class="comment">// 返回 this，支持链式调用</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 抽象方法：每个具体节点实现自己的审批逻辑</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> AuthInfo <span class="title function_">doAuth</span><span class="params">(String uId, String orderId, Date authDate)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="4-5-2-三级节点-Level3AuthLink（链头，无时间限制，总是生效）"><a href="#4-5-2-三级节点-Level3AuthLink（链头，无时间限制，总是生效）" class="headerlink" title="4.5.2 三级节点 Level3AuthLink（链头，无时间限制，总是生效）"></a>4.5.2 三级节点 <code>Level3AuthLink</code>（链头，无时间限制，总是生效）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Level3AuthLink</span> <span class="keyword">extends</span> <span class="title class_">AuthLink</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Level3AuthLink</span><span class="params">(String levelUserId, String levelUserName)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(levelUserId, levelUserName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> AuthInfo <span class="title function_">doAuth</span><span class="params">(String uId, String orderId, Date authDate)</span> &#123;</span><br><span class="line">        <span class="comment">// ① 查询三级审批是否已完成</span></span><br><span class="line">        <span class="type">Date</span> <span class="variable">date</span> <span class="operator">=</span> AuthService.queryAuthInfo(levelUserId, orderId);</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == date) &#123;</span><br><span class="line">            <span class="comment">// ② 未审批 → 返回&quot;待审批&quot;，请求在此节点终止</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">AuthInfo</span>(<span class="string">&quot;0001&quot;</span>, <span class="string">&quot;单号：&quot;</span>, orderId, <span class="string">&quot; 状态：待三级审批负责人 &quot;</span>, levelUserName);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">AuthLink</span> <span class="variable">next</span> <span class="operator">=</span> <span class="built_in">super</span>.getNext();</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == next) &#123;</span><br><span class="line">            <span class="comment">// ③ 已审批 + 无下一节点 → 链路结束，返回完成</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">AuthInfo</span>(<span class="string">&quot;0000&quot;</span>, <span class="string">&quot;单号：&quot;</span>, orderId, <span class="string">&quot; 状态：一级审批完成负责人&quot;</span>,</span><br><span class="line">                <span class="string">&quot; 时间：&quot;</span>, f.format(date), <span class="string">&quot; 审批人：&quot;</span>, levelUserName);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// ④ 已审批 + 有下一节点 → 传递给下一节点继续处理</span></span><br><span class="line">        <span class="keyword">return</span> next.doAuth(uId, orderId, authDate);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="4-5-3-二级节点-Level2AuthLink（仅-6-1-6-25-期间生效）"><a href="#4-5-3-二级节点-Level2AuthLink（仅-6-1-6-25-期间生效）" class="headerlink" title="4.5.3 二级节点 Level2AuthLink（仅 6.1~6.25 期间生效）"></a>4.5.3 二级节点 <code>Level2AuthLink</code>（仅 6.1~6.25 期间生效）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Level2AuthLink</span> <span class="keyword">extends</span> <span class="title class_">AuthLink</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ✅ 关键：时间判断封装在节点内部，不暴露给外部</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">Date</span> <span class="variable">beginDate</span> <span class="operator">=</span> f.parse(<span class="string">&quot;2020-06-01 00:00:00&quot;</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="type">Date</span> <span class="variable">endDate</span>   <span class="operator">=</span> f.parse(<span class="string">&quot;2020-06-25 23:59:59&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> AuthInfo <span class="title function_">doAuth</span><span class="params">(String uId, String orderId, Date authDate)</span> &#123;</span><br><span class="line">        <span class="type">Date</span> <span class="variable">date</span> <span class="operator">=</span> AuthService.queryAuthInfo(levelUserId, orderId);</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == date) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">AuthInfo</span>(<span class="string">&quot;0001&quot;</span>, <span class="string">&quot;单号：&quot;</span>, orderId, <span class="string">&quot; 状态：待二级审批负责人 &quot;</span>, levelUserName);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">AuthLink</span> <span class="variable">next</span> <span class="operator">=</span> <span class="built_in">super</span>.getNext();</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == next) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">AuthInfo</span>(<span class="string">&quot;0000&quot;</span>, <span class="string">&quot;单号：&quot;</span>, orderId, <span class="string">&quot; 状态：二级审批完成负责人&quot;</span>,</span><br><span class="line">                <span class="string">&quot; 时间：&quot;</span>, f.format(date), <span class="string">&quot; 审批人：&quot;</span>, levelUserName);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// ✅ 不在大促时间段 → 不需要再往上审批，直接返回完成</span></span><br><span class="line">        <span class="keyword">if</span> (authDate.before(beginDate) || authDate.after(endDate)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">AuthInfo</span>(<span class="string">&quot;0000&quot;</span>, <span class="string">&quot;单号：&quot;</span>, orderId, <span class="string">&quot; 状态：二级审批完成负责人&quot;</span>,</span><br><span class="line">                <span class="string">&quot; 时间：&quot;</span>, f.format(date), <span class="string">&quot; 审批人：&quot;</span>, levelUserName);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> next.doAuth(uId, orderId, authDate);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="4-5-4-责任链组装与测试"><a href="#4-5-4-责任链组装与测试" class="headerlink" title="4.5.4 责任链组装与测试"></a>4.5.4 责任链组装与测试</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ApiTest.java</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test_AuthLink</span><span class="params">()</span> <span class="keyword">throws</span> ParseException &#123;</span><br><span class="line">    <span class="comment">// ✅ 责任链组装：Level3（王工）→ Level2（张经理）→ Level1（段总）</span></span><br><span class="line">    <span class="type">AuthLink</span> <span class="variable">authLink</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Level3AuthLink</span>(<span class="string">&quot;1000013&quot;</span>, <span class="string">&quot;王工&quot;</span>)</span><br><span class="line">            .appendNext(<span class="keyword">new</span> <span class="title class_">Level2AuthLink</span>(<span class="string">&quot;1000012&quot;</span>, <span class="string">&quot;张经理&quot;</span>)</span><br><span class="line">                    .appendNext(<span class="keyword">new</span> <span class="title class_">Level1AuthLink</span>(<span class="string">&quot;1000011&quot;</span>, <span class="string">&quot;段总&quot;</span>)));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 查询当前状态（三级未审批）</span></span><br><span class="line">    logger.info(<span class="string">&quot;测试结果：&#123;&#125;&quot;</span>, JSON.toJSONString(authLink.doAuth(<span class="string">&quot;小傅哥&quot;</span>, <span class="string">&quot;1000998004813441&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>())));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 模拟三级审批</span></span><br><span class="line">    AuthService.auth(<span class="string">&quot;1000013&quot;</span>, <span class="string">&quot;1000998004813441&quot;</span>);</span><br><span class="line">    logger.info(<span class="string">&quot;测试结果：&#123;&#125;&quot;</span>, JSON.toJSONString(authLink.doAuth(<span class="string">&quot;小傅哥&quot;</span>, <span class="string">&quot;1000998004813441&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>())));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 模拟二级审批</span></span><br><span class="line">    AuthService.auth(<span class="string">&quot;1000012&quot;</span>, <span class="string">&quot;1000998004813441&quot;</span>);</span><br><span class="line">    logger.info(<span class="string">&quot;测试结果：&#123;&#125;&quot;</span>, JSON.toJSONString(authLink.doAuth(<span class="string">&quot;小傅哥&quot;</span>, <span class="string">&quot;1000998004813441&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>())));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 模拟一级审批</span></span><br><span class="line">    AuthService.auth(<span class="string">&quot;1000011&quot;</span>, <span class="string">&quot;1000998004813441&quot;</span>);</span><br><span class="line">    logger.info(<span class="string">&quot;测试结果：&#123;&#125;&quot;</span>, JSON.toJSONString(authLink.doAuth(<span class="string">&quot;小傅哥&quot;</span>, <span class="string">&quot;1000998004813441&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>())));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出：</span></span><br><span class="line"><span class="comment">// &#123;&quot;code&quot;:&quot;0001&quot;,&quot;info&quot;:&quot;单号：1000998... 状态：待三级审批负责人 王工&quot;&#125;</span></span><br><span class="line"><span class="comment">// &#123;&quot;code&quot;:&quot;0001&quot;,&quot;info&quot;:&quot;单号：1000998... 状态：待二级审批负责人 张经理&quot;&#125;</span></span><br><span class="line"><span class="comment">// &#123;&quot;code&quot;:&quot;0001&quot;,&quot;info&quot;:&quot;单号：1000998... 状态：待一级审批负责人 段总&quot;&#125;</span></span><br><span class="line"><span class="comment">// &#123;&quot;code&quot;:&quot;0000&quot;,&quot;info&quot;:&quot;单号：1000998... 状态：一级审批完成负责人 时间：... 审批人：段总&quot;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>面条代码</th>
+<th>责任链模式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>审批逻辑位置</strong></td>
+<td>全部堆在 <code>doAuth()</code> 一个方法</td>
+<td>每级封装在各自节点类中</td>
+</tr>
+<tr>
+<td><strong>新增审批级别</strong></td>
+<td>修改原有 if 逻辑，影响稳定性</td>
+<td>新建节点类，<code>appendNext()</code> 插入链中</td>
+</tr>
+<tr>
+<td><strong>审批顺序调整</strong></td>
+<td>重写 if 逻辑</td>
+<td>修改链的组装顺序即可</td>
+</tr>
+<tr>
+<td><strong>时间判断逻辑</strong></td>
+<td>散落在 if 条件中</td>
+<td>封装在对应节点内部</td>
+</tr>
+<tr>
+<td><strong>符合开闭原则</strong></td>
+<td>否（修改原有代码）</td>
+<td>是（扩展新增，不改旧代码）</td>
+</tr>
+</tbody></table>
+<p><strong>责任链模式的关键实现要点：</strong></p>
+<blockquote>
+<ol>
+<li><strong><code>appendNext()</code> 返回 <code>this</code></strong>：支持链式调用，是优雅组装责任链的语法糖。</li>
+<li><strong>每个节点的三判断模式</strong>：① 当前节点是否满足处理条件？不满足 → 提前返回。② 有无下一节点？无 → 返回最终结果。③ 传递给下一节点 <code>next.doAuth()</code>。</li>
+<li><strong>链的可配置化</strong>：本案例是代码硬组装，生产中常见的方式是从数据库&#x2F;配置文件读取审批链配置，动态组装，实现完全可配置的流程引擎。</li>
+</ol>
+</blockquote>
+<p><strong>责任链模式的适用场景：</strong></p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>多级审批流程</td>
+<td>报销审批、上线审批、权限申请等</td>
+</tr>
+<tr>
+<td>HTTP 过滤器&#x2F;拦截器链</td>
+<td><code>javax.servlet.Filter</code> 就是责任链</td>
+</tr>
+<tr>
+<td>Spring Security 过滤器链</td>
+<td>多个 <code>SecurityFilter</code> 串成链</td>
+</tr>
+<tr>
+<td>Netty ChannelPipeline</td>
+<td>入站&#x2F;出站处理器链</td>
+</tr>
+<tr>
+<td>日志级别过滤</td>
+<td>多个 Logger 节点判断日志级别</td>
+</tr>
+</tbody></table>
+<p><strong>与其他模式对比：</strong></p>
+<ul>
+<li><strong>责任链模式 vs 装饰器模式</strong>：装饰器的每个节点<strong>都会</strong>执行（叠加功能），责任链的节点可以<strong>中断链路</strong>（提前返回）</li>
+<li><strong>责任链模式 vs 组合模式</strong>：组合模式是树形结构，可双向遍历；责任链是线性结构，单向传递</li>
+<li><strong>责任链模式 vs 策略模式</strong>：策略在一组算法中<strong>选择一个</strong>执行，责任链是顺序<strong>依次流过</strong>各节点</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Like</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://likerhood.github.io/2026/05/25/051%20%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/">https://likerhood.github.io/2026/05/25/051%20%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://likerhood.github.io" target="_blank">Liker's Blog</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/020javazerenlian_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://fastly.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2026/05/25/050%20%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/"><img class="next-cover" src="/img/019javaproxypattern_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Java 动态代理详解：从 InvocationHandler 到 Mapper 接口代理</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%C2%B7-%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F%EF%BC%88Chain-of-Responsibility-Pattern%EF%BC%89"><span class="toc-text">设计模式 · 责任链模式（Chain of Responsibility Pattern）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A0%B8%E5%BF%83%E5%AE%9A%E4%B9%89"><span class="toc-text">一、核心定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A0%87%E5%87%86%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%9B%BE"><span class="toc-text">二、标准体系结构图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%9C%BA%E6%99%AF%E6%8E%A8%E6%BC%94"><span class="toc-text">三、场景推演</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B"><span class="toc-text">四、实战案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="toc-text">4.1 需求分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-text">4.2 架构图</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-1-%E9%9D%A2%E6%9D%A1%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-text">4.2.1 面条代码架构图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-2-%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-text">4.2.2 责任链模式架构图</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E7%B1%BB%E5%9B%BE%E5%AF%B9%E6%AF%94"><span class="toc-text">4.3 类图对比</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-1-%E9%9D%A2%E6%9D%A1%E4%BB%A3%E7%A0%81%E7%B1%BB%E5%9B%BE"><span class="toc-text">4.3.1 面条代码类图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-2-%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F%E7%B1%BB%E5%9B%BE"><span class="toc-text">4.3.2 责任链模式类图</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="toc-text">4.4 时序图</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-1-%E9%9D%A2%E6%9D%A1%E4%BB%A3%E7%A0%81%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="toc-text">4.4.1 面条代码时序图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-2-%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="toc-text">4.4.2 责任链模式时序图</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-text">4.5 代码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-5-1-%E6%8A%BD%E8%B1%A1%E9%93%BE%E8%8A%82%E7%82%B9-AuthLink%EF%BC%88%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A0%B8%E5%BF%83%E9%AA%A8%E6%9E%B6%EF%BC%89"><span class="toc-text">4.5.1 抽象链节点 AuthLink（责任链核心骨架）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-5-2-%E4%B8%89%E7%BA%A7%E8%8A%82%E7%82%B9-Level3AuthLink%EF%BC%88%E9%93%BE%E5%A4%B4%EF%BC%8C%E6%97%A0%E6%97%B6%E9%97%B4%E9%99%90%E5%88%B6%EF%BC%8C%E6%80%BB%E6%98%AF%E7%94%9F%E6%95%88%EF%BC%89"><span class="toc-text">4.5.2 三级节点 Level3AuthLink（链头，无时间限制，总是生效）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-5-3-%E4%BA%8C%E7%BA%A7%E8%8A%82%E7%82%B9-Level2AuthLink%EF%BC%88%E4%BB%85-6-1-6-25-%E6%9C%9F%E9%97%B4%E7%94%9F%E6%95%88%EF%BC%89"><span class="toc-text">4.5.3 二级节点 Level2AuthLink（仅 6.1~6.25 期间生效）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-5-4-%E8%B4%A3%E4%BB%BB%E9%93%BE%E7%BB%84%E8%A3%85%E4%B8%8E%E6%B5%8B%E8%AF%95"><span class="toc-text">4.5.4 责任链组装与测试</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div></div></main><footer id="footer" style="background: #FFFFFF"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2026 By Like</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">Bcxm</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = async () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+      mermaid.initialize({ startOnLoad: false, theme: theme, securityLevel: 'loose' })
+
+      for (let i = 0; i < $mermaidWrap.length; i++) {
+        const item = $mermaidWrap[i]
+        const mermaidSrc = item.firstElementChild
+        const mermaidID = 'mermaid-' + i
+        const mermaidDefinition = mermaidSrc.textContent.trim()
+        try {
+          const result = await mermaid.render(mermaidID, mermaidDefinition)
+          const svgCode = result && result.svg ? result.svg : result
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        } catch (e) {
+          console.error('Mermaid render error:', mermaidID, e)
+        }
+      }
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://fastly.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/leancloud-storage@4.10.0/dist/av-min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
