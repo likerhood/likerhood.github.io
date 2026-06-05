@@ -1,0 +1,388 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Linux 服务器基础资源查看：CPU、GPU、内存、磁盘与一键配置检测脚本</title><meta name="author" content="Like"><meta name="copyright" content="Like"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Linux 服务器基础资源查看：CPU、GPU、内存、磁盘与一键配置检测脚本前言在服务器上跑大模型、深度学习实验、代码仓库分析任务时，第一步不是马上运行代码，而是先确认服务器资源是否够用。 常见需要查看的资源包括： 1234567GPU 型号和显存CPU 型号和核心数内存 RAM 和 Swap磁盘空间系统版本CUDA 驱动Python &#x2F; PyTorch 是否能使用 GPU  这些信息决定了服务器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 服务器基础资源查看：CPU、GPU、内存、磁盘与一键配置检测脚本">
+<meta property="og:url" content="https://likerhood.github.io/2026/06/05/057%20%E5%AD%A6%E4%B9%A0%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E7%9B%B8%E5%85%B3%E5%86%85%E5%AE%B9/index.html">
+<meta property="og:site_name" content="Liker&#39;s Blog">
+<meta property="og:description" content="Linux 服务器基础资源查看：CPU、GPU、内存、磁盘与一键配置检测脚本前言在服务器上跑大模型、深度学习实验、代码仓库分析任务时，第一步不是马上运行代码，而是先确认服务器资源是否够用。 常见需要查看的资源包括： 1234567GPU 型号和显存CPU 型号和核心数内存 RAM 和 Swap磁盘空间系统版本CUDA 驱动Python &#x2F; PyTorch 是否能使用 GPU  这些信息决定了服务器">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likerhood.github.io/img/026fuwuqipeizhijiancha_cover">
+<meta property="article:published_time" content="2026-06-05T07:48:47.679Z">
+<meta property="article:modified_time" content="2026-06-05T07:50:13.413Z">
+<meta property="article:author" content="Like">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likerhood.github.io/img/026fuwuqipeizhijiancha_cover"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/06/05/057%20%E5%AD%A6%E4%B9%A0%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E7%9B%B8%E5%85%B3%E5%86%85%E5%AE%B9/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Like","link":"链接: ","source":"来源: Liker's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux 服务器基础资源查看：CPU、GPU、内存、磁盘与一键配置检测脚本',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-06-05 15:50:13'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Liker's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Linux 服务器基础资源查看：CPU、GPU、内存、磁盘与一键配置检测脚本</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-06-05T07:48:47.679Z" title="发表于 2026-06-05 15:48:47">2026-06-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/">工具安装教程</a></span></div><div class="meta-secondline"></div></div></div><article class="post-content" id="article-container"><h1 id="Linux-服务器基础资源查看：CPU、GPU、内存、磁盘与一键配置检测脚本"><a href="#Linux-服务器基础资源查看：CPU、GPU、内存、磁盘与一键配置检测脚本" class="headerlink" title="Linux 服务器基础资源查看：CPU、GPU、内存、磁盘与一键配置检测脚本"></a>Linux 服务器基础资源查看：CPU、GPU、内存、磁盘与一键配置检测脚本</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在服务器上跑大模型、深度学习实验、代码仓库分析任务时，第一步不是马上运行代码，而是先确认服务器资源是否够用。</p>
+<p>常见需要查看的资源包括：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">GPU 型号和显存</span><br><span class="line">CPU 型号和核心数</span><br><span class="line">内存 RAM 和 Swap</span><br><span class="line">磁盘空间</span><br><span class="line">系统版本</span><br><span class="line">CUDA 驱动</span><br><span class="line">Python / PyTorch 是否能使用 GPU</span><br></pre></td></tr></table></figure>
+
+<p>这些信息决定了服务器能不能跑模型、能不能加载数据集、能不能支撑并发任务。</p>
+<p>可以把服务器理解成一台“实验机器”：</p>
+<ol>
+<li>GPU：主要负责大模型推理和训练</li>
+<li>CPU：负责数据处理、代码解析、进程调度</li>
+<li>内存：负责临时存放数据</li>
+<li>磁盘：负责存模型、数据集、代码仓库和实验结果</li>
+</ol>
+<hr>
+<h2 id="一、查看-GPU：显卡型号、显存和进程占用"><a href="#一、查看-GPU：显卡型号、显存和进程占用" class="headerlink" title="一、查看 GPU：显卡型号、显存和进程占用"></a>一、查看 GPU：显卡型号、显存和进程占用</h2><h3 id="1-1-使用-nvidia-smi-查看-GPU"><a href="#1-1-使用-nvidia-smi-查看-GPU" class="headerlink" title="1.1 使用 nvidia-smi 查看 GPU"></a>1.1 使用 nvidia-smi 查看 GPU</h3><p>最常用命令是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi</span><br></pre></td></tr></table></figure>
+
+<p>它可以查看：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">显卡型号</span><br><span class="line">显存总量</span><br><span class="line">显存占用</span><br><span class="line">GPU 使用率</span><br><span class="line">CUDA 驱动版本</span><br><span class="line">正在占用 GPU 的进程</span><br></pre></td></tr></table></figure>
+
+<p>例如输出中看到：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NVIDIA RTX A6000</span><br><span class="line">Memory-Usage: 22826MiB / 49140MiB</span><br><span class="line">GPU-Util: 0%</span><br></pre></td></tr></table></figure>
+
+<p>表示：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">显卡型号：NVIDIA RTX A6000</span><br><span class="line">总显存：约 48GB</span><br><span class="line">当前已用显存：约 22.8GB</span><br><span class="line">当前 GPU 计算利用率：0%</span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GPU-Util 0% 不代表 GPU 完全空闲。</span><br><span class="line">它只表示当前这一瞬间没有进行计算。</span><br><span class="line">如果 Memory-Usage 很高，说明显存仍然被程序占着。</span><br></pre></td></tr></table></figure>
+
+<p>可以理解为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">显存占用高：有人把座位占住了</span><br><span class="line">GPU-Util 低：这个人现在没干活</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-查看-GPU-上有哪些进程"><a href="#1-2-查看-GPU-上有哪些进程" class="headerlink" title="1.2 查看 GPU 上有哪些进程"></a>1.2 查看 GPU 上有哪些进程</h3><p><code>nvidia-smi</code> 底部会显示类似：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">PID       Process name        GPU Memory</span><br><span class="line">2816656   python              11404MiB</span><br><span class="line">3230939   VLLM::EngineCore    41098MiB</span><br></pre></td></tr></table></figure>
+
+<p>这表示：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">某个 Python 程序占用了约 11GB 显存</span><br><span class="line">某个 vLLM 服务占用了约 41GB 显存</span><br></pre></td></tr></table></figure>
+
+<p>如果想看这些进程详情，可以执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ps -fp 2816656</span><br><span class="line">ps -fp 3230939</span><br></pre></td></tr></table></figure>
+
+<p>如果进程是自己的，并且确定不用了，可以结束：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">kill</span> 进程PID</span><br></pre></td></tr></table></figure>
+
+<p>如果普通 kill 无效，再谨慎使用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">kill</span> -9 进程PID</span><br></pre></td></tr></table></figure>
+
+<p>不要随便 kill 别人的进程。</p>
+<h3 id="1-3-案例分析"><a href="#1-3-案例分析" class="headerlink" title="1.3  案例分析"></a>1.3  案例分析</h3><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260605152632475.png" alt="image-20260605152632475"></p>
+<hr>
+<h2 id="二、查看-CPU：核心数和线程数"><a href="#二、查看-CPU：核心数和线程数" class="headerlink" title="二、查看 CPU：核心数和线程数"></a>二、查看 CPU：核心数和线程数</h2><h3 id="2-1-使用-lscpu-查看-CPU-详情"><a href="#2-1-使用-lscpu-查看-CPU-详情" class="headerlink" title="2.1 使用 lscpu 查看 CPU 详情"></a>2.1 使用 lscpu 查看 CPU 详情</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lscpu</span><br></pre></td></tr></table></figure>
+
+<p>重点看这些字段：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Model name：CPU 型号</span><br><span class="line">CPU(s)：逻辑线程数</span><br><span class="line">Socket(s)：物理 CPU 数量</span><br><span class="line">Core(s) per socket：每颗 CPU 的物理核心数</span><br><span class="line">Thread(s) per core：每个物理核心的线程数</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Model name: Intel(R) Xeon(R) Silver 4210R CPU @ 2.40GHz</span><br><span class="line">CPU(s): 40</span><br><span class="line">Socket(s): 2</span><br><span class="line">Core(s) per socket: 10</span><br><span class="line">Thread(s) per core: 2</span><br></pre></td></tr></table></figure>
+
+<p>可以理解为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">有 2 颗物理 CPU</span><br><span class="line">每颗 CPU 有 10 个物理核心</span><br><span class="line">每个物理核心有 2 个线程</span><br><span class="line">所以总共有 2 × 10 × 2 = 40 个逻辑线程</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-只查看-CPU-逻辑核心数"><a href="#2-2-只查看-CPU-逻辑核心数" class="headerlink" title="2.2 只查看 CPU 逻辑核心数"></a>2.2 只查看 CPU 逻辑核心数</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">nproc</span></span><br></pre></td></tr></table></figure>
+
+<p>如果输出：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">40</span><br></pre></td></tr></table></figure>
+
+<p>表示当前系统可用 40 个逻辑 CPU 线程。</p>
+<p>CPU 对下面这些任务比较重要：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">代码仓库解析</span><br><span class="line">数据预处理</span><br><span class="line">编译项目</span><br><span class="line">多进程并发</span><br><span class="line">运行测试用例</span><br><span class="line">构建索引</span><br></pre></td></tr></table></figure>
+
+<p>但对于大模型推理和训练来说，最关键的通常还是 GPU 显存。</p>
+<h3 id="2-3-案例"><a href="#2-3-案例" class="headerlink" title="2.3 案例"></a>2.3 案例</h3><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260605152958302.png" alt="image-20260605152958302"></p>
+<hr>
+<h2 id="三、查看内存：RAM-和-Swap"><a href="#三、查看内存：RAM-和-Swap" class="headerlink" title="三、查看内存：RAM 和 Swap"></a>三、查看内存：RAM 和 Swap</h2><h3 id="3-1-使用-free-h-查看内存"><a href="#3-1-使用-free-h-查看内存" class="headerlink" title="3.1 使用 free -h 查看内存"></a>3.1 使用 free -h 查看内存</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">free -h</span><br></pre></td></tr></table></figure>
+
+<p>输出类似：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">              total        used        free      buff/cache   available</span><br><span class="line">Mem:           30Gi        14Gi       1.2Gi        15Gi        16Gi</span><br><span class="line">Swap:          47Gi        16Gi        30Gi</span><br></pre></td></tr></table></figure>
+
+<p>重点看：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Mem total：物理内存总量</span><br><span class="line">Mem used：已使用内存</span><br><span class="line">Mem available：当前大概还能用的内存</span><br><span class="line">Swap used：已经使用的交换分区</span><br></pre></td></tr></table></figure>
+
+<p>其中最重要的是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">available</span><br></pre></td></tr></table></figure>
+
+<p>它表示当前系统大概还能给新程序使用多少内存。</p>
+<h3 id="3-2-free-很小不一定代表内存不足"><a href="#3-2-free-很小不一定代表内存不足" class="headerlink" title="3.2 free 很小不一定代表内存不足"></a>3.2 free 很小不一定代表内存不足</h3><p>Linux 会把空闲内存拿来做缓存，所以有时 <code>free</code> 很小，但 <code>available</code> 仍然比较大。</p>
+<p>例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">free: 1.2Gi</span><br><span class="line">available: 16Gi</span><br></pre></td></tr></table></figure>
+
+<p>这表示完全空闲的内存只有 1.2GB，但系统实际还能给程序释放出约 16GB 使用。</p>
+<h3 id="3-3-Swap-是什么"><a href="#3-3-Swap-是什么" class="headerlink" title="3.3 Swap 是什么"></a>3.3 Swap 是什么</h3><p>Swap 可以理解为“硬盘上的临时内存”。</p>
+<p>当物理内存不够用时，系统会把一部分数据临时放到硬盘上。</p>
+<p>但是硬盘速度比内存慢很多，所以 Swap 用得太多，程序可能会变慢。</p>
+<p>如果看到：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Swap used: 16Gi</span><br></pre></td></tr></table></figure>
+
+<p>说明系统已经有一定内存压力。</p>
+<h3 id="3-4-案例"><a href="#3-4-案例" class="headerlink" title="3.4 案例"></a>3.4 案例</h3><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260605153041880.png" alt="image-20260605153041880"></p>
+<hr>
+<h2 id="四、查看磁盘空间"><a href="#四、查看磁盘空间" class="headerlink" title="四、查看磁盘空间"></a>四、查看磁盘空间</h2><h3 id="4-1-使用-df-h-查看分区空间"><a href="#4-1-使用-df-h-查看分区空间" class="headerlink" title="4.1 使用 df -h 查看分区空间"></a>4.1 使用 df -h 查看分区空间</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">df</span> -h</span><br></pre></td></tr></table></figure>
+
+<p>重点看这些列：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Size：总容量</span><br><span class="line">Used：已使用</span><br><span class="line">Avail：剩余空间</span><br><span class="line">Use%：使用率</span><br><span class="line">Mounted on：挂载位置</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/dev/sdc4  827G  394G  391G  51%  /</span><br><span class="line">/dev/sda1  2.2T  338G  1.8T  17%  /data26</span><br><span class="line">/dev/sdd1  2.2T  1.6T  486G  77%  /home</span><br></pre></td></tr></table></figure>
+
+<p>表示：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">根目录 / 剩余约 391GB</span><br><span class="line">/data26 剩余约 1.8TB</span><br><span class="line">/home 剩余约 486GB</span><br></pre></td></tr></table></figure>
+
+<p>如果要存放大模型、数据集、代码仓库和实验输出，优先选择剩余空间更大的数据盘，例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data26</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-查看当前目录属于哪个磁盘"><a href="#4-2-查看当前目录属于哪个磁盘" class="headerlink" title="4.2 查看当前目录属于哪个磁盘"></a>4.2 查看当前目录属于哪个磁盘</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">df</span> -h .</span><br></pre></td></tr></table></figure>
+
+<p>如果你当前在 <code>/home/likecodebase</code>，输出一般会显示它属于 <code>/home</code> 分区。</p>
+<h3 id="4-3-查看当前目录占用大小"><a href="#4-3-查看当前目录占用大小" class="headerlink" title="4.3 查看当前目录占用大小"></a>4.3 查看当前目录占用大小</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">du</span> -sh .</span><br></pre></td></tr></table></figure>
+
+<p>查看当前目录下每个文件夹大小：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">du</span> -h --max-depth=1 | <span class="built_in">sort</span> -hr</span><br></pre></td></tr></table></figure>
+
+<p>这个命令很适合找哪个目录最占空间。</p>
+<h3 id="4-4-案例"><a href="#4-4-案例" class="headerlink" title="4.4 案例"></a>4.4 案例</h3><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260605153313605.png" alt="image-20260605153313605"></p>
+<hr>
+<h2 id="五、查看磁盘挂载结构"><a href="#五、查看磁盘挂载结构" class="headerlink" title="五、查看磁盘挂载结构"></a>五、查看磁盘挂载结构</h2><h3 id="5-1-使用-lsblk-查看磁盘结构"><a href="#5-1-使用-lsblk-查看磁盘结构" class="headerlink" title="5.1 使用 lsblk 查看磁盘结构"></a>5.1 使用 lsblk 查看磁盘结构</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsblk</span><br></pre></td></tr></table></figure>
+
+<p>输出类似：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sda      2.2T</span><br><span class="line">└─sda1   2.2T  /data26</span><br><span class="line"></span><br><span class="line">sdc      893.8G</span><br><span class="line">├─sdc1   476M  /boot/efi</span><br><span class="line">├─sdc2   47.7G [SWAP]</span><br><span class="line">├─sdc3   4.7G  /boot</span><br><span class="line">└─sdc4   841G  /</span><br><span class="line"></span><br><span class="line">sdd      2.2T</span><br><span class="line">└─sdd1   2.2T  /home</span><br></pre></td></tr></table></figure>
+
+<p>可以理解为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sda：数据盘，挂载到 /data26</span><br><span class="line">sdc：系统盘，包含 /、/boot、swap</span><br><span class="line">sdd：用户目录盘，挂载到 /home</span><br></pre></td></tr></table></figure>
+
+<p>如果某块盘没有挂载点，比如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sdb 894.3G</span><br></pre></td></tr></table></figure>
+
+<p>说明它目前没有挂载到系统目录中。普通用户一般不要随便操作这种磁盘，避免误删数据。</p>
+<h3 id="5-2-案例"><a href="#5-2-案例" class="headerlink" title="5.2 案例"></a>5.2 案例</h3><p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260605153529896.png" alt="image-20260605153529896"></p>
+<hr>
+<h2 id="六、查看系统版本和-CUDA-环境"><a href="#六、查看系统版本和-CUDA-环境" class="headerlink" title="六、查看系统版本和 CUDA 环境"></a>六、查看系统版本和 CUDA 环境</h2><h3 id="6-1-查看-Linux-系统版本"><a href="#6-1-查看-Linux-系统版本" class="headerlink" title="6.1 查看 Linux 系统版本"></a>6.1 查看 Linux 系统版本</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/os-release</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-查看内核版本"><a href="#6-2-查看内核版本" class="headerlink" title="6.2 查看内核版本"></a>6.2 查看内核版本</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">uname</span> -a</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-3-查看-CUDA-驱动支持版本"><a href="#6-3-查看-CUDA-驱动支持版本" class="headerlink" title="6.3 查看 CUDA 驱动支持版本"></a>6.3 查看 CUDA 驱动支持版本</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi</span><br></pre></td></tr></table></figure>
+
+<p>在顶部可以看到：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Driver Version: 535.261.03</span><br><span class="line">CUDA Version: 12.2</span><br></pre></td></tr></table></figure>
+
+<p>这里的 CUDA Version 表示当前显卡驱动支持的 CUDA 版本。</p>
+<h3 id="6-4-查看-PyTorch-是否能使用-GPU"><a href="#6-4-查看-PyTorch-是否能使用-GPU" class="headerlink" title="6.4 查看 PyTorch 是否能使用 GPU"></a>6.4 查看 PyTorch 是否能使用 GPU</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">python - &lt;&lt;<span class="string">&#x27;PY&#x27;</span></span><br><span class="line">import torch</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;torch version:&quot;</span>, torch.__version__)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;cuda available:&quot;</span>, torch.cuda.is_available())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;gpu count:&quot;</span>, torch.cuda.device_count())</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> torch.cuda.is_available():</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(torch.cuda.device_count()):</span><br><span class="line">        <span class="built_in">print</span>(i, torch.cuda.get_device_name(i))</span><br><span class="line">PY</span><br></pre></td></tr></table></figure>
+
+<p>如果输出：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cuda available: True</span><br><span class="line">gpu count: 2</span><br><span class="line">0 NVIDIA RTX A6000</span><br><span class="line">1 NVIDIA RTX A6000</span><br></pre></td></tr></table></figure>
+
+<p>说明 PyTorch 可以正常识别 GPU。</p>
+<hr>
+<h2 id="七、结合实际服务器做一个简要判断"><a href="#七、结合实际服务器做一个简要判断" class="headerlink" title="七、结合实际服务器做一个简要判断"></a>七、结合实际服务器做一个简要判断</h2><p>以当前这台服务器为例，可以总结为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">GPU：</span><br><span class="line">2 张 NVIDIA RTX A6000，每张约 48GB 显存。</span><br><span class="line"></span><br><span class="line">CPU：</span><br><span class="line">2 颗 Intel Xeon Silver 4210R。</span><br><span class="line">总共 20 个物理核心，40 个逻辑线程。</span><br><span class="line"></span><br><span class="line">内存：</span><br><span class="line">30GB RAM，另有 47GB Swap。</span><br><span class="line">RAM 不算特别大，运行大数据任务时要注意内存压力。</span><br><span class="line"></span><br><span class="line">磁盘：</span><br><span class="line">/home 剩余约 486GB。</span><br><span class="line">/data26 剩余约 1.8TB，最适合放模型、数据集、仓库和实验结果。</span><br><span class="line"></span><br><span class="line">CUDA：</span><br><span class="line">驱动支持 CUDA 12.2。</span><br></pre></td></tr></table></figure>
+
+<p>如果要运行 Qwen 7B 模型：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">只做推理：不吃力。</span><br><span class="line">LoRA / QLoRA 微调：可以，但最好清理 GPU 显存。</span><br><span class="line">全参数微调：不太建议，显存、内存和优化器开销都比较大。</span><br></pre></td></tr></table></figure>
+
+<p>需要注意：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GPU 显存是否已经被其他进程占用。</span><br><span class="line">系统内存只有 30GB，加载大数据集时不要一次性全部读入内存。</span><br><span class="line">模型和数据建议放到 /data26。</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="八、一键查看服务器资源的-Bash-脚本"><a href="#八、一键查看服务器资源的-Bash-脚本" class="headerlink" title="八、一键查看服务器资源的 Bash 脚本"></a>八、一键查看服务器资源的 Bash 脚本</h2><h3 id="8-1-创建脚本"><a href="#8-1-创建脚本" class="headerlink" title="8.1 创建脚本"></a>8.1 创建脚本</h3><p>在服务器终端执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim check_server_info.sh</span><br></pre></td></tr></table></figure>
+
+<p>然后粘贴下面脚本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ============================================</span></span><br><span class="line"><span class="comment"># check_server_info.sh</span></span><br><span class="line"><span class="comment"># 一键查看 Linux 服务器基础资源信息</span></span><br><span class="line"><span class="comment"># 包括：系统、CPU、内存、GPU、磁盘、Python/PyTorch GPU</span></span><br><span class="line"><span class="comment"># ============================================</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">set</span> -u</span><br><span class="line"></span><br><span class="line">REPORT_FILE=<span class="string">&quot;server_info_<span class="subst">$(date +%Y%m%d_%H%M%S)</span>.txt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">print_section</span></span>() &#123;</span><br><span class="line">    <span class="built_in">echo</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;============================================================&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$1</span>&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;============================================================&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">run_cmd</span></span>() &#123;</span><br><span class="line">    <span class="built_in">local</span> title=<span class="string">&quot;<span class="variable">$1</span>&quot;</span></span><br><span class="line">    <span class="built_in">local</span> cmd=<span class="string">&quot;<span class="variable">$2</span>&quot;</span></span><br><span class="line"></span><br><span class="line">    print_section <span class="string">&quot;<span class="variable">$title</span>&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;\$ <span class="variable">$cmd</span>&quot;</span></span><br><span class="line">    <span class="built_in">eval</span> <span class="string">&quot;<span class="variable">$cmd</span>&quot;</span> 2&gt;&amp;1 || <span class="built_in">echo</span> <span class="string">&quot;[WARN] command failed: <span class="variable">$cmd</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    print_section <span class="string">&quot;基础信息&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;当前时间: <span class="subst">$(date)</span>&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;主机名: <span class="subst">$(hostname)</span>&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;当前用户: <span class="subst">$(whoami)</span>&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;当前路径: <span class="subst">$(pwd)</span>&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> [ -f /etc/os-release ]; <span class="keyword">then</span></span><br><span class="line">        print_section <span class="string">&quot;系统版本&quot;</span></span><br><span class="line">        <span class="built_in">cat</span> /etc/os-release</span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">    run_cmd <span class="string">&quot;内核版本&quot;</span> <span class="string">&quot;uname -a&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">command</span> -v lscpu &gt;/dev/null 2&gt;&amp;1; <span class="keyword">then</span></span><br><span class="line">        print_section <span class="string">&quot;CPU 信息&quot;</span></span><br><span class="line">        lscpu | grep -E <span class="string">&quot;Architecture|Model name|CPU\\(s\\)|Thread\\(s\\) per core|Core\\(s\\) per socket|Socket\\(s\\)|NUMA node\\(s\\)&quot;</span> || lscpu</span><br><span class="line">        <span class="built_in">echo</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;逻辑 CPU 核心数: <span class="subst">$(nproc 2&gt;/dev/null || echo unknown)</span>&quot;</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;[WARN] lscpu command not found&quot;</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">    run_cmd <span class="string">&quot;内存信息&quot;</span> <span class="string">&quot;free -h&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">command</span> -v nvidia-smi &gt;/dev/null 2&gt;&amp;1; <span class="keyword">then</span></span><br><span class="line">        print_section <span class="string">&quot;GPU 信息：nvidia-smi&quot;</span></span><br><span class="line">        nvidia-smi</span><br><span class="line"></span><br><span class="line">        print_section <span class="string">&quot;GPU 简要信息&quot;</span></span><br><span class="line">        nvidia-smi --query-gpu=index,name,memory.total,memory.used,memory.free,utilization.gpu,temperature.gpu --format=csv</span><br><span class="line"></span><br><span class="line">        print_section <span class="string">&quot;GPU 进程信息&quot;</span></span><br><span class="line">        nvidia-smi --query-compute-apps=gpu_uuid,pid,process_name,used_memory --format=csv || <span class="literal">true</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        print_section <span class="string">&quot;GPU 信息&quot;</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;未检测到 nvidia-smi，可能没有 NVIDIA GPU，或者驱动未安装。&quot;</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">    run_cmd <span class="string">&quot;磁盘空间 df -h&quot;</span> <span class="string">&quot;df -h&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">command</span> -v lsblk &gt;/dev/null 2&gt;&amp;1; <span class="keyword">then</span></span><br><span class="line">        run_cmd <span class="string">&quot;磁盘挂载结构 lsblk&quot;</span> <span class="string">&quot;lsblk&quot;</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">    print_section <span class="string">&quot;当前目录磁盘占用&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;\$ df -h .&quot;</span></span><br><span class="line">    <span class="built_in">df</span> -h . 2&gt;&amp;1 || <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">echo</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;\$ du -sh .&quot;</span></span><br><span class="line">    <span class="built_in">du</span> -sh . 2&gt;&amp;1 || <span class="built_in">echo</span> <span class="string">&quot;[WARN] 当前目录过大或无权限，统计失败。&quot;</span></span><br><span class="line"></span><br><span class="line">    print_section <span class="string">&quot;Python / PyTorch GPU 检测&quot;</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">command</span> -v python &gt;/dev/null 2&gt;&amp;1; <span class="keyword">then</span></span><br><span class="line">        python - &lt;&lt;<span class="string">&#x27;PY&#x27;</span></span><br><span class="line">try:</span><br><span class="line">    import sys</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;python executable:&quot;</span>, sys.executable)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;python version:&quot;</span>, sys.version.replace(<span class="string">&quot;\n&quot;</span>, <span class="string">&quot; &quot;</span>))</span><br><span class="line"></span><br><span class="line">    import torch</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;torch version:&quot;</span>, torch.__version__)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;cuda available:&quot;</span>, torch.cuda.is_available())</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;gpu count:&quot;</span>, torch.cuda.device_count())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> torch.cuda.is_available():</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(torch.cuda.device_count()):</span><br><span class="line">            <span class="built_in">print</span>(f<span class="string">&quot;GPU &#123;i&#125;:&quot;</span>, torch.cuda.get_device_name(i))</span><br><span class="line">except ImportError:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;未安装 PyTorch，跳过 torch.cuda 检测。&quot;</span>)</span><br><span class="line">except Exception as e:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;PyTorch GPU 检测失败:&quot;</span>, repr(e))</span><br><span class="line">PY</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;未检测到 python 命令。&quot;</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">    print_section <span class="string">&quot;检查完成&quot;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;报告文件: <span class="variable">$REPORT_FILE</span>&quot;</span></span><br><span class="line"></span><br><span class="line">&#125; | <span class="built_in">tee</span> <span class="string">&quot;<span class="variable">$REPORT_FILE</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>保存并退出，键盘按下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">按 i 进入编辑模式</span><br><span class="line">粘贴脚本</span><br><span class="line">按 Esc</span><br><span class="line">输入 :wq</span><br><span class="line">回车保存退出</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-2-给脚本执行权限"><a href="#8-2-给脚本执行权限" class="headerlink" title="8.2 给脚本执行权限"></a>8.2 给脚本执行权限</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> +x check_server_info.sh</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-3-一键运行"><a href="#8-3-一键运行" class="headerlink" title="8.3 一键运行"></a>8.3 一键运行</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./check_server_info.sh</span><br></pre></td></tr></table></figure>
+
+<p>运行后，它会在当前目录生成一个报告文件，例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">server_info_20260604_224500.txt</span><br></pre></td></tr></table></figure>
+
+<p>以后如果想发给别人分析服务器配置，直接发这个 txt 文件即可。</p>
+<hr>
+<h2 id="九、脚本输出怎么看"><a href="#九、脚本输出怎么看" class="headerlink" title="九、脚本输出怎么看"></a>九、脚本输出怎么看</h2><h3 id="9-1-看-GPU"><a href="#9-1-看-GPU" class="headerlink" title="9.1 看 GPU"></a>9.1 看 GPU</h3><p>重点看：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GPU name</span><br><span class="line">memory.total</span><br><span class="line">memory.used</span><br><span class="line">memory.free</span><br><span class="line">utilization.gpu</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NVIDIA RTX A6000, 49140 MiB, 22826 MiB, 26314 MiB, 0 %</span><br></pre></td></tr></table></figure>
+
+<p>表示：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">总显存约 48GB</span><br><span class="line">已用约 22.8GB</span><br><span class="line">剩余约 26GB</span><br><span class="line">当前计算利用率 0%</span><br></pre></td></tr></table></figure>
+
+<h3 id="9-2-看-CPU"><a href="#9-2-看-CPU" class="headerlink" title="9.2 看 CPU"></a>9.2 看 CPU</h3><p>重点看：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Model name</span><br><span class="line">CPU(s)</span><br><span class="line">Thread(s) per core</span><br><span class="line">Core(s) per socket</span><br><span class="line">Socket(s)</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CPU(s): 40</span><br><span class="line">Socket(s): 2</span><br><span class="line">Core(s) per socket: 10</span><br><span class="line">Thread(s) per core: 2</span><br></pre></td></tr></table></figure>
+
+<p>表示：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">2 颗 CPU</span><br><span class="line">每颗 10 个物理核心</span><br><span class="line">每核 2 线程</span><br><span class="line">总共 40 个逻辑线程</span><br></pre></td></tr></table></figure>
+
+<h3 id="9-3-看内存"><a href="#9-3-看内存" class="headerlink" title="9.3 看内存"></a>9.3 看内存</h3><p>重点看：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Mem total</span><br><span class="line">Mem available</span><br><span class="line">Swap used</span><br></pre></td></tr></table></figure>
+
+<p>如果 <code>available</code> 很小，说明可用内存紧张。</p>
+<p>如果 <code>Swap used</code> 很大，说明系统可能已经发生过内存压力。</p>
+<h3 id="9-4-看磁盘"><a href="#9-4-看磁盘" class="headerlink" title="9.4 看磁盘"></a>9.4 看磁盘</h3><p>重点看：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Mounted on</span><br><span class="line">Avail</span><br><span class="line">Use%</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/data26 Avail 1.8T</span><br><span class="line">/home   Avail 486G</span><br></pre></td></tr></table></figure>
+
+<p>说明大数据更适合放到 <code>/data26</code>。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>查看服务器资源时，最常用的命令可以记住这几个：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi</span><br><span class="line">lscpu</span><br><span class="line">free -h</span><br><span class="line"><span class="built_in">df</span> -h</span><br><span class="line">lsblk</span><br></pre></td></tr></table></figure>
+
+<p>它们分别对应：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">nvidia-smi：查看 GPU 和显存</span><br><span class="line">lscpu：查看 CPU</span><br><span class="line">free -h：查看内存</span><br><span class="line">df -h：查看磁盘空间</span><br><span class="line">lsblk：查看磁盘挂载结构</span><br></pre></td></tr></table></figure>
+
+<p>对于大模型实验来说，最重要的是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">显存够不够</span><br><span class="line">GPU 是否被别人占用</span><br><span class="line">内存是否紧张</span><br><span class="line">磁盘是否有足够空间存模型和数据</span><br></pre></td></tr></table></figure>
+
+<p>以当前服务器为例，2 张 RTX A6000 是非常好的 GPU 配置，运行 Qwen 7B 推理基本不吃力；但系统内存只有 30GB，运行大规模数据处理或训练时要注意内存压力。</p>
+<p>一句话总结：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">跑实验之前，先看资源；显存决定模型能不能跑，内存决定数据能不能撑住，磁盘决定模型和数据能不能放得下。</span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Like</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://likerhood.github.io/2026/06/05/057%20%E5%AD%A6%E4%B9%A0%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E7%9B%B8%E5%85%B3%E5%86%85%E5%AE%B9/">https://likerhood.github.io/2026/06/05/057%20%E5%AD%A6%E4%B9%A0%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E7%9B%B8%E5%85%B3%E5%86%85%E5%AE%B9/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://likerhood.github.io" target="_blank">Liker's Blog</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/026fuwuqipeizhijiancha_cover" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://fastly.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2026/06/04/056%20wsl%E5%AE%89%E8%A3%85miniconda/"><img class="next-cover" src="/img/025wslpeizhiconda.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">WSL 下安装 Miniconda 笔记</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux-%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9F%BA%E7%A1%80%E8%B5%84%E6%BA%90%E6%9F%A5%E7%9C%8B%EF%BC%9ACPU%E3%80%81GPU%E3%80%81%E5%86%85%E5%AD%98%E3%80%81%E7%A3%81%E7%9B%98%E4%B8%8E%E4%B8%80%E9%94%AE%E9%85%8D%E7%BD%AE%E6%A3%80%E6%B5%8B%E8%84%9A%E6%9C%AC"><span class="toc-text">Linux 服务器基础资源查看：CPU、GPU、内存、磁盘与一键配置检测脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%9F%A5%E7%9C%8B-GPU%EF%BC%9A%E6%98%BE%E5%8D%A1%E5%9E%8B%E5%8F%B7%E3%80%81%E6%98%BE%E5%AD%98%E5%92%8C%E8%BF%9B%E7%A8%8B%E5%8D%A0%E7%94%A8"><span class="toc-text">一、查看 GPU：显卡型号、显存和进程占用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%BD%BF%E7%94%A8-nvidia-smi-%E6%9F%A5%E7%9C%8B-GPU"><span class="toc-text">1.1 使用 nvidia-smi 查看 GPU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E6%9F%A5%E7%9C%8B-GPU-%E4%B8%8A%E6%9C%89%E5%93%AA%E4%BA%9B%E8%BF%9B%E7%A8%8B"><span class="toc-text">1.2 查看 GPU 上有哪些进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E6%A1%88%E4%BE%8B%E5%88%86%E6%9E%90"><span class="toc-text">1.3  案例分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%9F%A5%E7%9C%8B-CPU%EF%BC%9A%E6%A0%B8%E5%BF%83%E6%95%B0%E5%92%8C%E7%BA%BF%E7%A8%8B%E6%95%B0"><span class="toc-text">二、查看 CPU：核心数和线程数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E4%BD%BF%E7%94%A8-lscpu-%E6%9F%A5%E7%9C%8B-CPU-%E8%AF%A6%E6%83%85"><span class="toc-text">2.1 使用 lscpu 查看 CPU 详情</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%8F%AA%E6%9F%A5%E7%9C%8B-CPU-%E9%80%BB%E8%BE%91%E6%A0%B8%E5%BF%83%E6%95%B0"><span class="toc-text">2.2 只查看 CPU 逻辑核心数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E6%A1%88%E4%BE%8B"><span class="toc-text">2.3 案例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%EF%BC%9ARAM-%E5%92%8C-Swap"><span class="toc-text">三、查看内存：RAM 和 Swap</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E4%BD%BF%E7%94%A8-free-h-%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98"><span class="toc-text">3.1 使用 free -h 查看内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-free-%E5%BE%88%E5%B0%8F%E4%B8%8D%E4%B8%80%E5%AE%9A%E4%BB%A3%E8%A1%A8%E5%86%85%E5%AD%98%E4%B8%8D%E8%B6%B3"><span class="toc-text">3.2 free 很小不一定代表内存不足</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-Swap-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-text">3.3 Swap 是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E6%A1%88%E4%BE%8B"><span class="toc-text">3.4 案例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E7%A9%BA%E9%97%B4"><span class="toc-text">四、查看磁盘空间</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E4%BD%BF%E7%94%A8-df-h-%E6%9F%A5%E7%9C%8B%E5%88%86%E5%8C%BA%E7%A9%BA%E9%97%B4"><span class="toc-text">4.1 使用 df -h 查看分区空间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E5%B1%9E%E4%BA%8E%E5%93%AA%E4%B8%AA%E7%A3%81%E7%9B%98"><span class="toc-text">4.2 查看当前目录属于哪个磁盘</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E5%8D%A0%E7%94%A8%E5%A4%A7%E5%B0%8F"><span class="toc-text">4.3 查看当前目录占用大小</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E6%A1%88%E4%BE%8B"><span class="toc-text">4.4 案例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E6%8C%82%E8%BD%BD%E7%BB%93%E6%9E%84"><span class="toc-text">五、查看磁盘挂载结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E4%BD%BF%E7%94%A8-lsblk-%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E7%BB%93%E6%9E%84"><span class="toc-text">5.1 使用 lsblk 查看磁盘结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E6%A1%88%E4%BE%8B"><span class="toc-text">5.2 案例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E6%9F%A5%E7%9C%8B%E7%B3%BB%E7%BB%9F%E7%89%88%E6%9C%AC%E5%92%8C-CUDA-%E7%8E%AF%E5%A2%83"><span class="toc-text">六、查看系统版本和 CUDA 环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E6%9F%A5%E7%9C%8B-Linux-%E7%B3%BB%E7%BB%9F%E7%89%88%E6%9C%AC"><span class="toc-text">6.1 查看 Linux 系统版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E6%9F%A5%E7%9C%8B%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC"><span class="toc-text">6.2 查看内核版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-%E6%9F%A5%E7%9C%8B-CUDA-%E9%A9%B1%E5%8A%A8%E6%94%AF%E6%8C%81%E7%89%88%E6%9C%AC"><span class="toc-text">6.3 查看 CUDA 驱动支持版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-4-%E6%9F%A5%E7%9C%8B-PyTorch-%E6%98%AF%E5%90%A6%E8%83%BD%E4%BD%BF%E7%94%A8-GPU"><span class="toc-text">6.4 查看 PyTorch 是否能使用 GPU</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E7%BB%93%E5%90%88%E5%AE%9E%E9%99%85%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%81%9A%E4%B8%80%E4%B8%AA%E7%AE%80%E8%A6%81%E5%88%A4%E6%96%AD"><span class="toc-text">七、结合实际服务器做一个简要判断</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E4%B8%80%E9%94%AE%E6%9F%A5%E7%9C%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%B5%84%E6%BA%90%E7%9A%84-Bash-%E8%84%9A%E6%9C%AC"><span class="toc-text">八、一键查看服务器资源的 Bash 脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E5%88%9B%E5%BB%BA%E8%84%9A%E6%9C%AC"><span class="toc-text">8.1 创建脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-%E7%BB%99%E8%84%9A%E6%9C%AC%E6%89%A7%E8%A1%8C%E6%9D%83%E9%99%90"><span class="toc-text">8.2 给脚本执行权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-3-%E4%B8%80%E9%94%AE%E8%BF%90%E8%A1%8C"><span class="toc-text">8.3 一键运行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E8%84%9A%E6%9C%AC%E8%BE%93%E5%87%BA%E6%80%8E%E4%B9%88%E7%9C%8B"><span class="toc-text">九、脚本输出怎么看</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-1-%E7%9C%8B-GPU"><span class="toc-text">9.1 看 GPU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-2-%E7%9C%8B-CPU"><span class="toc-text">9.2 看 CPU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-3-%E7%9C%8B%E5%86%85%E5%AD%98"><span class="toc-text">9.3 看内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-4-%E7%9C%8B%E7%A3%81%E7%9B%98"><span class="toc-text">9.4 看磁盘</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div></div></main><footer id="footer" style="background: #FFFFFF"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2026 By Like</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">Bcxm</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = async () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+      mermaid.initialize({ startOnLoad: false, theme: theme, securityLevel: 'loose' })
+
+      for (let i = 0; i < $mermaidWrap.length; i++) {
+        const item = $mermaidWrap[i]
+        const mermaidSrc = item.firstElementChild
+        const mermaidID = 'mermaid-' + i
+        const mermaidDefinition = mermaidSrc.textContent.trim()
+        try {
+          const result = await mermaid.render(mermaidID, mermaidDefinition)
+          const svgCode = result && result.svg ? result.svg : result
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        } catch (e) {
+          console.error('Mermaid render error:', mermaidID, e)
+        }
+      }
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://fastly.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script></div><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/leancloud-storage@4.10.0/dist/av-min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
