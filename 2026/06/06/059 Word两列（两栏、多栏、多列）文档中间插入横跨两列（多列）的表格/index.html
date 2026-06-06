@@ -1,0 +1,298 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Word 两列文档中插入横跨两列的表格</title><meta name="author" content="Like,3441506149@qq.com"><meta name="copyright" content="Like"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Word 两列文档中插入横跨两列的表格前言在写论文、报告或课程作业时，Word 文档经常会设置成“两栏排版”。这种排版适合正文阅读，但如果表格内容较宽，就会出现一个问题： 1表格被限制在单栏宽度内，显示很挤，甚至排版错乱。  这时我们希望正文仍然保持两栏，但中间某一张表格可以横跨左右两栏，铺满整页宽度。 本文记录一种常用做法：通过“连续分节符”把表格单独隔离出来，再把表格所在区域设置为“一栏”。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Word 两列文档中插入横跨两列的表格">
+<meta property="og:url" content="https://likerhood.github.io/2026/06/06/059%20Word%E4%B8%A4%E5%88%97%EF%BC%88%E4%B8%A4%E6%A0%8F%E3%80%81%E5%A4%9A%E6%A0%8F%E3%80%81%E5%A4%9A%E5%88%97%EF%BC%89%E6%96%87%E6%A1%A3%E4%B8%AD%E9%97%B4%E6%8F%92%E5%85%A5%E6%A8%AA%E8%B7%A8%E4%B8%A4%E5%88%97%EF%BC%88%E5%A4%9A%E5%88%97%EF%BC%89%E7%9A%84%E8%A1%A8%E6%A0%BC/index.html">
+<meta property="og:site_name" content="Liker&#39;s Blog">
+<meta property="og:description" content="Word 两列文档中插入横跨两列的表格前言在写论文、报告或课程作业时，Word 文档经常会设置成“两栏排版”。这种排版适合正文阅读，但如果表格内容较宽，就会出现一个问题： 1表格被限制在单栏宽度内，显示很挤，甚至排版错乱。  这时我们希望正文仍然保持两栏，但中间某一张表格可以横跨左右两栏，铺满整页宽度。 本文记录一种常用做法：通过“连续分节符”把表格单独隔离出来，再把表格所在区域设置为“一栏”。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://likerhood.github.io/img/028wordgeshi_cover.png">
+<meta property="article:published_time" content="2026-06-06T05:56:23.567Z">
+<meta property="article:modified_time" content="2026-06-06T06:01:39.662Z">
+<meta property="article:author" content="Like">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://likerhood.github.io/img/028wordgeshi_cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://likerhood.github.io/2026/06/06/059%20Word%E4%B8%A4%E5%88%97%EF%BC%88%E4%B8%A4%E6%A0%8F%E3%80%81%E5%A4%9A%E6%A0%8F%E3%80%81%E5%A4%9A%E5%88%97%EF%BC%89%E6%96%87%E6%A1%A3%E4%B8%AD%E9%97%B4%E6%8F%92%E5%85%A5%E6%A8%AA%E8%B7%A8%E4%B8%A4%E5%88%97%EF%BC%88%E5%A4%9A%E5%88%97%EF%BC%89%E7%9A%84%E8%A1%A8%E6%A0%BC/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Like","link":"链接: ","source":"来源: Liker's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://fastly.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Word 两列文档中插入横跨两列的表格',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-06-06 14:01:39'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Liker's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-clock"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/gedan/"><i class="fa-fw fas fa-music"></i><span> 歌单</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fa fa-heartbeat"></i><span> 时光</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-tools"></i><span> 工具</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn"><span> 镜像</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://www.json.cn"><span> Json格式化</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://app.diagrams.net"><span> Draw画布</span></a></li><li><a class="site-page child" target="_blank" rel="noopener" href="https://keycode.info"><span> EnKey</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Word 两列文档中插入横跨两列的表格</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-06-06T05:56:23.567Z" title="发表于 2026-06-06 13:56:23">2026-06-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/">工具安装教程</a></span></div><div class="meta-secondline"></div></div></div><article class="post-content" id="article-container"><h1 id="Word-两列文档中插入横跨两列的表格"><a href="#Word-两列文档中插入横跨两列的表格" class="headerlink" title="Word 两列文档中插入横跨两列的表格"></a>Word 两列文档中插入横跨两列的表格</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在写论文、报告或课程作业时，Word 文档经常会设置成“两栏排版”。这种排版适合正文阅读，但如果表格内容较宽，就会出现一个问题：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">表格被限制在单栏宽度内，显示很挤，甚至排版错乱。</span><br></pre></td></tr></table></figure>
+
+<p>这时我们希望正文仍然保持两栏，但中间某一张表格可以横跨左右两栏，铺满整页宽度。</p>
+<p>本文记录一种常用做法：通过“连续分节符”把表格单独隔离出来，再把表格所在区域设置为“一栏”。</p>
+<blockquote>
+<p>参考博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_20179227/article/details/141264727">Word–两列（两栏、多栏、多列）文档中间插入横跨两列（多列）的表格_如何在两栏中加入一栏的表格-CSDN博客</a></p>
+</blockquote>
+<h2 id="一、最终效果与原本问题"><a href="#一、最终效果与原本问题" class="headerlink" title="一、最终效果与原本问题"></a>一、最终效果与原本问题</h2><h3 id="1-1-最终效果"><a href="#1-1-最终效果" class="headerlink" title="1.1 最终效果"></a>1.1 最终效果</h3><p>最终希望实现的效果是：正文仍然是两栏排版，但中间的表格横跨两栏，铺满页面宽度。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260606110638255.png" alt="最终效果"></p>
+<h3 id="1-2-原本样式"><a href="#1-2-原本样式" class="headerlink" title="1.2 原本样式"></a>1.2 原本样式</h3><p>原本情况下，表格会被压缩在某一栏中，宽度不够，显示效果不好。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260606110706516.png" alt="原本样式"></p>
+<p>可以把两栏文档理解成一条路被分成了左右两条车道，而表格太宽，单独放在一条车道里会很拥挤。我们要做的事情，就是在表格这一段临时把两条车道合并成一条大车道。</p>
+<h2 id="二、核心思路"><a href="#二、核心思路" class="headerlink" title="二、核心思路"></a>二、核心思路</h2><h3 id="2-1-为什么需要分节符"><a href="#2-1-为什么需要分节符" class="headerlink" title="2.1 为什么需要分节符"></a>2.1 为什么需要分节符</h3><p>Word 中的“分栏”设置通常是针对某一段文档区域生效的。</p>
+<p>如果直接把整篇文档设置为“一栏”，正文排版也会被破坏。</p>
+<p>所以正确做法是：</p>
+<ol>
+<li>表格前插入一个连续分节符</li>
+<li>表格后插入一个连续分节符</li>
+<li>只把两个分节符中间的表格区域设置为一栏</li>
+</ol>
+<p>这样就可以实现：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">表格前正文：两栏</span><br><span class="line">表格区域：一栏</span><br><span class="line">表格后正文：两栏</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-操作关键"><a href="#2-2-操作关键" class="headerlink" title="2.2 操作关键"></a>2.2 操作关键</h3><p>整个操作的关键只有一句话：</p>
+<p><strong>用两个连续分节符把表格单独包起来，然后把中间区域设置为一栏。</strong></p>
+<p>需要注意的是，如果表格标题也想横跨两栏，那么表格标题也要包含在两个分节符之间。</p>
+<h2 id="三、具体操作步骤"><a href="#三、具体操作步骤" class="headerlink" title="三、具体操作步骤"></a>三、具体操作步骤</h2><h3 id="3-1-先给表格前后加上文字标记"><a href="#3-1-先给表格前后加上文字标记" class="headerlink" title="3.1 先给表格前后加上文字标记"></a>3.1 先给表格前后加上文字标记</h3><p>为了方便定位，可以先在表格前后写上临时文字标记，例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">表格开始</span><br><span class="line">表格结束</span><br></pre></td></tr></table></figure>
+
+<p>这样在插入分节符时，不容易选错位置。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260606110936258.png" alt="文字标记"></p>
+<p>这些标记后面可以删除，它们只是帮助我们确认位置。</p>
+<h3 id="3-2-在表格前插入连续分节符"><a href="#3-2-在表格前插入连续分节符" class="headerlink" title="3.2 在表格前插入连续分节符"></a>3.2 在表格前插入连续分节符</h3><p>把光标放到表格前面，也就是表格标题前面。</p>
+<p>然后点击：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">布局 → 分隔符 → 分节符 → 连续</span><br></pre></td></tr></table></figure>
+
+<p>旧版 Word 中，“布局”可能叫“页面布局”。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260606111038766.png" alt="表格前插入连续分节符"></p>
+<p>这里的意思是：从这里开始，Word 会把后面的内容看成一个新的“节”。</p>
+<h3 id="3-3-在表格后插入连续分节符"><a href="#3-3-在表格后插入连续分节符" class="headerlink" title="3.3 在表格后插入连续分节符"></a>3.3 在表格后插入连续分节符</h3><p>接着，把光标放到表格末尾，也就是表格区域之后。</p>
+<p>再次点击：布局 → 分隔符 → 分节符 → 连续</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260606111128734.png" alt="表格后插入连续分节符"></p>
+<p>这样，表格区域就被两个连续分节符包围起来了。</p>
+<p>结构可以理解为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">两栏正文</span><br><span class="line">======== 连续分节符 ========</span><br><span class="line">表格区域</span><br><span class="line">======== 连续分节符 ========</span><br><span class="line">两栏正文</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-查看此时表格状态"><a href="#3-4-查看此时表格状态" class="headerlink" title="3.4 查看此时表格状态"></a>3.4 查看此时表格状态</h3><p>插入两个连续分节符之后，表格可能暂时变成下面这种样式。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260606111220415.png" alt="插入分节符后的状态"></p>
+<p>这一步不用担心，说明表格已经被单独隔离出来了，后面只需要调整分栏即可。</p>
+<h3 id="3-5-通过大纲视图确认分节符是否生效"><a href="#3-5-通过大纲视图确认分节符是否生效" class="headerlink" title="3.5 通过大纲视图确认分节符是否生效"></a>3.5 通过大纲视图确认分节符是否生效</h3><p>可以点击：视图 → 大纲</p>
+<p>在大纲视图中，可以看到分节符的位置。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260606111325715.png" alt="大纲视图查看分节符"></p>
+<p>如果能看到两个“连续分节符”，就说明分节符已经成功插入。</p>
+<h3 id="3-6-选中两个分节符中间的表格区域"><a href="#3-6-选中两个分节符中间的表格区域" class="headerlink" title="3.6 选中两个分节符中间的表格区域"></a>3.6 选中两个分节符中间的表格区域</h3><p>选中两个分节符中间的内容，也就是整张表格以及需要横跨两栏的表格标题。</p>
+<p>然后点击：布局 → 分栏 → 一栏</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260606111437879.png" alt="设置为一栏"></p>
+<p>这一步完成后，表格所在区域就会从“两栏”变成“一栏”，表格自然会铺满整页宽度。</p>
+<h3 id="3-7-调整表格格式"><a href="#3-7-调整表格格式" class="headerlink" title="3.7 调整表格格式"></a>3.7 调整表格格式</h3><p>设置完成后，表格已经可以横跨两栏。</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260606111523891.png" alt="初步效果"></p>
+<p>最后可以根据需要继续调整表格格式，例如：</p>
+<ol>
+<li>调整表格宽度</li>
+<li>调整字体大小</li>
+<li>调整行高列宽</li>
+<li>设置表格居中</li>
+<li>修改边框样式</li>
+</ol>
+<p>调整后的效果如下：</p>
+<p><img src="https://gitee.com/jdhhka6/pic_bed/raw/master/img/image-20260606111625489.png" alt="调整后的效果"></p>
+<h2 id="四、容易出错的地方"><a href="#四、容易出错的地方" class="headerlink" title="四、容易出错的地方"></a>四、容易出错的地方</h2><h3 id="4-1-只插入一个分节符"><a href="#4-1-只插入一个分节符" class="headerlink" title="4.1 只插入一个分节符"></a>4.1 只插入一个分节符</h3><p>如果只在表格前插入一个分节符，后面的正文也可能受到影响。</p>
+<p>正确做法是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">表格前一个分节符</span><br><span class="line">表格后一个分节符</span><br></pre></td></tr></table></figure>
+
+<p>两个分节符缺一不可。</p>
+<h3 id="4-2-没有选中完整表格区域"><a href="#4-2-没有选中完整表格区域" class="headerlink" title="4.2 没有选中完整表格区域"></a>4.2 没有选中完整表格区域</h3><p>设置“一栏”时，需要选中两个分节符中间的内容。</p>
+<p>如果只选中了表格的一部分，可能会导致表格标题、表格正文或后续正文排版不一致。</p>
+<h3 id="4-3-把整篇文档改成一栏"><a href="#4-3-把整篇文档改成一栏" class="headerlink" title="4.3 把整篇文档改成一栏"></a>4.3 把整篇文档改成一栏</h3><p>不要直接对整篇文档设置“一栏”。</p>
+<p>否则原本的两栏正文也会变成一栏，整体排版会被破坏。</p>
+<h2 id="五、方法总结"><a href="#五、方法总结" class="headerlink" title="五、方法总结"></a>五、方法总结</h2><h3 id="5-1-简化操作流程"><a href="#5-1-简化操作流程" class="headerlink" title="5.1 简化操作流程"></a>5.1 简化操作流程</h3><p>整个流程可以简化为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">第一步：在表格前插入连续分节符</span><br><span class="line">第二步：在表格后插入连续分节符</span><br><span class="line">第三步：选中两个分节符中间的表格区域</span><br><span class="line">第四步：设置为一栏</span><br><span class="line">第五步：调整表格格式</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-核心记忆"><a href="#5-2-核心记忆" class="headerlink" title="5.2 核心记忆"></a>5.2 核心记忆</h3><p>可以这样记：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">正文两栏，表格一栏；</span><br><span class="line">前后分节，中间改栏。</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，表格本身不是直接“跨栏”，而是通过分节符把表格区域单独划出来，然后让这个区域临时变成一栏。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在 Word 两栏文档中插入横跨两列的表格，核心方法是使用“连续分节符”。</p>
+<p>先在表格前后各插入一个连续分节符，把表格区域单独隔离出来。然后选中两个分节符中间的内容，将其设置为“一栏”。这样正文仍然保持两栏，表格则可以横跨整页宽度。</p>
+<p>这个方法非常适合论文、实验报告、课程设计文档中处理较宽表格的场景。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:3441506149@qq.com">Like</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://likerhood.github.io/2026/06/06/059%20Word%E4%B8%A4%E5%88%97%EF%BC%88%E4%B8%A4%E6%A0%8F%E3%80%81%E5%A4%9A%E6%A0%8F%E3%80%81%E5%A4%9A%E5%88%97%EF%BC%89%E6%96%87%E6%A1%A3%E4%B8%AD%E9%97%B4%E6%8F%92%E5%85%A5%E6%A8%AA%E8%B7%A8%E4%B8%A4%E5%88%97%EF%BC%88%E5%A4%9A%E5%88%97%EF%BC%89%E7%9A%84%E8%A1%A8%E6%A0%BC/">https://likerhood.github.io/2026/06/06/059%20Word%E4%B8%A4%E5%88%97%EF%BC%88%E4%B8%A4%E6%A0%8F%E3%80%81%E5%A4%9A%E6%A0%8F%E3%80%81%E5%A4%9A%E5%88%97%EF%BC%89%E6%96%87%E6%A1%A3%E4%B8%AD%E9%97%B4%E6%8F%92%E5%85%A5%E6%A8%AA%E8%B7%A8%E4%B8%A4%E5%88%97%EF%BC%88%E5%A4%9A%E5%88%97%EF%BC%89%E7%9A%84%E8%A1%A8%E6%A0%BC/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://likerhood.github.io" target="_blank">Liker's Blog</a>！</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/028wordgeshi_cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://fastly.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/06/06/060%20%E4%BD%BF%E7%94%A8vllm%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%AD%E9%83%A8%E7%BD%B2qwen2.5-7B/"><img class="prev-cover" src="/img/029fuwuqbushuqwen_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">服务器使用 vLLM 部署 Qwen2.5-Coder-7B-CL 笔记</div></div></a></div><div class="next-post pull-right"><a href="/2026/06/05/058%20%E4%BD%BF%E7%94%A8vllm%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2%E5%A4%A7%E6%A8%A1%E5%9E%8B/"><img class="next-cover" src="/img/027huggingfaceinstall_cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">服务器下载 Hugging Face 模型笔记：以 Qwen2.5-Coder-7B-CL 为例</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Word-%E4%B8%A4%E5%88%97%E6%96%87%E6%A1%A3%E4%B8%AD%E6%8F%92%E5%85%A5%E6%A8%AA%E8%B7%A8%E4%B8%A4%E5%88%97%E7%9A%84%E8%A1%A8%E6%A0%BC"><span class="toc-text">Word 两列文档中插入横跨两列的表格</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%9C%80%E7%BB%88%E6%95%88%E6%9E%9C%E4%B8%8E%E5%8E%9F%E6%9C%AC%E9%97%AE%E9%A2%98"><span class="toc-text">一、最终效果与原本问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E6%9C%80%E7%BB%88%E6%95%88%E6%9E%9C"><span class="toc-text">1.1 最终效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%8E%9F%E6%9C%AC%E6%A0%B7%E5%BC%8F"><span class="toc-text">1.2 原本样式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF"><span class="toc-text">二、核心思路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%88%86%E8%8A%82%E7%AC%A6"><span class="toc-text">2.1 为什么需要分节符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%93%8D%E4%BD%9C%E5%85%B3%E9%94%AE"><span class="toc-text">2.2 操作关键</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%85%B7%E4%BD%93%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4"><span class="toc-text">三、具体操作步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%85%88%E7%BB%99%E8%A1%A8%E6%A0%BC%E5%89%8D%E5%90%8E%E5%8A%A0%E4%B8%8A%E6%96%87%E5%AD%97%E6%A0%87%E8%AE%B0"><span class="toc-text">3.1 先给表格前后加上文字标记</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%9C%A8%E8%A1%A8%E6%A0%BC%E5%89%8D%E6%8F%92%E5%85%A5%E8%BF%9E%E7%BB%AD%E5%88%86%E8%8A%82%E7%AC%A6"><span class="toc-text">3.2 在表格前插入连续分节符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E5%9C%A8%E8%A1%A8%E6%A0%BC%E5%90%8E%E6%8F%92%E5%85%A5%E8%BF%9E%E7%BB%AD%E5%88%86%E8%8A%82%E7%AC%A6"><span class="toc-text">3.3 在表格后插入连续分节符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E6%9F%A5%E7%9C%8B%E6%AD%A4%E6%97%B6%E8%A1%A8%E6%A0%BC%E7%8A%B6%E6%80%81"><span class="toc-text">3.4 查看此时表格状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E9%80%9A%E8%BF%87%E5%A4%A7%E7%BA%B2%E8%A7%86%E5%9B%BE%E7%A1%AE%E8%AE%A4%E5%88%86%E8%8A%82%E7%AC%A6%E6%98%AF%E5%90%A6%E7%94%9F%E6%95%88"><span class="toc-text">3.5 通过大纲视图确认分节符是否生效</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-%E9%80%89%E4%B8%AD%E4%B8%A4%E4%B8%AA%E5%88%86%E8%8A%82%E7%AC%A6%E4%B8%AD%E9%97%B4%E7%9A%84%E8%A1%A8%E6%A0%BC%E5%8C%BA%E5%9F%9F"><span class="toc-text">3.6 选中两个分节符中间的表格区域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-7-%E8%B0%83%E6%95%B4%E8%A1%A8%E6%A0%BC%E6%A0%BC%E5%BC%8F"><span class="toc-text">3.7 调整表格格式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%B9%E6%98%93%E5%87%BA%E9%94%99%E7%9A%84%E5%9C%B0%E6%96%B9"><span class="toc-text">四、容易出错的地方</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%8F%AA%E6%8F%92%E5%85%A5%E4%B8%80%E4%B8%AA%E5%88%86%E8%8A%82%E7%AC%A6"><span class="toc-text">4.1 只插入一个分节符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E6%B2%A1%E6%9C%89%E9%80%89%E4%B8%AD%E5%AE%8C%E6%95%B4%E8%A1%A8%E6%A0%BC%E5%8C%BA%E5%9F%9F"><span class="toc-text">4.2 没有选中完整表格区域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E6%8A%8A%E6%95%B4%E7%AF%87%E6%96%87%E6%A1%A3%E6%94%B9%E6%88%90%E4%B8%80%E6%A0%8F"><span class="toc-text">4.3 把整篇文档改成一栏</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93"><span class="toc-text">五、方法总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E7%AE%80%E5%8C%96%E6%93%8D%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-text">5.1 简化操作流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E6%A0%B8%E5%BF%83%E8%AE%B0%E5%BF%86"><span class="toc-text">5.2 核心记忆</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Like</div><div class="author-info__description">去码头整点薯条</div></div><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/likerhood" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3441506149@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div></div></main><footer id="footer" style="background: #FFFFFF"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2026 By Like</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/chenxz21/hexo-theme-bcxm">Bcxm</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://fastly.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = async () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+      mermaid.initialize({ startOnLoad: false, theme: theme, securityLevel: 'loose' })
+
+      for (let i = 0; i < $mermaidWrap.length; i++) {
+        const item = $mermaidWrap[i]
+        const mermaidSrc = item.firstElementChild
+        const mermaidID = 'mermaid-' + i
+        const mermaidDefinition = mermaidSrc.textContent.trim()
+        try {
+          const result = await mermaid.render(mermaidID, mermaidDefinition)
+          const svgCode = result && result.svg ? result.svg : result
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        } catch (e) {
+          console.error('Mermaid render error:', mermaidID, e)
+        }
+      }
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://fastly.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script><script>function loadGiscus () {
+  let nowTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'preferred_color_scheme' : 'preferred_color_scheme'
+
+  const config = Object.assign({
+    src: 'https://giscus.app/client.js',
+    'data-repo': 'likerhood/comment-utterances',
+    'data-repo-id': 'R_kgDOSynDHQ',
+    'data-category-id': 'DIC_kwDOSynDHc4C-nSK',
+    'data-mapping': 'pathname',
+    'data-theme': nowTheme,
+    'data-reactions-enabled': '1',
+    crossorigin: 'anonymous',
+    async: true
+  },{"data-category":"Announcements","data-mapping":"pathname","data-lang":"zh-CN","data-strict":0,"data-reactions-enabled":1,"data-emit-metadata":0,"data-input-position":"top","data-loading":"lazy"})
+
+  let ele = document.createElement('script')
+  for (let key in config) {
+    ele.setAttribute(key, config[key])
+  }
+  document.getElementById('giscus-wrap').insertAdjacentElement('afterbegin',ele)
+}
+
+function changeGiscusTheme () {
+  const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'preferred_color_scheme' : 'preferred_color_scheme'
+
+  function sendMessage(message) {
+    const iframe = document.querySelector('iframe.giscus-frame');
+    if (!iframe) return;
+    iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+  }
+
+  sendMessage({
+    setConfig: {
+      theme: theme
+    }
+  });
+}
+
+if ('Giscus' === 'Giscus' || !false) {
+  if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+  else loadGiscus()
+} else {
+  function loadOtherComment () {
+    loadGiscus()
+  }
+}</script></div><script type="text/javascript" src="https://fastly.jsdelivr.net/npm/leancloud-storage@4.10.0/dist/av-min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://fastly.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
